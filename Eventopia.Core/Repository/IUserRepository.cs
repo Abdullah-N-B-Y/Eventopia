@@ -2,7 +2,7 @@
 
 namespace Eventopia.Core.Repository;
 
-public interface ICourseRepository
+public interface IUserRepository
 {
-    List<Course>GetAllCourses();
+    List<User>GetAllUsers();
 }
