@@ -5,9 +5,9 @@ namespace Eventopia.Core.Data;
 
 public partial class Role
 {
-    public decimal Roleid { get; set; }
+    public decimal Id { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? Rolename { get; set; }
 
-    public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
