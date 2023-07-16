@@ -1,3 +1,6 @@
+using Eventopia.Core.Common;
+using Eventopia.Infra.Common;
+
 namespace Eventopia
 {
     public class Program
@@ -12,6 +15,9 @@ namespace Eventopia
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
+            builder.Services.AddScoped<IDbContext, DbContext>();
 
             var app = builder.Build();
 
