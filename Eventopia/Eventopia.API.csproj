@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Eventopia.Core\Eventopia.Core.csproj" />
     <ProjectReference Include="..\Eventopia.Infra\Eventopia.Infra.csproj" />
   </ItemGroup>
 
