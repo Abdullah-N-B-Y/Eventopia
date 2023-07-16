@@ -7,5 +7,4 @@ namespace Eventopia.Core.Common
         {
             public DbConnection Connection { get; }
         }
-    
 }
