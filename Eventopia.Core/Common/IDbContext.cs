@@ -3,7 +3,7 @@
 
 namespace Eventopia.Core.Common
 {
-   
+   //comment to test
         public interface IDbContext
         {
             public DbConnection Connection { get; }
