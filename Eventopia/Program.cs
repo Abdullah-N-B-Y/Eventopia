@@ -1,11 +1,11 @@
 using Eventopia.Core.Common;
+using Eventopia.Core.Data;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
 using Eventopia.Infra.Common;
 using Eventopia.Infra.Repository;
 using Eventopia.Infra.Service;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Drawing;
+
 
 namespace Eventopia;
 
@@ -23,6 +23,7 @@ public class Program
 
 
 		builder.Services.AddScoped<IDbContext, DbContext>();
+		builder.Services.AddScoped<IRepository<Booking>, BookingRepository>();
 		builder.Services.AddScoped<IUserRepository, UserRepository>();
 		builder.Services.AddScoped<IUserService, UserService>();
 
