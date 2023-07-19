@@ -35,5 +35,12 @@ namespace Eventopia.API.Controllers
         {
             return _bookingService.GetAll();
         }
+
+        [HttpPut]
+        [Route("UpdateBooking")]
+        public void UpdateBooking(Booking booking) 
+        {
+            _bookingService.Update(booking);
+        }
     }
 }

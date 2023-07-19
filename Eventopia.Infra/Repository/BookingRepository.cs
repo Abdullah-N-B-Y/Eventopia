@@ -43,7 +43,14 @@ public class BookingRepository : IRepository<Booking>
 
     public void Update(Booking t)
     {
-        throw new NotImplementedException();
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_BookingId",t.Id,dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_BookingDate", t.Bookingdate,dbType:DbType.Date,direction:ParameterDirection.Input);
+        parameters.Add("p_UserId", t.Userid,dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_EventId", t.Eventid,dbType:DbType.Int32,direction:ParameterDirection.Input);
+
+        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
     }
 
     public void Delete(int id)

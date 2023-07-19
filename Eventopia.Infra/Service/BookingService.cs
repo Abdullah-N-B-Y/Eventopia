@@ -30,7 +30,7 @@ public class BookingService : IService<Booking>
 
     public void Update(Booking t)
     {
-        throw new NotImplementedException();
+        _bookingRepository.Update(t);
     }
 
     public void Delete(int id)
