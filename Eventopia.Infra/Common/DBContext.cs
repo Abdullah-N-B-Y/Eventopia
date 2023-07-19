@@ -11,12 +11,10 @@ namespace Eventopia.Infra.Common
     public class DbContext : IDbContext
     {
         private DbConnection _connection;
-
         private readonly IConfiguration _configuration;
 
         public DbContext(IConfiguration configuration)
         {
-         
             _configuration = configuration;
         }
 
@@ -29,11 +27,12 @@ namespace Eventopia.Infra.Common
                     _connection = new OracleConnection(_configuration["ConnectionStrings:DBConnectionString"]);
                     _connection.Open();
                 }
-                else if (_connection.State!=ConnectionState.Open)
+                else if (_connection.State != ConnectionState.Open)
                 {
                     _connection.Open();
                 }
-                return _connection; }
+                return _connection; 
+            }
         }
     }
 }

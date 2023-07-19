@@ -24,6 +24,7 @@ public class Program
 
 		builder.Services.AddScoped<IDbContext, DbContext>();
 		builder.Services.AddScoped<IRepository<Booking>, BookingRepository>();
+		builder.Services.AddScoped<IService<Booking>, BookingService>();
 
 
 		var app = builder.Build();

@@ -17,4 +17,25 @@ public class BookingService : IService<Booking>
     {
         _bookingRepository.CreateNew(t);
     }
+
+    public Booking GetById(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Booking> GetAll()
+    {
+        return _bookingRepository.GetAll();
+    }
+
+    public void Update(Booking t)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Delete(int id)
+    {
+        throw new NotImplementedException();
+    }
+
 }
