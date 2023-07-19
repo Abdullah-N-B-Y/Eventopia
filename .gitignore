@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 
+# Exclude Eventopia/appsettings.json
+Eventopia/appsettings.json
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
