@@ -20,7 +20,7 @@ public class BookingService : IService<Booking>
 
     public Booking GetById(int id)
     {
-        throw new NotImplementedException();
+        return _bookingRepository.GetById(id);
     }
 
     public List<Booking> GetAll()
@@ -30,12 +30,12 @@ public class BookingService : IService<Booking>
 
     public void Update(Booking t)
     {
-        throw new NotImplementedException();
+        _bookingRepository.Update(t);
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        _bookingRepository.Delete(id);
     }
 
 }

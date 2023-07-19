@@ -31,7 +31,7 @@ public class BookingRepository : IRepository<Booking>
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("Id",dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_BookingId", dbType:DbType.Int32,direction:ParameterDirection.Input);
 
         return _dBContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
     }
@@ -43,12 +43,23 @@ public class BookingRepository : IRepository<Booking>
 
     public void Update(Booking t)
     {
-        throw new NotImplementedException();
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_BookingId",t.Id,dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_BookingDate", t.Bookingdate,dbType:DbType.Date,direction:ParameterDirection.Input);
+        parameters.Add("p_UserId", t.Userid,dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_EventId", t.Eventid,dbType:DbType.Int32,direction:ParameterDirection.Input);
+
+        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_BookingId",id,dbType:DbType.Int32,direction:ParameterDirection.Input);
+
+        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.DeleteBooking",parameters,commandType:CommandType.StoredProcedure);
     }
     
 }
