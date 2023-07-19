@@ -50,12 +50,16 @@ public class BookingRepository : IRepository<Booking>
         parameters.Add("p_UserId", t.Userid,dbType:DbType.Int32,direction:ParameterDirection.Input);
         parameters.Add("p_EventId", t.Eventid,dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
+        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_BookingId",id,dbType:DbType.Int32,direction:ParameterDirection.Input);
+
+        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.DeleteBooking",parameters,commandType:CommandType.StoredProcedure);
     }
     
 }

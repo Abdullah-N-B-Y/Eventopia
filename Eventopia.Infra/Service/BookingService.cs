@@ -35,7 +35,7 @@ public class BookingService : IService<Booking>
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        _bookingRepository.Delete(id);
     }
 
 }

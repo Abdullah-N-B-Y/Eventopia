@@ -42,5 +42,12 @@ namespace Eventopia.API.Controllers
         {
             _bookingService.Update(booking);
         }
+
+        [HttpDelete]
+        [Route("DeleteBooking")]
+        public void DeleteBooking(int id)
+        {
+            _bookingService.Delete(id);
+        }
     }
 }
