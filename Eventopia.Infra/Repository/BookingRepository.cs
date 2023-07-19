@@ -15,13 +15,15 @@ public class BookingRepository : IRepository<Booking>
         _dBContext = dBContext;
     }
 
-    public void CreateBooking(Booking booking)
+    public void CreateNew(Booking booking)
     {
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("p_BookingDate", booking.Bookingdate, dbType:DbType.Date, direction:ParameterDirection.Input);
         parameters.Add("p_UserId", booking.Userid, dbType:DbType.Int32, direction:ParameterDirection.Input);
         parameters.Add("p_EventId", booking.Eventid, dbType:DbType.Int32, direction:ParameterDirection.Input);
         parameters.Add("p_Is_successed", dbType:DbType.Int32, direction:ParameterDirection.Output);
-        int isSuccessed = parameters.Get<int>("p_Is_successed");
+        //int isSuccessed = parameters.Get<int>("p_Is_successed");
+
+        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
     }
 }

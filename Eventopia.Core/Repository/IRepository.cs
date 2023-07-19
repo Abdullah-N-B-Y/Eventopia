@@ -6,6 +6,6 @@ namespace Eventopia.Core.Repository;
 
 public interface IRepository<T>
 {
-    void CreateBooking(Booking booking);
+    void CreateNew(T t);
 
 }
