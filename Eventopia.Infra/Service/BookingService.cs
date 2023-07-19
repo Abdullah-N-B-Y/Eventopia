@@ -20,7 +20,7 @@ public class BookingService : IService<Booking>
 
     public Booking GetById(int id)
     {
-        throw new NotImplementedException();
+        return _bookingRepository.GetById(id);
     }
 
     public List<Booking> GetAll()

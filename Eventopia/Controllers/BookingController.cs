@@ -23,17 +23,17 @@ namespace Eventopia.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetBookingByID")]
-        public void GetBookingByID()
+        [Route("GetBookingByID/{id}")]
+        public Booking GetBookingByID(int id)
         {
-            _bookingService.GetAll();
+            return _bookingService.GetById(id);
         }
 
         [HttpGet]
         [Route("GetAllBooking")]
-        public void GetAllBooking()
+        public List<Booking> GetAllBooking()
         {
-            _bookingService.GetAll();
+            return _bookingService.GetAll();
         }
     }
 }

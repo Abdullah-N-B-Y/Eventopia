@@ -31,7 +31,7 @@ public class BookingRepository : IRepository<Booking>
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("Id",dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_BookingId", dbType:DbType.Int32,direction:ParameterDirection.Input);
 
         return _dBContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
     }
