@@ -8,11 +8,11 @@ namespace Eventopia.Infra.Repository;
 
 public class BookingRepository : IRepository<Booking>
 {
-    private readonly IDbContext _dBContext;
+    private readonly IDbContext _dbContext;
 
     public BookingRepository(IDbContext dBContext)
     {
-        _dBContext = dBContext;
+        _dbContext = dBContext;
     }
 
     public void CreateNew(Booking booking)
@@ -24,7 +24,7 @@ public class BookingRepository : IRepository<Booking>
         parameters.Add("p_Is_successed", dbType:DbType.Int32, direction:ParameterDirection.Output);
         int isSuccessed = parameters.Get<int>("p_Is_successed");
 
-        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
+        int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
     }
 
     public Booking GetById(int id)
@@ -33,12 +33,12 @@ public class BookingRepository : IRepository<Booking>
 
         parameters.Add("p_BookingId", dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        return _dBContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
+        return _dbContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
     }
 
     public List<Booking> GetAll()
     {
-        return _dBContext.Connection.Query<Booking>("Booking_Package.GetAllBooking", commandType: CommandType.StoredProcedure).ToList();
+        return _dbContext.Connection.Query<Booking>("Booking_Package.GetAllBooking", commandType: CommandType.StoredProcedure).ToList();
     }
 
     public void Update(Booking t)
@@ -50,7 +50,7 @@ public class BookingRepository : IRepository<Booking>
         parameters.Add("p_UserId", t.Userid,dbType:DbType.Int32,direction:ParameterDirection.Input);
         parameters.Add("p_EventId", t.Eventid,dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
+        int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
     }
 
     public void Delete(int id)
@@ -59,7 +59,7 @@ public class BookingRepository : IRepository<Booking>
 
         parameters.Add("p_BookingId",id,dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        int numberOfAffectedColumns = _dBContext.Connection.Execute("Booking_Package.DeleteBooking",parameters,commandType:CommandType.StoredProcedure);
+        int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.DeleteBooking",parameters,commandType:CommandType.StoredProcedure);
     }
     
 }

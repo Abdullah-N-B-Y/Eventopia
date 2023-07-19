@@ -44,7 +44,7 @@ namespace Eventopia.API.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteBooking")]
+        [Route("DeleteBooking/{id}")]
         public void DeleteBooking(int id)
         {
             _bookingService.Delete(id);
