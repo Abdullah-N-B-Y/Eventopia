@@ -28,7 +28,9 @@ public class Program
 		builder.Services.AddScoped<IRepository<Page>, PageRepository>();
 		builder.Services.AddScoped<IService<Page>, PageService>();
 		builder.Services.AddScoped<IUserRepository, UserRepository>();
+		builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 		builder.Services.AddScoped<IUserService, UserService>();
+		builder.Services.AddScoped<IAdminService, AdminService>();
 
 		var app = builder.Build();
 
