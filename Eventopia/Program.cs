@@ -27,6 +27,8 @@ public class Program
 		builder.Services.AddScoped<IService<Booking>, BookingService>();
 		builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 		builder.Services.AddScoped<IService<Category>, CategoryService>();
+		builder.Services.AddScoped<IRepository<Page>, PageRepository>();
+		builder.Services.AddScoped<IService<Page>, PageService>();
 
 
 		var app = builder.Build();
