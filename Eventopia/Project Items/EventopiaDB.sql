@@ -742,3 +742,28 @@ CREATE OR REPLACE PACKAGE BODY Message_Package IS
     END GetAllMessages;
   
 END Message_Package;
+
+
+CREATE OR REPLACE PACKAGE Admin_Package
+AS
+    
+    PROCEDURE EventAcceptation(p_event_id Event.ID%TYPE, p_event_status Event.Status%TYPE);
+    
+END Admin_Package;
+
+
+CREATE OR REPLACE PACKAGE BODY Admin_Package
+AS
+    
+    PROCEDURE EventAcceptation(p_event_id Event.ID%TYPE, p_event_status Event.Status%TYPE)
+    AS
+        BEGIN
+        UPDATE Event SET Status = p_event_status
+        WHERE ID = p_event_id;
+        COMMIT;
+    END EventAcceptation;
+    
+END Admin_Package;
+
+
+
