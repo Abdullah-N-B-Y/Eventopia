@@ -24,9 +24,9 @@ namespace Eventopia.Infra.Repository
 		public void CreateNew(Page page)
 		{
 			DynamicParameters parameters = new DynamicParameters();
-			parameters.Add("CONTENT_1", page.Content1, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("CONTENT_2", page.Content2, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("IMAGEPATH", page.Backgroundimagepath, dbType: DbType.Int32, direction: ParameterDirection.Input);
+			parameters.Add("CONTENT_1", page.Content1, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("CONTENT_2", page.Content2, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("IMAGEPATH", page.Backgroundimagepath, dbType: DbType.String, direction: ParameterDirection.Input);
 			parameters.Add("ADMIN_ID", page.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 			var result = _dBContext.Connection.Execute("PAGE_PACKAGE.CreatePage", parameters, commandType: CommandType.StoredProcedure);
@@ -49,7 +49,7 @@ namespace Eventopia.Infra.Repository
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("PAGE_ID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			IEnumerable<Page> result = _dBContext.Connection.Query<Page>("Page_Package.GetPageById", commandType: CommandType.StoredProcedure);
+			IEnumerable<Page> result = _dBContext.Connection.Query<Page>("Page_Package.GetPageById", parameters, commandType: CommandType.StoredProcedure);
 			return result.FirstOrDefault();
 		}
 
@@ -57,9 +57,9 @@ namespace Eventopia.Infra.Repository
 		{
 			DynamicParameters parameters = new DynamicParameters();
 			parameters.Add("PAGE_ID", page.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("CONTENT_1", page.Content1, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("CONTENT_2", page.Content2, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("IMAGEPATH", page.Backgroundimagepath, dbType: DbType.Int32, direction: ParameterDirection.Input);
+			parameters.Add("CONTENT_1", page.Content1, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("CONTENT_2", page.Content2, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("IMAGEPATH", page.Backgroundimagepath, dbType: DbType.String, direction: ParameterDirection.Input);
 			parameters.Add("ADMIN_ID", page.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 			var result = _dBContext.Connection.Execute("PAGE_PACKAGE.UpdatePage", parameters, commandType: CommandType.StoredProcedure);

@@ -17,10 +17,8 @@ public class Program
 
 
         builder.Services.AddControllers();
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
 
 		builder.Services.AddScoped<IDbContext, DbContext>();
 		builder.Services.AddScoped<IRepository<Booking>, BookingRepository>();
@@ -29,7 +27,8 @@ public class Program
 		builder.Services.AddScoped<IService<Category>, CategoryService>();
 		builder.Services.AddScoped<IRepository<Page>, PageRepository>();
 		builder.Services.AddScoped<IService<Page>, PageService>();
-
+		builder.Services.AddScoped<IUserRepository, UserRepository>();
+		builder.Services.AddScoped<IUserService, UserService>();
 
 		var app = builder.Build();
 

@@ -176,9 +176,27 @@ CREATE TABLE Contact_Us_Entries (
   Content VARCHAR2(500),
   Email VARCHAR2(100),
   PhoneNumber NUMBER
+--  PhoneNumber Varchar2(13)
 );
 
+--insert into Role_(ROLENAME) Values('Admin');
+--insert into Role_(ROLENAME) Values('User');
+--insert into Role_(ROLENAME) Values('Guest');
 
+--INSERT INTO User_ (Username, Password, Email, VerfiicationCode, UserStatus, RoleId)
+--VALUES ('Admin', 'AdminPass', 'Admin@example.com', 'verification_code', 'active', 1);
+
+--INSERT INTO User_ (Username, Password, Email, VerfiicationCode, UserStatus, RoleId)
+--VALUES ('TestUser', 'UserPass', 'User1@example.com', 'verification_code', 'active', 2);
+
+
+commit;
+
+select * from Role_;
+select * from User_;
+
+select * from User_ u
+join Role_ r on u.RoleId = r.ID;
 
 --drop table comments;
 --drop table Contact_Us_Entries
@@ -204,6 +222,8 @@ CREATE OR REPLACE PACKAGE User_Package AS
 
   -- Procedure to get a user by ID
   PROCEDURE GetUserByID(p_UserID IN NUMBER);
+  
+  PROCEDURE GetUserByUserName(User_Name IN VARCHAR2);
 
   -- Procedure to delete a user by ID
   PROCEDURE DeleteUserByID(p_UserID IN NUMBER);
@@ -233,6 +253,14 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
     DBMS_SQL.RETURN_RESULT(cur_item);
   END;
 
+  PROCEDURE GetUserByUserName(User_Name IN VARCHAR2)
+  As
+    cur_item SYS_REFCURSOR;
+  BEGIN
+    OPEN cur_item FOR 'SELECT * FROM User_ WHERE Username = :user_name' USING User_Name;
+    DBMS_SQL.RETURN_RESULT(cur_item);
+  END;
+  
   -- Procedure to delete a user by ID
   PROCEDURE DeleteUserByID(p_UserID IN NUMBER) AS
   BEGIN
@@ -571,7 +599,146 @@ CREATE OR REPLACE PACKAGE BODY Testimonial_Package AS
   
 END Testimonial_Package;
 
+-- BOOKING PACKAGE
+CREATE OR REPLACE PACKAGE Booking_Package AS
+
+    -- Create Procedure
+    PROCEDURE CreateBooking(p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_Is_successed OUT NUMBER);
+    -- Read Procedure
+    PROCEDURE GetBookingById(p_BookingId IN Booking.ID%TYPE);
+    -- Update Procedure
+    PROCEDURE UpdateBooking(p_BookingId IN Booking.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE);
+    -- Delete Procedure
+    PROCEDURE DeleteBooking(p_BookingId IN Booking.ID%TYPE);
+    -- Get All Procedures
+    PROCEDURE GetAllBooking;
+
+END Booking_Package;
+
+CREATE OR REPLACE PACKAGE BODY Booking_Package AS
+
+    -- Create Procedure
+    PROCEDURE CreateBooking(p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_Is_successed OUT NUMBER)
+    AS
+	Id NUMBER;
+    	BEGIN
+        	INSERT INTO Booking VALUES(DEFAULT, p_BookingDate, p_UserId, p_EventId) RETURNING ID INTO Id;
+        	COMMIT;
+		IF p_Is_successed IS NULL
+		THEN
+			p_Is_successed := 0;
+		ELSE
+			p_Is_successed := 1;
+		END IF;
+    END CreateBooking;
+
+    -- Read Procedure
+    PROCEDURE GetBookingById(p_BookingId IN Booking.ID%TYPE)
+    AS
+    	cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM Booking
+                WHERE ID = p_BookingId;
+                Dbms_sql.return_result(cur_item);
+    END GetBookingById;
+
+    -- Update Procedure
+    PROCEDURE UpdateBooking(p_BookingId IN Booking.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE)
+    AS
+        BEGIN
+            UPDATE Booking 
+            SET BookingDate = p_BookingDate , UserId = p_UserId , EventId = p_EventId
+            WHERE ID = p_BookingId ;
+            COMMIT;
+    END;
+
+    -- Delete Procedure
+    PROCEDURE DeleteBooking(p_BookingId IN Booking.ID%TYPE)
+    AS
+        BEGIN
+            DELETE FROM Booking
+            WHERE ID = p_BookingId;
+            COMMIT;
+    END;
+
+    --GetAll Procedure
+    PROCEDURE GetAllBooking
+    AS
+        cur_all SYS_REFCURSOR ;
+        Begin 
+            OPEN cur_all FOR
+            SELECT * FROM Booking ;
+            Dbms_sql.return_result(cur_all);
+    END GetAllBooking;
+
+END Booking_Package;
 
 
+CREATE OR REPLACE PACKAGE Message_Package
+AS
+  
+      -- Insert a new message
+      PROCEDURE CreateMessage(p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE);
+      -- Retrieve a message by ID
+      PROCEDURE GetMessageById(p_Id IN Message.ID%TYPE) ;
+      -- Update an existing message
+      PROCEDURE UpdateMessage(p_Id IN Message.ID%TYPE, p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE);
+      -- Delete a message
+      PROCEDURE DeleteMessage(p_Id IN Message.ID%TYPE);
+      -- Retrieve all messages
+      PROCEDURE GetAllMessages;
+  
+END Message_Package;
 
 
+CREATE OR REPLACE PACKAGE BODY Message_Package IS
+  
+      PROCEDURE CreateMessage(p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE)
+    AS
+        BEGIN
+            INSERT INTO Message VALUES (DEFAULT,p_Content, p_MessageDate,p_IsRead, p_IsDeleted, p_SenderId, p_ReceiverId);
+            COMMIT;
+    END CreateMessage;
+  
+    PROCEDURE GetMessageById(p_Id IN Message.ID%TYPE)  
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM Message
+                WHERE ID = p_Id;
+                Dbms_sql.return_result(cur_item);
+    END GetMessageById;
+  
+    PROCEDURE UpdateMessage(p_Id IN Message.ID%TYPE, p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE)
+    AS
+        BEGIN
+            UPDATE Message SET 
+            Content = p_Content,
+            MessageDate = p_MessageDate,
+            IsRead = p_IsRead,
+            IsDeleted = p_IsDeleted,
+            SenderId = p_SenderId,
+            ReceiverId = p_ReceiverId
+            WHERE ID = p_Id;
+            COMMIT;
+    END UpdateMessage;
+  
+    PROCEDURE DeleteMessage(p_Id IN Message.ID%TYPE)
+    AS
+        BEGIN
+            DELETE FROM Message WHERE ID = p_Id;
+            COMMIT;
+    END DeleteMessage;
+  
+    PROCEDURE GetAllMessages
+    AS
+        cur_all SYS_REFCURSOR ;
+        Begin 
+            OPEN cur_all FOR
+                SELECT * FROM Message ;
+                Dbms_sql.return_result(cur_all);
+    END GetAllMessages;
+  
+END Message_Package;

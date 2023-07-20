@@ -23,10 +23,10 @@ namespace Eventopia.Infra.Repository
 		public void CreateNew(Category category)
 		{
 			DynamicParameters parameters = new DynamicParameters();
-			parameters.Add("NAME_", category.Name, dbType: DbType.Date, direction: ParameterDirection.Input);
-			parameters.Add("IMAGE_PATH", category.Imagepath, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("DESCRIPTION_", category.Description, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("CREATION_DATE", category.Creationdate, dbType: DbType.Int32, direction: ParameterDirection.Input);
+			parameters.Add("NAME_", category.Name, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("IMAGE_PATH", category.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("DESCRIPTION_", category.Description, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("CREATION_DATE", category.Creationdate, dbType: DbType.Date, direction: ParameterDirection.Input);
 			parameters.Add("ADMIN_ID", category.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 			var result = _dBContext.Connection.Execute("CATEGORY_PACKAGE.CreateCategory", parameters, commandType: CommandType.StoredProcedure);
@@ -56,11 +56,11 @@ namespace Eventopia.Infra.Repository
 		public void Update(Category category)
 		{
 			DynamicParameters parameters = new DynamicParameters();
-			parameters.Add("CATEGORY_ID", category.Id, dbType: DbType.Date, direction: ParameterDirection.Input);
-			parameters.Add("NAME_", category.Name, dbType: DbType.Date, direction: ParameterDirection.Input);
-			parameters.Add("IMAGE_PATH", category.Imagepath, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("DESCRIPTION_", category.Description, dbType: DbType.Int32, direction: ParameterDirection.Input);
-			parameters.Add("CREATION_DATE", category.Creationdate, dbType: DbType.Int32, direction: ParameterDirection.Input);
+			parameters.Add("CATEGORY_ID", category.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+			parameters.Add("NAME_", category.Name, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("IMAGE_PATH", category.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("DESCRIPTION_", category.Description, dbType: DbType.String, direction: ParameterDirection.Input);
+			parameters.Add("CREATION_DATE", category.Creationdate, dbType: DbType.Date, direction: ParameterDirection.Input);
 			parameters.Add("ADMIN_ID", category.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 			var result = _dBContext.Connection.Execute("CATEGORY_PACKAGE.UpdateCategory", parameters, commandType: CommandType.StoredProcedure);
