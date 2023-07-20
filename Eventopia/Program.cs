@@ -5,10 +5,11 @@ using Eventopia.Core.Service;
 using Eventopia.Infra.Common;
 using Eventopia.Infra.Repository;
 using Eventopia.Infra.Service;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Eventopia;
-
 public class Program
 {
     public static void Main(string[] args)
@@ -31,6 +32,23 @@ public class Program
 		builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 		builder.Services.AddScoped<IUserService, UserService>();
 		builder.Services.AddScoped<IAdminService, AdminService>();
+		builder.Services.AddScoped<IJWTRepository, JWTRepository>();
+		builder.Services.AddScoped<IJWTService, JWTService>();
+
+		builder.Services.AddAuthentication(opt => {
+			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+			opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+		}).AddJwtBearer(options => {
+			options.TokenValidationParameters = new TokenValidationParameters
+			{
+				ValidateIssuer = true,
+				ValidateAudience = true,
+				ValidateLifetime = true,
+				ValidateIssuerSigningKey = true,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
+			};
+		});
+
 
 		var app = builder.Build();
 
@@ -42,8 +60,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
-        app.UseAuthorization();
+		app.UseAuthentication();
+		app.UseAuthorization();
         app.MapControllers();
 
         app.Run();

@@ -743,7 +743,7 @@ CREATE OR REPLACE PACKAGE BODY Message_Package IS
   
 END Message_Package;
 
-
+-- Admin package
 CREATE OR REPLACE PACKAGE Admin_Package
 AS
     
@@ -764,6 +764,26 @@ AS
     END EventAcceptation;
     
 END Admin_Package;
+
+-- Auth Package
+create or replace PACKAGE Auth_Package 
+AS
+    PROCEDURE GetUser(User_Name IN VARCHAR2, PASS IN VARCHAR2);
+END Auth_Package;
+
+create or replace PACKAGE body Auth_Package 
+AS
+    PROCEDURE GetUser(User_Name IN VARCHAR2, PASS IN VARCHAR2)
+    AS
+        c_all SYS_REFCURSOR;
+        BEGIN
+        open c_all for
+        SELECT * FROM User_ WHERE Username=User_Name AND Password=PASS;
+        DBMS_SQL.RETURN_RESULT(c_all);
+    end GetUser;
+    
+END Auth_Package;
+
 
 
 
