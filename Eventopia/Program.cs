@@ -32,8 +32,8 @@ public class Program
 		builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 		builder.Services.AddScoped<IUserService, UserService>();
 		builder.Services.AddScoped<IAdminService, AdminService>();
-		builder.Services.AddScoped<IJWTRepository, JWTRepository>();
-		builder.Services.AddScoped<IJWTService, JWTService>();
+		builder.Services.AddScoped<AuthRepository, AuthRepository>();
+		builder.Services.AddScoped<AuthService, AuthService>();
 
 		builder.Services.AddAuthentication(opt => {
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
