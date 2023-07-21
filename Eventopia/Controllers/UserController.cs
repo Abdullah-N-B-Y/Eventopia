@@ -23,7 +23,7 @@ namespace Eventopia.API.Controllers
 		}
 
 		[HttpDelete]
-		[Route("DeleteUser")]
+		[Route("DeleteUser/{id}")]
 		public void DeleteUser(int id)
 		{
 			_userService.Delete(id);
@@ -37,7 +37,7 @@ namespace Eventopia.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("GetUserById")]
+		[Route("GetUserById/{id}")]
 		public User GetUserById(int id)
 		{
 			return _userService.GetById(id);
