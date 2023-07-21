@@ -233,6 +233,11 @@ CREATE OR REPLACE PACKAGE User_Package AS
 
   -- Procedure to create a new user
   PROCEDURE CreateUser(p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER);
+
+  PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER);
+    
+  PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsUpdated OUT NUMBER);
+
 END User_Package;
 
 -- USER PACKAGE BODY
@@ -281,6 +286,56 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
       USING p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID;
   END;
   
+
+  PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER)
+      AS
+        v_Password User_.Password%TYPE;
+        BEGIN
+            SELECT Password INTO v_Password
+            FROM User_ 
+            WHERE ID = p_UserId;
+      
+            IF v_Password = p_Password 
+            THEN
+                UPDATE Profile 
+                SET FirstName = p_FirstName,
+                         LastName = p_LastName,
+                         PhoneNumber = p_PhoneNumber
+                WHERE ID = p_UserId;
+                p_IsUpdated := 1;
+            ELSE 
+                p_IsUpdated := 0;    
+            END IF;
+            EXCEPTION
+              WHEN NO_DATA_FOUND THEN
+                -- Handle the case when the user with the given p_UserId is not found
+                p_IsUpdated := 0;
+      END UpdateUserProfile;
+        
+      PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsUpdated OUT NUMBER)
+      AS
+        v_Password User_.Password%TYPE;
+        BEGIN
+            SELECT Password INTO v_Password
+            FROM User_ 
+            WHERE ID = p_UserId;
+      
+            IF v_Password = p_OldPassword AND p_NewPassword = p_ConfirmPassword
+            THEN
+                UPDATE User_ 
+                SET Password = p_NewPassword
+                WHERE ID = p_UserId;
+                p_IsUpdated := 1;
+            ELSE 
+                p_IsUpdated := 0;    
+            END IF;
+            EXCEPTION
+              WHEN NO_DATA_FOUND THEN
+                -- Handle the case when the user with the given p_UserId is not found
+                p_IsUpdated := 0;
+      END UpdatePassword;
+
+
 END User_Package;
 
 
