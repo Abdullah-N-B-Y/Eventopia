@@ -14,28 +14,28 @@ using System.Threading.Tasks;
 
 namespace Eventopia.Infra.Service
 {
-	public class JWTService : IJWTService
+	public class AuthService : IAuthService
 	{
-		private readonly IJWTRepository _jWTRepository;
+		private readonly IAuthRepository _authRepository;
 
-		public JWTService(IJWTRepository jWTRepository)
+		public AuthService(IAuthRepository authRepository)
 		{
-			_jWTRepository = jWTRepository;
+			_authRepository = authRepository;
 		}
 
 		public bool CheckEmailExists(string email)
 		{
-			return _jWTRepository.CheckEmailExists(email);
+			return _authRepository.CheckEmailExists(email);
 		}
 
 		public bool CheckUsernameExists(string username)
 		{
-			return _jWTRepository.CheckUsernameExists(username);
+			return _authRepository.CheckUsernameExists(username);
 		}
 
 		public string? Login(LoginDTO loginDTO)
 		{
-			var result = _jWTRepository.Login(loginDTO);
+			var result = _authRepository.Login(loginDTO);
 
 			if (result == null)
 			{

@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Eventopia.Core.Service
+namespace Eventopia.Core.Repository
 {
-	public interface IJWTService
+	public interface IAuthRepository
 	{
-		string? Login(LoginDTO loginDTO);
+		User Login(LoginDTO loginDTO);
 		bool CheckEmailExists(string email);
 		bool CheckUsernameExists(string username);
 	}
