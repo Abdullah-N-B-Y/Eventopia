@@ -24,16 +24,18 @@ public class Program
 		builder.Services.AddScoped<IDbContext, DbContext>();
 		builder.Services.AddScoped<IRepository<Booking>, BookingRepository>();
 		builder.Services.AddScoped<IService<Booking>, BookingService>();
-		builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+        builder.Services.AddScoped<IRepository<Message>, MessageRepository>();
+        builder.Services.AddScoped<IService<Message>, MessageService>();
+        builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 		builder.Services.AddScoped<IService<Category>, CategoryService>();
 		builder.Services.AddScoped<IRepository<Page>, PageRepository>();
 		builder.Services.AddScoped<IService<Page>, PageService>();
-		builder.Services.AddScoped<IUserRepository, UserRepository>();
 		builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-		builder.Services.AddScoped<IUserService, UserService>();
-		builder.Services.AddScoped<IAdminService, AdminService>();
-		builder.Services.AddScoped<IJWTRepository, JWTRepository>();
-		builder.Services.AddScoped<IJWTService, JWTService>();
+        builder.Services.AddScoped<IAdminService, AdminService>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IUserService, UserService>();
+		builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+		builder.Services.AddScoped<IAuthService, AuthService>();
 
 		builder.Services.AddAuthentication(opt => {
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
