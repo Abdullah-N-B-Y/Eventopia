@@ -47,5 +47,12 @@ namespace Eventopia.Infra.Service
 		{
 			_userRepository.Update(user);
 		}
-	}
+
+        public void UpdateUserProfile(Profile profile, string password)
+        {
+			_userRepository.UpdateUserProfile(profile, password);
+        }
+
+        
+    }
 }

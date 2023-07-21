@@ -75,5 +75,24 @@ namespace Eventopia.Infra.Repository
 
 			var result = _dBContext.Connection.Execute("USER_PACKAGE.UpdateUserByID", parameters, commandType: CommandType.StoredProcedure);
 		}
-	}
+
+
+        public void UpdateUserProfile(Profile profile, string password)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("p_UserId", profile.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            parameters.Add("p_Password", password, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            parameters.Add("p_IsUpdated", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            int p_IsUpdated = parameters.Get<int>("p_IsUpdated");
+
+            var result = _dBContext.Connection.Execute("USER_PACKAGE.UpdateUserProfile", parameters, commandType: CommandType.StoredProcedure);
+        }
+
+
+        
+    }
 }

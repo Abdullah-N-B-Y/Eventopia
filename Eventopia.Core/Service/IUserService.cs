@@ -10,5 +10,7 @@ namespace Eventopia.Core.Service
 	public interface IUserService : IService<User>
 	{
 		User GetUserByUserName(string username);
-	}
+        void UpdateUserProfile(Profile profile, string password);
+        
+    }
 }
