@@ -46,7 +46,7 @@ namespace Eventopia.API.Controllers
 		}
 
 		[HttpDelete]
-		[Route("DeletePage")]
+		[Route("DeletePage/{id}")]
 		public void DeletePage(int id)
 		{
 			_pageService.Delete(id);

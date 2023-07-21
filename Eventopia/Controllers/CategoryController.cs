@@ -45,7 +45,7 @@ namespace Eventopia.API.Controllers
 		}
 
 		[HttpDelete]
-		[Route("DeleteCategory")]
+		[Route("DeleteCategory/{id}")]
 		public void DeleteCategory(int id)
 		{
 			_categoryService.Delete(id);
