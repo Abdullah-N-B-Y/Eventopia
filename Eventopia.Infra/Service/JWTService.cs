@@ -1,4 +1,5 @@
 ﻿using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
 using Microsoft.IdentityModel.Tokens;
@@ -22,9 +23,19 @@ namespace Eventopia.Infra.Service
 			_jWTRepository = jWTRepository;
 		}
 
-		public string? Login(string username, string password)
+		public bool CheckEmailExists(string email)
 		{
-			var result = _jWTRepository.Login(username, password);
+			return _jWTRepository.CheckEmailExists(email);
+		}
+
+		public bool CheckUsernameExists(string username)
+		{
+			return _jWTRepository.CheckUsernameExists(username);
+		}
+
+		public string? Login(LoginDTO loginDTO)
+		{
+			var result = _jWTRepository.Login(loginDTO);
 
 			if (result == null)
 			{
@@ -42,8 +53,9 @@ namespace Eventopia.Infra.Service
 				var secretKey = new SymmetricSecurityKey(secretKeyBytes);
 				var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 				var claims = new List<Claim> {
-					new Claim(ClaimTypes.Name, result.Username),
-					new Claim(ClaimTypes.Role, result.Roleid.ToString())
+					new Claim("Username", result.Username),
+					new Claim("RoleId", result.Roleid.ToString()),
+					new Claim("UserId", result.Id.ToString())
 				};
 
 				var tokeOptions = new JwtSecurityToken (
