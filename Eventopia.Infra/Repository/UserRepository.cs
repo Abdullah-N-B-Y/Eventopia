@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Eventopia.Core.Common;
 using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using Eventopia.Core.Repository;
 using System;
 using System.Collections.Generic;
@@ -93,13 +94,13 @@ namespace Eventopia.Infra.Repository
         }
 
 
-        public void UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
+        public void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("p_UserId", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            parameters.Add("p_OldPassword", oldPassword, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("p_NewPassword", newPassword, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("p_ConfirmPassword", confirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_OldPassword", updatePasswordDTO.OldPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_NewPassword", updatePasswordDTO.NewPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_ConfirmPassword", updatePasswordDTO.ConfirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
 
             parameters.Add("p_IsUpdated", dbType: DbType.Int32, direction: ParameterDirection.Output);
             int p_IsUpdated = parameters.Get<int>("p_IsUpdated");

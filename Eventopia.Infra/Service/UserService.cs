@@ -1,4 +1,5 @@
 ﻿using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
 using System;
@@ -53,9 +54,9 @@ namespace Eventopia.Infra.Service
 			_userRepository.UpdateUserProfile(profile, password);
         }
 
-        public void UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
+        public void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
         {
-            _userRepository.UpdatePassword(id, oldPassword, newPassword, confirmPassword);
+            _userRepository.UpdatePassword(id, updatePasswordDTO);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Eventopia.Core.Repository
 	{
 		User GetUserByUserName(string username);
 		void UpdateUserProfile(Profile profile, string password);
-		void UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword);
+		void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
 
     }
 }

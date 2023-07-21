@@ -1,4 +1,5 @@
 ﻿using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,10 +66,10 @@ namespace Eventopia.API.Controllers
         }
 
         [HttpPut]
-        [Route("UpdatePassword/{id}/{oldPassword}/{newPassword}/{confirmPassword}")]
-        public void UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
+        [Route("UpdatePassword/{id}")]
+        public void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
         {
-            _userService.UpdatePassword(id,oldPassword,newPassword,confirmPassword);
+            _userService.UpdatePassword(id, updatePasswordDTO);
         }
     }
 }
