@@ -769,6 +769,8 @@ END Admin_Package;
 create or replace PACKAGE Auth_Package 
 AS
     PROCEDURE GetUser(User_Name IN VARCHAR2, PASS IN VARCHAR2);
+    PROCEDURE CheckEmailExists(p_email IN User_.Email%TYPE, p_email_exists OUT NUMBER);
+    PROCEDURE CheckUsernameExists(p_username IN User_.Username%TYPE, p_username_exists OUT NUMBER);
 END Auth_Package;
 
 create or replace PACKAGE body Auth_Package 
@@ -781,6 +783,38 @@ AS
         SELECT * FROM User_ WHERE Username=User_Name AND Password=PASS;
         DBMS_SQL.RETURN_RESULT(c_all);
     end GetUser;
+    
+    PROCEDURE CheckEmailExists(p_email IN User_.Email%TYPE, p_email_exists OUT NUMBER)
+    AS
+      v_count NUMBER;
+    BEGIN
+      -- Check if the email exists in the table
+      SELECT COUNT(*) INTO v_count
+      FROM User_
+      WHERE Email = p_email;
+    
+      IF v_count > 0 THEN
+        p_email_exists := 1; -- Email exists in the table
+      ELSE
+        p_email_exists := 0; -- Email does not exist in the table
+      END IF;
+    END CheckEmailExists;
+    
+    PROCEDURE CheckUsernameExists(p_username IN User_.Username%TYPE, p_username_exists OUT NUMBER)
+    AS
+      v_count NUMBER;
+    BEGIN
+      -- Check if the email exists in the table
+      SELECT COUNT(*) INTO v_count
+      FROM User_
+      WHERE Username = p_username;
+    
+      IF v_count > 0 THEN
+        p_username_exists := 1; -- Email exists in the table
+      ELSE
+        p_username_exists := 0; -- Email does not exist in the table
+      END IF;
+    END CheckUsernameExists;
     
 END Auth_Package;
 

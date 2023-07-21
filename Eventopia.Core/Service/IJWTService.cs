@@ -1,4 +1,5 @@
 ﻿using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Eventopia.Core.Service
 {
 	public interface IJWTService
 	{
-		string? Login(string username, string password);
+		string? Login(LoginDTO loginDTO);
+		bool CheckEmailExists(string email);
+		bool CheckUsernameExists(string username);
 	}
 }
