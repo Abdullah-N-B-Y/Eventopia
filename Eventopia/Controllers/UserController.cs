@@ -64,5 +64,11 @@ namespace Eventopia.API.Controllers
             _userService.UpdateUserProfile(profile, password);
         }
 
+        [HttpPut]
+        [Route("UpdatePassword/{id}/{oldPassword}/{newPassword}/{confirmPassword}")]
+        public void UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
+        {
+            _userService.UpdatePassword(id,oldPassword,newPassword,confirmPassword);
+        }
     }
 }

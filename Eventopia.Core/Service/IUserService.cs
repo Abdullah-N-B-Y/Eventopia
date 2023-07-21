@@ -11,6 +11,6 @@ namespace Eventopia.Core.Service
 	{
 		User GetUserByUserName(string username);
         void UpdateUserProfile(Profile profile, string password);
-        
+        void UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword);
     }
 }

@@ -93,6 +93,18 @@ namespace Eventopia.Infra.Repository
         }
 
 
-        
+        public void UpdatePassword(int id, string oldPassword, string newPassword, string confirmPassword)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("p_UserId", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            parameters.Add("p_OldPassword", oldPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_NewPassword", newPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("p_ConfirmPassword", confirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+
+            parameters.Add("p_IsUpdated", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            int p_IsUpdated = parameters.Get<int>("p_IsUpdated");
+
+            var result = _dBContext.Connection.Execute("USER_PACKAGE.UpdatePassword", parameters, commandType: CommandType.StoredProcedure);
+        }  
     }
 }
