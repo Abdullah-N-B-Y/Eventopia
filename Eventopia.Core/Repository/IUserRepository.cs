@@ -14,5 +14,6 @@ namespace Eventopia.Core.Repository
 		void UpdateUserProfile(Profile profile, string password);
 		void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
 
+
     }
 }
