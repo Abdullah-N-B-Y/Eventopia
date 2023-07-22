@@ -1,65 +1,59 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Eventopia.Core.Data;
-using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
+using Eventopia.Infra.Service;
 
 namespace Eventopia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProfilesController : ControllerBase
+    public class ProfileController : ControllerBase
     {
-        private readonly IRepository<Profile> _profileRepository;
+        private readonly IService<Profile> _profileService;
 
-        public ProfilesController(IRepository<Profile> profileRepository)
+        public ProfileController(IService<Profile> profileService)
         {
-            _profileRepository = profileRepository;
+            _profileService = profileService;
         }
 
         [HttpGet]
         [Route("GetAllProfiles")]
-        public ActionResult<List<Profile>> GetAllProfiles()
+        public List<Profile> GetAllProfiles()
         {
-            var profiles = _profileRepository.GetAll();
-            return Ok(profiles);
+            return _profileService.GetAll();
         }
 
         [HttpGet]
-        [Route("GetProfileById/{id}")]
-        public ActionResult<Profile> GetProfileById(int id)
+        [Route("GetProfileByID/{id}")]
+        public Profile GetProfileByID(int id)
         {
-            var profile = _profileRepository.GetById(id);
-            if (profile == null)
-            {
-                return NotFound();
-            }
-            return Ok(profile);
+            return _profileService.GetById(id);
         }
 
+
+
         [HttpPost]
-        [Route("CreateProfile")]
-        public IActionResult CreateProfile(Profile profile)
+        [Route("CreateNewProfile")]
+        public void CreateNewProfile(Profile profile)
         {
-            _profileRepository.CreateNew(profile);
-            return Ok();
+            _profileService.CreateNew(profile);
         }
 
         [HttpPut]
         [Route("UpdateProfile")]
-        public IActionResult UpdateProfile(Profile profile)
+        public void UpdateProfile(Profile profile)
         {
-            _profileRepository.Update(profile);
-            return Ok();
+            _profileService.Update(profile);
         }
 
         [HttpDelete]
         [Route("DeleteProfile/{id}")]
-        public IActionResult DeleteProfile(int id)
+        public void DeleteProfile(int id)
         {
-            _profileRepository.Delete(id);
-            return Ok();
+            _profileService.Delete(id);
         }
-
     }
 }
+
+
