@@ -34,6 +34,10 @@ public class Program
         builder.Services.AddScoped<IRepository<Profile>, ProfileRepository>();
         builder.Services.AddScoped<IService<Profile>, ProfileService>();
 
+        builder.Services.AddScoped<IRepository<Testimonial>, TestimonialRepository>();
+        builder.Services.AddScoped<IService<Testimonial>, TestimonialService>();
+
+
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
         builder.Services.AddScoped<IAdminService, AdminService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
