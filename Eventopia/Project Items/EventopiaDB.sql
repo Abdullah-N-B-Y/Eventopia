@@ -287,24 +287,26 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
   END;
   
 
+  --Satrday 22, 7 2023 
+
   PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER)
       AS
         v_Password User_.Password%TYPE;
         BEGIN
             SELECT Password INTO v_Password
-            FROM User_ 
+            FROM User_
             WHERE ID = p_UserId;
       
-            IF v_Password = p_Password 
+            IF v_Password = p_Password
             THEN
-                UPDATE Profile 
+                UPDATE Profile
                 SET FirstName = p_FirstName,
                          LastName = p_LastName,
                          PhoneNumber = p_PhoneNumber
                 WHERE ID = p_UserId;
                 p_IsUpdated := 1;
-            ELSE 
-                p_IsUpdated := 0;    
+            ELSE
+                p_IsUpdated := 0;
             END IF;
             EXCEPTION
               WHEN NO_DATA_FOUND THEN
@@ -872,6 +874,9 @@ AS
     END CheckUsernameExists;
     
 END Auth_Package;
+
+
+
 
 
 
