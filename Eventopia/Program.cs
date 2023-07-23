@@ -44,7 +44,6 @@ public class Program
         builder.Services.AddScoped<IRepository<Event>, EventRepository>();
         builder.Services.AddScoped<IEventService, EventService>();
 
-
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
         builder.Services.AddScoped<IAdminService, AdminService>();
 
@@ -54,7 +53,11 @@ public class Program
 		builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 		builder.Services.AddScoped<IAuthService, AuthService>();
 
-		builder.Services.AddAuthentication(opt => {
+        builder.Services.AddScoped<IBookingUserRepository, BookingUserRepository>();
+        builder.Services.AddScoped<IBookingUserService, BookingUserService>();
+
+
+        builder.Services.AddAuthentication(opt => {
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 		}).AddJwtBearer(options => {

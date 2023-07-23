@@ -20,5 +20,19 @@ namespace Eventopia.API.Controllers
         {
             _adminService.EventAcceptation(id, status);
         }
+
+        [HttpPut]
+        [Route("BannedUser/{id}")]
+        public void BannedUser(int id)
+        {
+            _adminService.BannedUser(id);
+        }
+
+        [HttpPut]
+        [Route("UnbannedUser/{id}")]
+        public void UnbannedUser(int id)
+        {
+            _adminService.UnbannedUser(id);
+        }
     }
 }

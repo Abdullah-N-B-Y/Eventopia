@@ -1,19 +1,13 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Eventopia.Core.Repository
+
+namespace Eventopia.Core.Repository;
+
+public interface IUserRepository : IRepository<User>
 {
-	public interface IUserRepository : IRepository<User>
-	{
-		User GetUserByUserName(string username);
-		void UpdateUserProfile(Profile profile, string password);
-		void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
+	User GetUserByUserName(string username);
+	void UpdateUserProfile(Profile profile, string password);
+	void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
 
-
-    }
 }

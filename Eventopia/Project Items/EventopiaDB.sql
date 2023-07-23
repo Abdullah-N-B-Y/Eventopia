@@ -287,24 +287,26 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
   END;
   
 
+  --Satrday 22, 7 2023 
+
   PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER)
       AS
         v_Password User_.Password%TYPE;
         BEGIN
             SELECT Password INTO v_Password
-            FROM User_ 
+            FROM User_
             WHERE ID = p_UserId;
       
-            IF v_Password = p_Password 
+            IF v_Password = p_Password
             THEN
-                UPDATE Profile 
+                UPDATE Profile
                 SET FirstName = p_FirstName,
                          LastName = p_LastName,
                          PhoneNumber = p_PhoneNumber
                 WHERE ID = p_UserId;
                 p_IsUpdated := 1;
-            ELSE 
-                p_IsUpdated := 0;    
+            ELSE
+                p_IsUpdated := 0;
             END IF;
             EXCEPTION
               WHEN NO_DATA_FOUND THEN
@@ -810,15 +812,17 @@ CREATE OR REPLACE PACKAGE BODY Message_Package IS
   
 END Message_Package;
 
+
+
 -- Admin package
 CREATE OR REPLACE PACKAGE Admin_Package
 AS
     
     PROCEDURE EventAcceptation(p_event_id Event.ID%TYPE, p_event_status Event.Status%TYPE);
+    PROCEDURE BannedUser(p_UserId User_.ID%TYPE);
+    PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE);
     
 END Admin_Package;
-
-
 CREATE OR REPLACE PACKAGE BODY Admin_Package
 AS
     
@@ -830,7 +834,23 @@ AS
         COMMIT;
     END EventAcceptation;
     
+    PROCEDURE BannedUser(p_UserId User_.ID%TYPE)
+    AS
+        BEGIN
+            UPDATE User_ SET UserStatus = 'Banned' WHERE ID = p_UserId;
+            COMMIT;
+    END BannedUser; 
+    
+    PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE)
+    AS
+        BEGIN
+            UPDATE User_ SET UserStatus = 'Activated' WHERE ID = p_UserId;
+            COMMIT;
+    END UnbannedUser; 
+    
 END Admin_Package;
+
+
 
 -- Auth Package
 create or replace PACKAGE Auth_Package 
@@ -885,6 +905,49 @@ AS
     
 END Auth_Package;
 
+
+
+CREATE OR REPLACE PACKAGE BookingUsers_Package
+AS
+
+    PROCEDURE AddUserToBooking(p_UserId IN User_.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_EventId IN Event.ID%TYPE, p_Is_successed OUT NUMBER);
+    PROCEDURE DeleteUserFromBooking(p_UserId User_.ID%TYPE, p_EventId Event.ID%TYPE, p_Is_successed OUT NUMBER);
+    
+END BookingUsers_Package;
+
+CREATE OR REPLACE PACKAGE BODY BookingUsers_Package
+AS
+    PROCEDURE AddUserToBooking(p_UserId IN User_.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_EventId IN Event.ID%TYPE, p_Is_successed OUT NUMBER)
+    AS
+        number_of_users_in_specific_event NUMBER;
+        event_capacity NUMBER; 
+        BEGIN
+            SELECT COUNT(ID) INTO number_of_users_in_specific_event FROM Booking WHERE EventId = p_EventId;
+            SELECT EventCapacity INTO event_capacity FROM Event WHERE ID = p_EventId;
+            IF number_of_users_in_specific_event < event_capacity
+            THEN
+                INSERT INTO Booking VALUES(DEFAULT, p_BookingDate, p_UserId, p_EventId);
+                COMMIT;
+                p_Is_successed := 1;
+            ELSE
+                p_Is_successed := 0;
+            END iF;
+    END AddUserToBooking;
+    
+    PROCEDURE DeleteUserFromBooking(p_UserId User_.ID%TYPE, p_EventId Event.ID%TYPE, p_Is_successed OUT NUMBER)
+    AS
+        id  NUMBER;
+        BEGIN
+            DELETE FROM Booking WHERE UserId = p_UserId AND EventId = p_EventId RETURNING ID INTO id;
+            COMMIT;
+            IF id IS NULL
+            THEN
+                p_Is_successed := 0;
+            ELSE
+                p_Is_successed := 1;
+            END IF;
+    END DeleteUserFromBooking;
+END BookingUsers_Package;
 
 
 
