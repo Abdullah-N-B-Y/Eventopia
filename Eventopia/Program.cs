@@ -47,10 +47,11 @@ public class Program
 		builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 		builder.Services.AddScoped<IAuthService, AuthService>();
 
+        builder.Services.AddScoped<IBookingUserRepository, BookingUserRepository>();
+        builder.Services.AddScoped<IBookingUserService, BookingUserService>();
 
 
-
-		builder.Services.AddAuthentication(opt => {
+        builder.Services.AddAuthentication(opt => {
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 		}).AddJwtBearer(options => {
