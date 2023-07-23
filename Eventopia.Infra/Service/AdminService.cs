@@ -16,4 +16,14 @@ public class AdminService : IAdminService
     { 
         _adminRepository.EventAcceptation(id, status);
     }
+
+    public void BannedUser(int userId)
+    {
+        _adminRepository.BannedUser(userId);
+    }
+
+    public void UnbannedUser(int userId)
+    {
+        _adminRepository.UnbannedUser(userId);
+    }
 }

@@ -23,7 +23,7 @@ public class BookingUserController : ControllerBase
         _bookingUserService.AddUserToBooking(booking);
     }
     [HttpDelete]
-    [Route("DeleteUserFromBooking")]
+    [Route("DeleteUserFromBooking/{userId}/{eventId}")]
     public void DeleteUserFromBooking(int userId, int eventId)
     {
         _bookingUserService.DeleteUserFromBooking(userId, eventId);

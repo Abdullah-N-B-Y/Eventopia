@@ -23,4 +23,22 @@ public class AdminRepository : IAdminRepository
 
         _dbContext.Connection.Execute("Admin_Package.EventAcceptation", parameters, commandType: CommandType.StoredProcedure);
     }
+
+    public void BannedUser(int userId)
+    {
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+        _dbContext.Connection.Execute("Admin_Package.BannedUser", parameters, commandType: CommandType.StoredProcedure);
+    }
+
+    public void UnbannedUser(int userId)
+    {
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+        _dbContext.Connection.Execute("Admin_Package.UnbannedUser", parameters, commandType: CommandType.StoredProcedure);
+    }
 }
