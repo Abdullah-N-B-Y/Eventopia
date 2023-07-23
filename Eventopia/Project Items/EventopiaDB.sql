@@ -877,7 +877,47 @@ END Auth_Package;
 
 
 
+CREATE OR REPLACE PACKAGE BookingUsers_Package
+AS
 
+    PROCEDURE AddUserToBooking(p_UserId IN User_.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_EventId IN Event.ID%TYPE, p_Is_successed OUT NUMBER);
+    PROCEDURE DeleteUserFromBooking(p_UserId User_.ID%TYPE, p_EventId Event.ID%TYPE, p_Is_successed OUT NUMBER);
+    
+END BookingUsers_Package;
+
+CREATE OR REPLACE PACKAGE BODY BookingUsers_Package
+AS
+    PROCEDURE AddUserToBooking(p_UserId IN User_.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_EventId IN Event.ID%TYPE, p_Is_successed OUT NUMBER)
+    AS
+        number_of_users_in_specific_event NUMBER;
+        event_capacity NUMBER; 
+        BEGIN
+            SELECT COUNT(ID) INTO number_of_users_in_specific_event FROM Booking WHERE EventId = p_EventId;
+            SELECT EventCapacity INTO event_capacity FROM Event WHERE ID = p_EventId;
+            IF number_of_users_in_specific_event < event_capacity
+            THEN
+                INSERT INTO Booking VALUES(DEFAULT, p_BookingDate, p_UserId, p_EventId);
+                COMMIT;
+                p_Is_successed := 1;
+            ELSE
+                p_Is_successed := 0;
+            END iF;
+    END AddUserToBooking;
+    
+    PROCEDURE DeleteUserFromBooking(p_UserId User_.ID%TYPE, p_EventId Event.ID%TYPE, p_Is_successed OUT NUMBER)
+    AS
+        id  NUMBER;
+        BEGIN
+            DELETE FROM Booking WHERE UserId = p_UserId AND EventId = p_EventId RETURNING ID INTO id;
+            COMMIT;
+            IF id IS NULL
+            THEN
+                p_Is_successed := 0;
+            ELSE
+                p_Is_successed := 1;
+            END IF;
+    END DeleteUserFromBooking;
+END BookingUsers_Package;
 
 
 
