@@ -40,7 +40,6 @@ public class Program
         builder.Services.AddScoped<IRepository<Event>, EventRepository>();
         builder.Services.AddScoped<IService<Event>, EventService>();
 
-
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
         builder.Services.AddScoped<IAdminService, AdminService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
