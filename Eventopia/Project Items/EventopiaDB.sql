@@ -800,15 +800,17 @@ CREATE OR REPLACE PACKAGE BODY Message_Package IS
   
 END Message_Package;
 
+
+
 -- Admin package
 CREATE OR REPLACE PACKAGE Admin_Package
 AS
     
     PROCEDURE EventAcceptation(p_event_id Event.ID%TYPE, p_event_status Event.Status%TYPE);
+    PROCEDURE BannedUser(p_UserId User_.ID%TYPE);
+    PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE);
     
 END Admin_Package;
-
-
 CREATE OR REPLACE PACKAGE BODY Admin_Package
 AS
     
@@ -820,7 +822,23 @@ AS
         COMMIT;
     END EventAcceptation;
     
+    PROCEDURE BannedUser(p_UserId User_.ID%TYPE)
+    AS
+        BEGIN
+            UPDATE User_ SET UserStatus = 'Banned' WHERE ID = p_UserId;
+            COMMIT;
+    END BannedUser; 
+    
+    PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE)
+    AS
+        BEGIN
+            UPDATE User_ SET UserStatus = 'Activated' WHERE ID = p_UserId;
+            COMMIT;
+    END UnbannedUser; 
+    
 END Admin_Package;
+
+
 
 -- Auth Package
 create or replace PACKAGE Auth_Package 
