@@ -1,20 +1,37 @@
 ﻿using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
 using Eventopia.Infra.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Eventopia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class EventController : ControllerBase
     {
-        private readonly IService<Event> _eventService;
+        private readonly IEventService _eventService; 
 
-        public EventController(IService<Event> eventService)
+        public EventController(IEventService eventService) 
         {
             _eventService = eventService;
         }
+
+        [HttpPost]
+        [Route("SearchEventsBetweenDates")]
+        [Authorize(Policy = "AdminOnly")]
+        public ActionResult<List<Event>> SearchEventsBetweenDates(SearchBetweenDatesDTO searchDTO)
+        {
+            // Call the backend logic to get the events within the date range
+            List<Event> eventsInRange = ((IEventService)_eventService).GetEventsBetweenDates(searchDTO); 
+
+            // Return the result to the admin
+            return Ok(eventsInRange);
+        }
+        
 
         [HttpPost]
         [Route("CreateNewEvent")]

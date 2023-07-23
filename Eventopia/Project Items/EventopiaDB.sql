@@ -339,7 +339,7 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
 END User_Package;
 
 
--- EVENT PACKAGE
+-- EVENT PACKAGE SPECIFICATION
 CREATE OR REPLACE PACKAGE Event_Package AS
   -- Procedure to get all events
   PROCEDURE GetAllEvents;
@@ -355,6 +355,9 @@ CREATE OR REPLACE PACKAGE Event_Package AS
 
   -- Procedure to create a new event
   PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER);
+  
+  -- Procedure to get events between two dates
+  PROCEDURE GetEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
 END Event_Package;
 
 -- EVENT PACKAGE BODY
@@ -394,7 +397,16 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
     EXECUTE IMMEDIATE 'INSERT INTO Event (Name, AttendingCost, StartDate, EndDate, Status, EventDescription, ImagePath, EventCapacity, Latitude, Longitude, EventCreatorID, CategoryID) VALUES (:name, :attendingcost, :startdate, :enddate, :status, :eventdescription, :imagepath, :eventcapacity, :latitude, :longitude, :eventcreatorid, :categoryid)'
       USING p_Name, p_AttendingCost, p_StartDate, p_EndDate, p_Status, p_EventDescription, p_ImagePath, p_EventCapacity, p_Latitude, p_Longitude, p_EventCreatorID, p_CategoryID;
   END;
-  
+
+  -- Procedure to get events between two dates
+  PROCEDURE GetEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE) AS
+    cur_events SYS_REFCURSOR;
+  BEGIN
+    OPEN cur_events FOR 'SELECT * FROM Event WHERE StartDate >= :startDate AND EndDate <= :endDate'
+      USING p_StartDate, p_EndDate;
+    DBMS_SQL.RETURN_RESULT(cur_events);
+  END;
+
 END Event_Package;
 
 

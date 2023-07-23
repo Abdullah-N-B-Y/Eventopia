@@ -18,6 +18,16 @@ namespace Eventopia.Infra.Repository
             _dBContext = dBContext;
         }
 
+        public List<Event> SearchBetweenDates(DateTime startDate, DateTime endDate)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("START_DATE", startDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+            parameters.Add("END_DATE", endDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            IEnumerable<Event> result = _dBContext.Connection.Query<Event>("EVENT_PACKAGE.SearchEventsBetweenDates", parameters, commandType: CommandType.StoredProcedure);
+            return result.ToList();
+        }
+
         public void CreateNew(Event @event)
         {
             DynamicParameters parameters = new DynamicParameters();
