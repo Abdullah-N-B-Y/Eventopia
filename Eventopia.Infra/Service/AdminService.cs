@@ -26,4 +26,9 @@ public class AdminService : IAdminService
     {
         return _adminRepository.UnbannedUser(userId);
     }
+
+    bool IAdminService.BannedUser(int userId)
+    {
+        throw new NotImplementedException();
+    }
 }
