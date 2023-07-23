@@ -43,5 +43,6 @@ public class BookingUserRepository : IBookingUserRepository
         int p_Is_successed = parameters.Get<int>("p_Is_successed");
 
         int numberOfAffectedColumns = _dbContext.Connection.Execute("BookingUsers_Package.DeleteUserFromBooking", parameters, commandType: CommandType.StoredProcedure);
+
     }
 }

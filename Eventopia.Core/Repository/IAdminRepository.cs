@@ -5,6 +5,6 @@ public interface IAdminRepository
 {
     void EventAcceptation(int id, string status);
 
-    void BannedUser(int userId);
-    void UnbannedUser(int userId);
+    bool BannedUser(int userId);
+    bool UnbannedUser(int userId);
 }

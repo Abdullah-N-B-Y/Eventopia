@@ -22,8 +22,8 @@ public class AdminService : IAdminService
         _adminRepository.BannedUser(userId);
     }
 
-    public void UnbannedUser(int userId)
+    public bool UnbannedUser(int userId)
     {
-        _adminRepository.UnbannedUser(userId);
+        return _adminRepository.UnbannedUser(userId);
     }
 }
