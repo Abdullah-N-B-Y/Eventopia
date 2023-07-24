@@ -22,7 +22,7 @@ namespace Eventopia.API.Controllers
 
         [HttpPost]
         [Route("SearchEventsBetweenDates")]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public ActionResult<List<Event>> SearchEventsBetweenDates(SearchBetweenDatesDTO searchDTO)
         {
             // Call the backend logic to get the events within the date range
@@ -32,7 +32,6 @@ namespace Eventopia.API.Controllers
             return Ok(eventsInRange);
         }
         
-
         [HttpPost]
         [Route("CreateNewEvent")]
         public void CreateNewEvent(Event eventt)
