@@ -238,6 +238,8 @@ CREATE OR REPLACE PACKAGE User_Package AS
     
   PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsUpdated OUT NUMBER);
 
+  PROCEDURE GetAllRegisteredUsersDetails;
+
 END User_Package;
 
 -- USER PACKAGE BODY
@@ -286,7 +288,6 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
       USING p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID;
   END;
   
-
   --Satrday 22, 7 2023 
 
   PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER)
@@ -337,6 +338,16 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
                 p_IsUpdated := 0;
       END UpdatePassword;
 
+      PROCEDURE GetAllRegisteredUsersDetails
+      AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT u.Username,u.Email,u.UserStatus, p.FirstName,p.LastName,p.ImagePath,p.PhoneNumber,p.Gender,p.DateOfBirth,p.Rate
+                FROM User_ u
+                JOIN Profile p ON u.ID = p.UserId;
+        Dbms_sql.return_result(cur_all);
+    END GetAllRegisteredUsersDetails;
 
 END User_Package;
 
