@@ -73,8 +73,8 @@ public class Program
 
 		builder.Services.AddAuthorization(options =>
 		{
-			options.AddPolicy("AdminOnly", policy => { policy.RequireClaim("RoleId", "1");});
-			options.AddPolicy("AdminUserOnly", policy => { policy.RequireClaim("RoleId", "2"); });
+			options.AddPolicy("AdminOnly", policy => { policy.RequireClaim("RoleId", "1"); });
+			options.AddPolicy("AdminAndUserOnly", policy => { policy.RequireClaim("RoleId", "2", "1"); });
 		});
 		// EX: [Authorize(Policy = "AdminOnly")] // Enforce the custom policy for role-based authorization
 

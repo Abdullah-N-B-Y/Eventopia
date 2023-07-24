@@ -1,4 +1,5 @@
-﻿using Eventopia.Core.Repository;
+﻿using Eventopia.Core.DTO;
+using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
 
 namespace Eventopia.Infra.Service;
@@ -25,5 +26,15 @@ public class AdminService : IAdminService
     public bool UnbannedUser(int userId)
     {
         return _adminRepository.UnbannedUser(userId);
+    }
+
+    bool IAdminService.BannedUser(int userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public StatisticsDTO GetStatistics()
+    {
+        return _adminRepository.GetStatistics();
     }
 }

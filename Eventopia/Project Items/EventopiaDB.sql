@@ -360,6 +360,9 @@ CREATE OR REPLACE PACKAGE Event_Package AS
   
   -- Procedure to get events between two dates
   PROCEDURE GetEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
+
+  -- Procedure to search events by name
+  PROCEDURE SearchEventsByName(p_EventName IN VARCHAR2);
 END Event_Package;
 
 -- EVENT PACKAGE BODY
@@ -409,7 +412,16 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
     DBMS_SQL.RETURN_RESULT(cur_events);
   END;
 
+  -- Procedure to search events by name
+  PROCEDURE SearchEventsByName(p_EventName IN VARCHAR2) AS
+    cur_events SYS_REFCURSOR;
+  BEGIN
+    OPEN cur_events FOR 'SELECT * FROM Event WHERE Name LIKE :eventName' USING '%' || p_EventName || '%';
+    DBMS_SQL.RETURN_RESULT(cur_events);
+  END;
+
 END Event_Package;
+
 
 
 -- CATEGORY PACKAGE
@@ -821,6 +833,10 @@ AS
     PROCEDURE EventAcceptation(p_event_id Event.ID%TYPE, p_event_status Event.Status%TYPE);
     PROCEDURE BannedUser(p_UserId User_.ID%TYPE);
     PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE);
+
+    PROCEDURE GetNumberOfUsers(p_num_users OUT NUMBER);
+    PROCEDURE GetNumberOfEvents(p_num_events OUT NUMBER);
+    PROCEDURE GetMaxEventAttendees(p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
     
 END Admin_Package;
 CREATE OR REPLACE PACKAGE BODY Admin_Package
@@ -847,6 +863,30 @@ AS
             UPDATE User_ SET UserStatus = 'Activated' WHERE ID = p_UserId;
             COMMIT;
     END UnbannedUser; 
+
+        
+    PROCEDURE GetNumberOfUsers(p_num_users OUT NUMBER)
+    AS
+    BEGIN
+        SELECT COUNT(*) INTO p_num_users FROM User_;
+    END;
+
+    PROCEDURE GetNumberOfEvents(p_num_events OUT NUMBER)
+    AS
+    BEGIN
+        SELECT COUNT(*) INTO p_num_events FROM Event;
+    END;
+
+    PROCEDURE GetMaxEventAttendees(p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER)
+    AS
+    BEGIN
+        SELECT EventID, COUNT(*) AS AttendeesCount
+        INTO p_event_id, p_max_attendees
+        FROM Booking
+        GROUP BY EventID
+        ORDER BY COUNT(*) DESC
+        FETCH FIRST 1 ROWS ONLY;
+    END;
     
 END Admin_Package;
 

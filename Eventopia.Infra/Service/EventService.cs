@@ -23,6 +23,12 @@ namespace Eventopia.Infra.Service
             return allEvents.Where(e => e.Startdate >= datesDTO.Startdate && e.Enddate <= datesDTO.Enddate).ToList();
         }
 
+        public List<Event> SearchEventsByName(string eventName)
+        {
+            var allEvents = _eventRepository.GetAll();
+            return allEvents.Where(e => e.Name.Contains(eventName, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
         public void CreateNew(Event @event)
         {
             _eventRepository.CreateNew(@event);
