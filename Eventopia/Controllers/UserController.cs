@@ -71,5 +71,13 @@ namespace Eventopia.API.Controllers
         {
             _userService.UpdatePassword(id, updatePasswordDTO);
         }
+
+        [HttpGet]
+        [Route("GetAllRegisteredUsersDetails")]
+        public List<RegisteredUsersDetailsDTO> GetAllRegisteredUsersDetails()
+        {
+            return _userService.GetAllRegisteredUsersDetails();
+        }
+
     }
 }
