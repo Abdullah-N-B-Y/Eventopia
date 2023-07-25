@@ -238,6 +238,8 @@ CREATE OR REPLACE PACKAGE User_Package AS
     
   PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsUpdated OUT NUMBER);
 
+  PROCEDURE GetAllRegisteredUsersDetails;
+
 END User_Package;
 
 -- USER PACKAGE BODY
@@ -286,7 +288,6 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
       USING p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID;
   END;
   
-
   --Satrday 22, 7 2023 
 
   PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER)
@@ -337,6 +338,16 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
                 p_IsUpdated := 0;
       END UpdatePassword;
 
+      PROCEDURE GetAllRegisteredUsersDetails
+      AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT u.Username,u.Email,u.UserStatus, p.FirstName,p.LastName,p.ImagePath,p.PhoneNumber,p.Gender,p.DateOfBirth,p.Rate
+                FROM User_ u
+                JOIN Profile p ON u.ID = p.UserId;
+        Dbms_sql.return_result(cur_all);
+    END GetAllRegisteredUsersDetails;
 
 END User_Package;
 
@@ -835,9 +846,8 @@ AS
     PROCEDURE BannedUser(p_UserId User_.ID%TYPE);
     PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE);
 
-    PROCEDURE GetNumberOfUsers(p_num_users OUT NUMBER);
-    PROCEDURE GetNumberOfEvents(p_num_events OUT NUMBER);
-    PROCEDURE GetMaxEventAttendees(p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
+    PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
+
     
 END Admin_Package;
 CREATE OR REPLACE PACKAGE BODY Admin_Package
@@ -866,28 +876,22 @@ AS
     END UnbannedUser; 
 
         
-    PROCEDURE GetNumberOfUsers(p_num_users OUT NUMBER)
-    AS
+    PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER) AS
     BEGIN
+        -- The number of registered users
         SELECT COUNT(*) INTO p_num_users FROM User_;
-    END;
 
-    PROCEDURE GetNumberOfEvents(p_num_events OUT NUMBER)
-    AS
-    BEGIN
+        -- The number of events
         SELECT COUNT(*) INTO p_num_events FROM Event;
-    END;
 
-    PROCEDURE GetMaxEventAttendees(p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER)
-    AS
-    BEGIN
+        -- The Event(ID) with the most attendees
         SELECT EventID, COUNT(*) AS AttendeesCount
         INTO p_event_id, p_max_attendees
         FROM Booking
         GROUP BY EventID
         ORDER BY COUNT(*) DESC
         FETCH FIRST 1 ROWS ONLY;
-    END;
+    END GetStats;
     
 END Admin_Package;
 
