@@ -845,9 +845,8 @@ AS
     PROCEDURE BannedUser(p_UserId User_.ID%TYPE);
     PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE);
 
-    PROCEDURE GetNumberOfUsers(p_num_users OUT NUMBER);
-    PROCEDURE GetNumberOfEvents(p_num_events OUT NUMBER);
-    PROCEDURE GetMaxEventAttendees(p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
+    PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
+
     
 END Admin_Package;
 CREATE OR REPLACE PACKAGE BODY Admin_Package
@@ -876,28 +875,22 @@ AS
     END UnbannedUser; 
 
         
-    PROCEDURE GetNumberOfUsers(p_num_users OUT NUMBER)
-    AS
+    PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER) AS
     BEGIN
+        -- The number of registered users
         SELECT COUNT(*) INTO p_num_users FROM User_;
-    END;
 
-    PROCEDURE GetNumberOfEvents(p_num_events OUT NUMBER)
-    AS
-    BEGIN
+        -- The number of events
         SELECT COUNT(*) INTO p_num_events FROM Event;
-    END;
 
-    PROCEDURE GetMaxEventAttendees(p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER)
-    AS
-    BEGIN
+        -- The Event(ID) with the most attendees
         SELECT EventID, COUNT(*) AS AttendeesCount
         INTO p_event_id, p_max_attendees
         FROM Booking
         GROUP BY EventID
         ORDER BY COUNT(*) DESC
         FETCH FIRST 1 ROWS ONLY;
-    END;
+    END GetStats;
     
 END Admin_Package;
 
