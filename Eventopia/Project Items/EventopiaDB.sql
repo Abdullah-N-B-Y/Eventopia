@@ -994,4 +994,37 @@ AS
 END BookingUsers_Package;
 
 
+CREATE OR REPLACE PACKAGE Payment_Package
+AS
 
+    PROCEDURE Pay(p_EventId IN Event.ID%TYPE, p_CardNumber IN Bank.CardNumber%TYPE, p_CardHolder IN Bank.CardHolder%TYPE, p_ExpirationDate IN Bank.ExpirationDate%TYPE, p_CVV IN Bank.CVV%TYPE, p_IsPaid OUT NUMBER);
+
+END Payment_Package;
+
+CREATE OR REPLACE PACKAGE BODY Payment_Package
+AS
+    PROCEDURE Pay(p_EventId IN Event.ID%TYPE, p_CardNumber IN Bank.CardNumber%TYPE, p_CardHolder IN Bank.CardHolder%TYPE, p_ExpirationDate IN Bank.ExpirationDate%TYPE, p_CVV IN Bank.CVV%TYPE, p_IsPaid OUT NUMBER)
+    AS
+        v_Balance Bank.Balance%TYPE;
+BEGIN
+    SELECT Balance INTO v_Balance
+    FROM Bank
+    WHERE CardNumber = p_CardNumber AND CardHolder = p_CardHolder AND ExpirationDate = p_ExpirationDate AND CVV = p_CVV;
+    
+    IF v_Balance IS NOT NULL AND v_Balance >= 25 THEN
+
+        UPDATE Bank
+        SET Balance = Balance - 25
+        WHERE CardNumber = p_CardNumber;
+
+        UPDATE Event
+        SET Status = 'Paid'
+        WHERE ID = p_EventId;
+
+        p_IsPaid := 1;
+    ELSE
+        p_IsPaid := 0;
+    END IF;
+    END Pay;
+    
+END Payment_Package;
