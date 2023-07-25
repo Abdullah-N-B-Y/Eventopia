@@ -373,7 +373,7 @@ CREATE OR REPLACE PACKAGE Event_Package AS
   PROCEDURE GetEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
 
   -- Procedure to search events by name
-  PROCEDURE SearchEventsByName(p_EventName IN VARCHAR2);
+  PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
 END Event_Package;
 
 -- EVENT PACKAGE BODY
@@ -424,14 +424,15 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
   END;
 
   -- Procedure to search events by name
-  PROCEDURE SearchEventsByName(p_EventName IN VARCHAR2) AS
+  PROCEDURE SearchEventsByName(p_Name IN VARCHAR2) AS
     cur_events SYS_REFCURSOR;
   BEGIN
-    OPEN cur_events FOR 'SELECT * FROM Event WHERE Name LIKE :eventName' USING '%' || p_EventName || '%';
+    OPEN cur_events FOR 'SELECT * FROM Event WHERE Name LIKE :eventName' USING '%' || p_Name || '%';
     DBMS_SQL.RETURN_RESULT(cur_events);
   END;
 
 END Event_Package;
+
 
 
 
@@ -846,6 +847,8 @@ AS
     PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE);
 
     PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
+    PROCEDURE GetBenefitsReport(p_start_date IN DATE, p_end_date IN DATE, p_monthly_benefits OUT NUMBER, p_annual_benefits OUT NUMBER);
+
 
     
 END Admin_Package;
@@ -892,6 +895,17 @@ AS
         FETCH FIRST 1 ROWS ONLY;
     END GetStats;
     
+    PROCEDURE GetBenefitsReport(p_start_date IN DATE, p_end_date IN DATE, p_monthly_benefits OUT NUMBER, p_annual_benefits OUT NUMBER) AS
+    BEGIN
+        SELECT SUM(Amount) INTO p_monthly_benefits
+        FROM Payment
+        WHERE PaymentDate >= p_start_date AND PaymentDate <= p_end_date;
+
+        SELECT SUM(Amount) INTO p_annual_benefits
+        FROM Payment
+        WHERE EXTRACT(YEAR FROM PaymentDate) = EXTRACT(YEAR FROM p_start_date);
+    END GetBenefitsReport;
+
 END Admin_Package;
 
 

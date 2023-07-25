@@ -67,4 +67,24 @@ public class AdminRepository : IAdminRepository
 
         return statistics;
     }
+
+    public GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("p_start_date", startDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_end_date", endDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_monthly_benefits", DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_annual_benefits", DbType.Decimal, direction: ParameterDirection.Output);
+
+        _dbContext.Connection.Execute("Admin_Package.GetBenefitsReport", parameters, commandType: CommandType.StoredProcedure);
+
+        var benefits = new GetBenefitsReportDTO
+        {
+            MonthlyBenefits = parameters.Get<decimal>("p_monthly_benefits"),
+            AnnualBenefits = parameters.Get<decimal>("p_annual_benefits")
+        };
+
+        return benefits;
+    }
+
 }
