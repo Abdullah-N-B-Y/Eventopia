@@ -11,5 +11,9 @@ public partial class Comment
 
     public decimal? Eventid { get; set; }
 
-    public virtual Event? Event { get; set; }
+	public decimal? Userid { get; set; }
+
+	public virtual Event? Event { get; set; }
+
+	public virtual User? User { get; set; }
 }
