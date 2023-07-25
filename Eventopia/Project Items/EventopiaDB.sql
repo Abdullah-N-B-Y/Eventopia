@@ -373,7 +373,7 @@ CREATE OR REPLACE PACKAGE Event_Package AS
   PROCEDURE GetEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
 
   -- Procedure to search events by name
-  PROCEDURE SearchEventsByName(p_EventName IN VARCHAR2);
+  PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
 END Event_Package;
 
 -- EVENT PACKAGE BODY
@@ -424,14 +424,15 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
   END;
 
   -- Procedure to search events by name
-  PROCEDURE SearchEventsByName(p_EventName IN VARCHAR2) AS
+  PROCEDURE SearchEventsByName(p_Name IN VARCHAR2) AS
     cur_events SYS_REFCURSOR;
   BEGIN
-    OPEN cur_events FOR 'SELECT * FROM Event WHERE Name LIKE :eventName' USING '%' || p_EventName || '%';
+    OPEN cur_events FOR 'SELECT * FROM Event WHERE Name LIKE :eventName' USING '%' || p_Name || '%';
     DBMS_SQL.RETURN_RESULT(cur_events);
   END;
 
 END Event_Package;
+
 
 
 
