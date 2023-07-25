@@ -43,5 +43,13 @@ namespace Eventopia.API.Controllers
             StatisticsDTO statistics = _adminService.GetStatistics();
             return Ok(statistics);
         }
+
+        [HttpGet]
+        [Route("BenefitsReport")]
+        public IActionResult GetBenefitsReport(DateTime startDate, DateTime endDate)
+        {
+            GetBenefitsReportDTO benefits = _adminService.GetBenefitsReport(startDate, endDate);
+            return Ok(benefits);
+        }
     }
 }

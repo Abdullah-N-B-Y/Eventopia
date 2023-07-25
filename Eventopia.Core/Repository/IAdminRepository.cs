@@ -12,4 +12,6 @@ public interface IAdminRepository
 
     StatisticsDTO GetStatistics();
 
+    GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate);
+
 }
