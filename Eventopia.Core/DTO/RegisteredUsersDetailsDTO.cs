@@ -1,7 +1,7 @@
 ﻿
 namespace Eventopia.Core.DTO;
 
-public class RegistedUsersDetails
+public class RegisteredUsersDetailsDTO
 {
     public string Username { get; set; }
     public string Email { get; set; }
