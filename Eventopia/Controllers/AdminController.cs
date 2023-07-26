@@ -1,55 +1,51 @@
-﻿using Eventopia.Core.DTO;
-using Eventopia.Core.Service;
+﻿using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventopia.API.Controllers
+namespace Eventopia.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AdminController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AdminController : ControllerBase
+    private readonly IAdminService _adminService;
+
+    public AdminController(IAdminService adminService)
     {
-        private readonly IAdminService _adminService;
+        _adminService = adminService;
+    }
 
-        public AdminController(IAdminService adminService)
-        {
-            _adminService = adminService;
-        }
+    [HttpPut]
+    [Route("EventAcceptation/{id}/{status}")]
+    public void EventAcceptation(int id, string status)
+    {
+        _adminService.EventAcceptation(id, status);
+    }
 
-        [HttpPut]
-        [Route("EventAcceptation/{id}/{status}")]
-        public void EventAcceptation(int id, string status)
-        {
-            _adminService.EventAcceptation(id, status);
-        }
+    [HttpPut]
+    [Route("BannedUser/{id}")]
+    public void BannedUser(int id)
+    {
+        _adminService.BannedUser(id);
+    }
 
-        [HttpPut]
-        [Route("BannedUser/{id}")]
-        public void BannedUser(int id)
-        {
-            _adminService.BannedUser(id);
-        }
+    [HttpPut]
+    [Route("UnbannedUser/{id}")]
+    public void UnbannedUser(int id)
+    {
+        _adminService.UnbannedUser(id);
+    }
 
-        [HttpPut]
-        [Route("UnbannedUser/{id}")]
-        public void UnbannedUser(int id)
-        {
-            _adminService.UnbannedUser(id);
-        }
+    [HttpGet]
+    [Route("Statistics")]
+    public IActionResult GetStatistics()
+    {
+        return Ok(_adminService.GetStatistics());
+    }
 
-        [HttpGet]
-        [Route("Statistics")]
-        public IActionResult GetStatistics()
-        {
-            StatisticsDTO statistics = _adminService.GetStatistics();
-            return Ok(statistics);
-        }
-
-        [HttpGet]
-        [Route("BenefitsReport")]
-        public IActionResult GetBenefitsReport(DateTime startDate, DateTime endDate)
-        {
-            GetBenefitsReportDTO benefits = _adminService.GetBenefitsReport(startDate, endDate);
-            return Ok(benefits);
-        }
+    [HttpGet]
+    [Route("BenefitsReport")]
+    public IActionResult GetBenefitsReport(DateTime startDate, DateTime endDate)
+    {
+        return Ok(_adminService.GetBenefitsReport(startDate, endDate));
     }
 }
