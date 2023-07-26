@@ -50,26 +50,41 @@ public class AdminRepository : IAdminRepository
     public StatisticsDTO GetStatistics()
     {
         var parameters = new DynamicParameters();
+        parameters.Add("p_num_users", DbType.Int32, direction: ParameterDirection.Output);
+        parameters.Add("p_num_events", DbType.Int32, direction: ParameterDirection.Output);
+        parameters.Add("p_event_id", DbType.Int32, direction: ParameterDirection.Output);
+        parameters.Add("p_max_attendees", DbType.Int32, direction: ParameterDirection.Output);
 
-        var statistics = new StatisticsDTO();
+        _dbContext.Connection.Execute("Admin_Package.GetStats", parameters, commandType: CommandType.StoredProcedure);
 
-        var numUsersParameters = new DynamicParameters();
-        numUsersParameters.Add("p_num_users", DbType.Int32, direction: ParameterDirection.Output);
-        _dbContext.Connection.Execute("Admin_Package.GetNumberOfUsers", numUsersParameters, commandType: CommandType.StoredProcedure);
-        statistics.NumberOfUsers = numUsersParameters.Get<int>("p_num_users");
-
-        var numEventsParameters = new DynamicParameters();
-        numEventsParameters.Add("p_num_events", DbType.Int32, direction: ParameterDirection.Output);
-        _dbContext.Connection.Execute("Admin_Package.GetNumberOfEvents", numEventsParameters, commandType: CommandType.StoredProcedure);
-        statistics.NumberOfEvents = numEventsParameters.Get<int>("p_num_events");
-
-        var maxAttendeesParameters = new DynamicParameters();
-        maxAttendeesParameters.Add("p_event_id", DbType.Int32, direction: ParameterDirection.Output);
-        maxAttendeesParameters.Add("p_max_attendees", DbType.Int32, direction: ParameterDirection.Output);
-        _dbContext.Connection.Execute("Admin_Package.GetMaxEventAttendees", maxAttendeesParameters, commandType: CommandType.StoredProcedure);
-        statistics.MaxEventID = maxAttendeesParameters.Get<int>("p_event_id");
-        statistics.MaxEventAttendees = maxAttendeesParameters.Get<int>("p_max_attendees");
+        var statistics = new StatisticsDTO
+        {
+            NumberOfUsers = parameters.Get<int>("p_num_users"),
+            NumberOfEvents = parameters.Get<int>("p_num_events"),
+            MaxEventID = parameters.Get<int>("p_event_id"),
+            MaxEventAttendees = parameters.Get<int>("p_max_attendees")
+        };
 
         return statistics;
     }
+
+    public GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("p_start_date", startDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_end_date", endDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_monthly_benefits", DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_annual_benefits", DbType.Decimal, direction: ParameterDirection.Output);
+
+        _dbContext.Connection.Execute("Admin_Package.GetBenefitsReport", parameters, commandType: CommandType.StoredProcedure);
+
+        var benefits = new GetBenefitsReportDTO
+        {
+            MonthlyBenefits = parameters.Get<decimal>("p_monthly_benefits"),
+            AnnualBenefits = parameters.Get<decimal>("p_annual_benefits")
+        };
+
+        return benefits;
+    }
+
 }

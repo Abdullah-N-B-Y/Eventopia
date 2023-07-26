@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Eventopia.Infra.Repository
 {
-    public class EventRepository : IRepository<Event>
+    public class EventRepository : IEventRepository
     {
         private readonly IDbContext _dBContext;
 
@@ -17,6 +17,16 @@ namespace Eventopia.Infra.Repository
         {
             _dBContext = dBContext;
         }
+
+        public List<Event> SearchEventsByName(string eventName)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("p_Name", eventName, dbType: DbType.String, direction: ParameterDirection.Input);
+
+            IEnumerable<Event> result = _dBContext.Connection.Query<Event>("EVENT_PACKAGE.SearchEventsByName", parameters, commandType: CommandType.StoredProcedure);
+            return result.ToList();
+        }
+        
 
         public List<Event> SearchBetweenDates(DateTime startDate, DateTime endDate)
         {

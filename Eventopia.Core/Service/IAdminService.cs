@@ -10,5 +10,7 @@ public interface IAdminService
     bool BannedUser(int userId);
     bool UnbannedUser(int userId);
     StatisticsDTO GetStatistics();
+    GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate);
+
 
 }

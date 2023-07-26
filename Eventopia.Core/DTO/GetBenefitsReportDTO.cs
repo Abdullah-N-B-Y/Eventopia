@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Eventopia.Core.DTO
 {
-    public class SearchByNameDTO
+    public class GetBenefitsReportDTO
     {
-        public string? EventName { get; set; }
+        public decimal MonthlyBenefits { get; set; }
+        public decimal AnnualBenefits { get; set; }
     }
 }

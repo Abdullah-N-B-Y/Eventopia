@@ -41,7 +41,7 @@ public class Program
         builder.Services.AddScoped<IRepository<Testimonial>, TestimonialRepository>();
         builder.Services.AddScoped<IService<Testimonial>, TestimonialService>();
 
-        builder.Services.AddScoped<IRepository<Event>, EventRepository>();
+        builder.Services.AddScoped<IEventRepository, EventRepository>();
         builder.Services.AddScoped<IEventService, EventService>();
 
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();

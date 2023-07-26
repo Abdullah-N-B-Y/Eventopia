@@ -10,9 +10,9 @@ namespace Eventopia.Infra.Service
 {
     public class EventService : IEventService
     {
-        private readonly IRepository<Event> _eventRepository;
+        private readonly IEventRepository _eventRepository;
 
-        public EventService(IRepository<Event> eventRepository)
+        public EventService(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
@@ -23,11 +23,12 @@ namespace Eventopia.Infra.Service
             return allEvents.Where(e => e.Startdate >= datesDTO.Startdate && e.Enddate <= datesDTO.Enddate).ToList();
         }
 
+
         public List<Event> SearchEventsByName(string eventName)
         {
-            var allEvents = _eventRepository.GetAll();
-            return allEvents.Where(e => e.Name.Contains(eventName, StringComparison.OrdinalIgnoreCase)).ToList();
+            return _eventRepository.SearchEventsByName(eventName);
         }
+        
 
         public void CreateNew(Event @event)
         {
@@ -64,9 +65,6 @@ namespace Eventopia.Infra.Service
             _eventRepository.Update(@event);
         }
 
-        public List<Event> GetEventsBetweenDates(DateTime? startdate, DateTime? enddate)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

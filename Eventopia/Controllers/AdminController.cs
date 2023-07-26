@@ -1,4 +1,5 @@
-﻿using Eventopia.Core.Service;
+﻿using Eventopia.Core.DTO;
+using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventopia.API.Controllers
@@ -33,6 +34,22 @@ namespace Eventopia.API.Controllers
         public void UnbannedUser(int id)
         {
             _adminService.UnbannedUser(id);
+        }
+
+        [HttpGet]
+        [Route("Statistics")]
+        public IActionResult GetStatistics()
+        {
+            StatisticsDTO statistics = _adminService.GetStatistics();
+            return Ok(statistics);
+        }
+
+        [HttpGet]
+        [Route("BenefitsReport")]
+        public IActionResult GetBenefitsReport(DateTime startDate, DateTime endDate)
+        {
+            GetBenefitsReportDTO benefits = _adminService.GetBenefitsReport(startDate, endDate);
+            return Ok(benefits);
         }
     }
 }

@@ -18,9 +18,9 @@ public class AdminService : IAdminService
         _adminRepository.EventAcceptation(id, status);
     }
 
-    public void BannedUser(int userId)
+    public bool BannedUser(int userId)
     {
-        _adminRepository.BannedUser(userId);
+        return _adminRepository.BannedUser(userId);
     }
 
     public bool UnbannedUser(int userId)
@@ -36,5 +36,10 @@ public class AdminService : IAdminService
     public StatisticsDTO GetStatistics()
     {
         return _adminRepository.GetStatistics();
+    }
+
+    public GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate)
+    {
+        return _adminRepository.GetBenefitsReport(startDate, endDate);
     }
 }
