@@ -155,7 +155,7 @@ public partial class ModelContext : DbContext
 
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("SYS_C008501");
+            entity.HasKey(e => e.Id).HasName("SYS_C008509");
 
             entity.ToTable("COMMENTS");
 
@@ -170,12 +170,19 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.Eventid)
                 .HasColumnType("NUMBER")
                 .HasColumnName("EVENTID");
+			entity.Property(e => e.Userid)
+				.HasColumnType("NUMBER")
+				.HasColumnName("USERID");
 
-            entity.HasOne(d => d.Event).WithMany(p => p.Comments)
+			entity.HasOne(d => d.Event).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.Eventid)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_COMMENT_EVENTID");
-        });
+			entity.HasOne(d => d.User).WithMany(p => p.Comments)
+				.HasForeignKey(d => d.Userid)
+				.OnDelete(DeleteBehavior.Cascade)
+				.HasConstraintName("FK_COMMENT_USERID");
+		});
 
         modelBuilder.Entity<ContactUsEntry>(entity =>
         {

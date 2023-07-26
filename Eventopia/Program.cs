@@ -56,8 +56,11 @@ public class Program
         builder.Services.AddScoped<IBookingUserRepository, BookingUserRepository>();
         builder.Services.AddScoped<IBookingUserService, BookingUserService>();
 
+		builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
+		builder.Services.AddScoped<ICommentsService, CommentsService>();
 
-        builder.Services.AddAuthentication(opt => {
+
+		builder.Services.AddAuthentication(opt => {
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 		}).AddJwtBearer(options => {
