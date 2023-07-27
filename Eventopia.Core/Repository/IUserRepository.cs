@@ -1,7 +1,6 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.DTO;
 
-
 namespace Eventopia.Core.Repository;
 
 public interface IUserRepository : IRepository<User>

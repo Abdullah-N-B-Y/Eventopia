@@ -1,6 +1,4 @@
-﻿
-using Eventopia.Core.DTO;
-using System.Security.Cryptography;
+﻿using Eventopia.Core.DTO;
 
 namespace Eventopia.Core.Service;
 
@@ -11,6 +9,4 @@ public interface IAdminService
     bool UnbannedUser(int userId);
     StatisticsDTO GetStatistics();
     GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate);
-
-
 }

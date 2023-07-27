@@ -31,6 +31,8 @@ public class AdminRepository : IAdminRepository
 
         parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
         _dbContext.Connection.Execute("Admin_Package.BannedUser", parameters, commandType: CommandType.StoredProcedure);
 
         return parameters.Get<int>("p_IsSuccessed") == 1;
@@ -41,6 +43,8 @@ public class AdminRepository : IAdminRepository
         DynamicParameters parameters = new DynamicParameters();
 
         parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dbContext.Connection.Execute("Admin_Package.UnbannedUser", parameters, commandType: CommandType.StoredProcedure);
 

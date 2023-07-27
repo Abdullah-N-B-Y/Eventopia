@@ -1,5 +1,4 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using Eventopia.Core.Common;
 using Eventopia.Core.Data;
 using Eventopia.Core.Repository;

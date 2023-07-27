@@ -1,18 +1,18 @@
-﻿
-using Eventopia.Core.Data;
+﻿using Eventopia.Core.Data;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
 
 namespace Eventopia.Infra.Service;
 
-public class BookingService : IService<Booking>
+public class BookingService : IBookingService
 {
-    private readonly IRepository<Booking> _bookingRepository;
+    private readonly IBookingRepository _bookingRepository;
 
-    public BookingService(IRepository<Booking> bookingRepository)
+    public BookingService(IBookingRepository bookingRepository)
     {
         _bookingRepository = bookingRepository;
     }
+
     public void CreateNew(Booking t)
     {
         _bookingRepository.CreateNew(t);
@@ -38,4 +38,8 @@ public class BookingService : IService<Booking>
         _bookingRepository.Delete(id);
     }
 
+    public bool DeleteUserFromBooking(int userId, int eventId)
+    {
+        return _bookingRepository.DeleteUserFromBooking(userId, eventId);
+    }
 }

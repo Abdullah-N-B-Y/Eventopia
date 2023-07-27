@@ -53,9 +53,6 @@ public class Program
 		builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 		builder.Services.AddScoped<IAuthService, AuthService>();
 
-        builder.Services.AddScoped<IBookingUserRepository, BookingUserRepository>();
-        builder.Services.AddScoped<IBookingUserService, BookingUserService>();
-
 		builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 		builder.Services.AddScoped<ICommentsService, CommentsService>();
 

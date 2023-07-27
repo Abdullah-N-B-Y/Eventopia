@@ -1,5 +1,4 @@
-﻿
-using Eventopia.Core.Data;
+﻿using Eventopia.Core.Data;
 
 namespace Eventopia.Core.Service;
 

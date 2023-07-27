@@ -1,5 +1,4 @@
-﻿
-using Eventopia.Core.DTO;
+﻿using Eventopia.Core.DTO;
 
 namespace Eventopia.Core.Repository;
 

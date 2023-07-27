@@ -12,6 +12,7 @@ public class PaymentService : IPaymentService
     {
         _paymentRepsitory = paymentRepsitory;
     }
+
     public bool Pay(int eventId, Bank bank)
     {
         return _paymentRepsitory.Pay(eventId, bank);

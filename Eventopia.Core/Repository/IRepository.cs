@@ -1,5 +1,4 @@
-﻿
-namespace Eventopia.Core.Repository;
+﻿namespace Eventopia.Core.Repository;
 
 public interface IRepository<T>
 {

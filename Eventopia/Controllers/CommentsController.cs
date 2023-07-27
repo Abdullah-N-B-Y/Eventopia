@@ -1,6 +1,5 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventopia.API.Controllers

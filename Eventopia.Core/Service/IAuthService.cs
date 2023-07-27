@@ -1,17 +1,10 @@
-﻿using Eventopia.Core.Data;
-using Eventopia.Core.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Eventopia.Core.DTO;
 
-namespace Eventopia.Core.Service
+namespace Eventopia.Core.Service;
+
+public interface IAuthService
 {
-	public interface IAuthService
-	{
-		string? Login(LoginDTO loginDTO);
-		bool CheckEmailExists(string email);
-		bool CheckUsernameExists(string username);
-	}
+	string? Login(LoginDTO loginDTO);
+	bool CheckEmailExists(string email);
+	bool CheckUsernameExists(string username);
 }

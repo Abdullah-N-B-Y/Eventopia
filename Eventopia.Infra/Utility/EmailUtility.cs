@@ -56,6 +56,4 @@ public static class EmailUtility
 		await _smtpClient.SendAsync(message);
 		_smtpClient.Disconnect(true);
 	}
-
-
 }

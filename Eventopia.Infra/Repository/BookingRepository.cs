@@ -6,7 +6,7 @@ using System.Data;
 
 namespace Eventopia.Infra.Repository;
 
-public class BookingRepository : IRepository<Booking>
+public class BookingRepository : IBookingRepository
 {
     private readonly IDbContext _dbContext;
 
@@ -62,5 +62,18 @@ public class BookingRepository : IRepository<Booking>
 
         int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.DeleteBooking",parameters,commandType:CommandType.StoredProcedure);
     }
-    
+
+    public bool DeleteUserFromBooking(int userId, int eventId)
+    {
+        DynamicParameters parameters= new DynamicParameters();
+
+        parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_EventId", eventId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+        parameters.Add("p_Is_successed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dbContext.Connection.Execute("Booking_Package.DeleteUserFromBooking",parameters,commandType:CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_Is_successed") == 1;
+    }
 }

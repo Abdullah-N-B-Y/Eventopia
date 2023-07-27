@@ -1,11 +1,8 @@
-﻿
-using Eventopia.Core.Data;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using Eventopia.Core.Data;
 
 namespace Eventopia.Core.Repository;
+
 public interface IPaymentRepository
 {
     bool Pay(int eventId, Bank bank);
-
 }

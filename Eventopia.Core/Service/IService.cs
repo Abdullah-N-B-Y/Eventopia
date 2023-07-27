@@ -1,5 +1,4 @@
 ﻿
-using Eventopia.Core.Data;
 
 namespace Eventopia.Core.Service;
 
@@ -10,5 +9,4 @@ public interface IService<T>
     List<T> GetAll();
     void Update(T t);
     void Delete(int id);
-    
 }

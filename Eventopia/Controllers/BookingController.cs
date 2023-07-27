@@ -1,5 +1,6 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
+using Eventopia.Infra.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventopia.API.Controllers
@@ -8,9 +9,9 @@ namespace Eventopia.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly IService<Booking> _bookingService;
+        private readonly IBookingService _bookingService;
 
-        public BookingController(IService<Booking> bookingService)
+        public BookingController(IBookingService bookingService)
         {
             _bookingService = bookingService;
         }
@@ -48,6 +49,13 @@ namespace Eventopia.API.Controllers
         public void DeleteBooking(int id)
         {
             _bookingService.Delete(id);
+        }
+
+        [HttpDelete]
+        [Route("DeleteUserFromBooking/{userId}/{eventId}")]
+        public void DeleteUserFromBooking(int userId, int eventId)
+        {
+            _bookingService.DeleteUserFromBooking(userId, eventId);
         }
     }
 }

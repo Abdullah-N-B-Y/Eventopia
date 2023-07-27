@@ -1,5 +1,4 @@
-﻿
-using Eventopia.Core.Data;
+﻿using Eventopia.Core.Data;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
 
@@ -7,7 +6,6 @@ namespace Eventopia.Infra.Service;
 
 public class MessageService : IService<Message>
 {
-
     private readonly IRepository<Message> _messageRepository;
 
     public MessageService(IRepository<Message> messageRepository)
