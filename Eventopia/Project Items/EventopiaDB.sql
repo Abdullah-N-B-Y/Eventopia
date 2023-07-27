@@ -844,9 +844,9 @@ END Message_Package;
 CREATE OR REPLACE PACKAGE Admin_Package
 AS
     
-    PROCEDURE EventAcceptation(p_event_id Event.ID%TYPE, p_event_status Event.Status%TYPE);
-    PROCEDURE BannedUser(p_UserId User_.ID%TYPE);
-    PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE);
+    PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE);
+    PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
 
     PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
     PROCEDURE GetBenefitsReport(p_start_date IN DATE, p_end_date IN DATE, p_monthly_benefits OUT NUMBER, p_annual_benefits OUT NUMBER);
@@ -857,26 +857,33 @@ END Admin_Package;
 CREATE OR REPLACE PACKAGE BODY Admin_Package
 AS
     
-    PROCEDURE EventAcceptation(p_event_id Event.ID%TYPE, p_event_status Event.Status%TYPE)
+    PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE)
     AS
         BEGIN
         UPDATE Event SET Status = p_event_status
         WHERE ID = p_event_id;
         COMMIT;
     END EventAcceptation;
-    
-    PROCEDURE BannedUser(p_UserId User_.ID%TYPE)
+
+    PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)
     AS
         BEGIN
             UPDATE User_ SET UserStatus = 'Banned' WHERE ID = p_UserId;
             COMMIT;
     END BannedUser; 
-    
-    PROCEDURE UnbannedUser(p_UserId User_.ID%TYPE)
+
+    PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)
     AS
+        v_Id NUMBER;
         BEGIN
-            UPDATE User_ SET UserStatus = 'Activated' WHERE ID = p_UserId;
+            UPDATE User_ SET UserStatus = 'Activated' WHERE ID = p_UserId RETURNING ID INTO v_Id;
             COMMIT;
+        IF v_Id IS NULL
+		THEN
+			p_IsSuccessed := 0;
+		ELSE
+			p_IsSuccessed := 1;
+		END IF;
     END UnbannedUser; 
 
         
