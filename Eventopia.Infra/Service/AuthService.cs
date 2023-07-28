@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Eventopia.Infra.Service;
 
@@ -37,14 +38,7 @@ public class AuthService : IAuthService
 		}
 		else
 		{
-			// Generate a 256-bit (32 bytes) secure secret key
-			var secretKeyBytes = new byte[32];
-			using (var rng = new RNGCryptoServiceProvider())
-			{
-				rng.GetBytes(secretKeyBytes);
-			}
-
-			var secretKey = new SymmetricSecurityKey(secretKeyBytes);
+			var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@34512345678912345"));
 			var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 			var claims = new List<Claim> {
 				new Claim("Username", result.Username),
