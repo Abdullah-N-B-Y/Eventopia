@@ -15,14 +15,18 @@ public class AdminRepository : IAdminRepository
         _dbContext = dbContext;
     }
 
-    public void EventAcceptation(int id, string status)
+    public bool EventAcceptation(int id, string status)
     {
         DynamicParameters parameters = new DynamicParameters();
 
         parameters.Add("p_event_id", id,dbType:DbType.Int32,direction:ParameterDirection.Input);
         parameters.Add("p_event_status", status, dbType:DbType.String,direction:ParameterDirection.Input);
 
+        parameters.Add("p_IsSuccessed", dbType:DbType.Int32,direction:ParameterDirection.Output);
+
         _dbContext.Connection.Execute("Admin_Package.EventAcceptation", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
     public bool BannedUser(int userId)

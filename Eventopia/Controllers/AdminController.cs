@@ -16,9 +16,9 @@ public class AdminController : ControllerBase
 
     [HttpPut]
     [Route("EventAcceptation/{id}/{status}")]
-    public void EventAcceptation(int id, string status)
+    public bool EventAcceptation(int id, string status)
     {
-        _adminService.EventAcceptation(id, status);
+        return _adminService.EventAcceptation(id, status);
     }
 
     [HttpPut]

@@ -844,7 +844,7 @@ END Message_Package;
 CREATE OR REPLACE PACKAGE Admin_Package
 AS
     
-    PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE);
+    PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
 
@@ -857,12 +857,19 @@ END Admin_Package;
 CREATE OR REPLACE PACKAGE BODY Admin_Package
 AS
     
-    PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE)
+    PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE, p_IsSuccessed OUT NUMBER)
     AS
+        v_id NUMBER;
         BEGIN
         UPDATE Event SET Status = p_event_status
-        WHERE ID = p_event_id;
+        WHERE ID = p_event_id RETURNING ID INTO v_id;
         COMMIT;
+        IF v_id IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF;
     END EventAcceptation;
 
     PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)
