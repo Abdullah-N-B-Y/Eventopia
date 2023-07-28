@@ -13,9 +13,9 @@ public class BookingService : IBookingService
         _bookingRepository = bookingRepository;
     }
 
-    public void CreateNew(Booking t)
+    public bool CreateNew(Booking t)
     {
-        _bookingRepository.CreateNew(t);
+        return _bookingRepository.CreateNew(t);
     }
 
     public Booking GetById(int id)
@@ -28,14 +28,14 @@ public class BookingService : IBookingService
         return _bookingRepository.GetAll();
     }
 
-    public void Update(Booking t)
+    public bool Update(Booking t)
     {
-        _bookingRepository.Update(t);
+        return _bookingRepository.Update(t);
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
-        _bookingRepository.Delete(id);
+        return _bookingRepository.Delete(id);
     }
 
     public bool DeleteUserFromBooking(int userId, int eventId)

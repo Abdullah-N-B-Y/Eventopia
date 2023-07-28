@@ -13,14 +13,14 @@ public class MessageService : IService<Message>
         _messageRepository = messageRepository;
     }
 
-    public void CreateNew(Message t)
+    public bool CreateNew(Message t)
     {
-        _messageRepository.CreateNew(t);
+        return _messageRepository.CreateNew(t);
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
-        _messageRepository.Delete(id);
+        return _messageRepository.Delete(id);
     }
 
     public List<Message> GetAll()
@@ -33,8 +33,8 @@ public class MessageService : IService<Message>
         return _messageRepository.GetById(id);
     }
 
-    public void Update(Message t)
+    public bool Update(Message t)
     {
-        _messageRepository.Update(t);
+        return _messageRepository.Update(t);
     }
 }

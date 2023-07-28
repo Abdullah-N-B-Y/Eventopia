@@ -15,7 +15,7 @@ public class MessageRepository : IRepository<Message>
         _dbContext = dbContext;
     }
 
-    public void CreateNew(Message message)
+    public bool CreateNew(Message message)
     {
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("p_Content", message.Content, dbType: DbType.String, direction: ParameterDirection.Input);
@@ -24,10 +24,11 @@ public class MessageRepository : IRepository<Message>
         parameters.Add("p_IsDeleted", message.Isdeleted, dbType: DbType.Decimal, direction: ParameterDirection.Input);
         parameters.Add("p_SenderId", message.Senderid, dbType: DbType.Int32, direction: ParameterDirection.Input);
         parameters.Add("p_ReceiverId", message.Receiverid, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        //parameters.Add("p_ReceiverId", dbType: DbType.Int32, direction: ParameterDirection.Output);
-        //int isSuccessed = parameters.Get<int>("p_Is_successed");
+        
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-        int numberOfAffectedColumns = _dbContext.Connection.Execute("Message_Package.CreateMessage", parameters, commandType: CommandType.StoredProcedure);
+        _dbContext.Connection.Execute("Message_Package.CreateMessage", parameters, commandType: CommandType.StoredProcedure);
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
     public Message GetById(int id)
@@ -44,7 +45,7 @@ public class MessageRepository : IRepository<Message>
         return _dbContext.Connection.Query<Message>("Message_Package.GetAllMessages",commandType:CommandType.StoredProcedure).ToList();
     }
 
-    public void Update(Message message)
+    public bool Update(Message message)
     {
         DynamicParameters parameters = new DynamicParameters();
 
@@ -56,17 +57,22 @@ public class MessageRepository : IRepository<Message>
         parameters.Add("p_SenderId", message.Senderid, dbType: DbType.Int32, direction: ParameterDirection.Input);
         parameters.Add("p_ReceiverId", message.Receiverid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dbContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
         DynamicParameters parameters = new DynamicParameters();
 
         parameters.Add("p_Id",id,dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        int numberOfAffectedColumns = _dbContext.Connection.Execute("Message_Package.DeleteMessage",parameters,commandType:CommandType.StoredProcedure);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
+        _dbContext.Connection.Execute("Message_Package.DeleteMessage",parameters,commandType:CommandType.StoredProcedure);
 
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 }

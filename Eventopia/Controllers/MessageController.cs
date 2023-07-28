@@ -17,9 +17,9 @@ public class MessageController : ControllerBase
 
     [HttpPost]
     [Route("CreateNewMessage")]
-    public void CreateNewMessage(Message message)
+    public bool CreateNewMessage([FromBody] Message message)
     {
-        _messageService.CreateNew(message);
+        return _messageService.CreateNew(message);
     }
 
     [HttpGet]
@@ -38,15 +38,15 @@ public class MessageController : ControllerBase
 
     [HttpPut]
     [Route("UpdateMessage")]
-    public void UpdateMessage(Message message)
+    public bool UpdateMessage(Message message)
     {
-        _messageService.Update(message);
+        return _messageService.Update(message);
     }
 
     [HttpDelete]
     [Route("DeleteMessage/{id}")]
-    public void DeleteMessage(int id)
+    public bool DeleteMessage(int id)
     {
-        _messageService.Delete(id);
+        return _messageService.Delete(id);
     }
 }

@@ -15,17 +15,18 @@ public class BookingRepository : IBookingRepository
         _dbContext = dBContext;
     }
 
-    public void CreateNew(Booking booking)
+    public bool CreateNew(Booking booking)
     {
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("p_BookingDate", booking.Bookingdate, dbType:DbType.Date, direction:ParameterDirection.Input);
         parameters.Add("p_UserId", booking.Userid, dbType:DbType.Int32, direction:ParameterDirection.Input);
         parameters.Add("p_EventId", booking.Eventid, dbType:DbType.Int32, direction:ParameterDirection.Input);
 
-        parameters.Add("p_Is_successed", dbType:DbType.Int32, direction:ParameterDirection.Output);
-        int isSuccessed = parameters.Get<int>("p_Is_successed");
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-        int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
+        _dbContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
     public Booking GetById(int id)
@@ -42,7 +43,7 @@ public class BookingRepository : IBookingRepository
         return _dbContext.Connection.Query<Booking>("Booking_Package.GetAllBooking", commandType: CommandType.StoredProcedure).ToList();
     }
 
-    public void Update(Booking t)
+    public bool Update(Booking t)
     {
         DynamicParameters parameters = new DynamicParameters();
 
@@ -51,16 +52,24 @@ public class BookingRepository : IBookingRepository
         parameters.Add("p_UserId", t.Userid,dbType:DbType.Int32,direction:ParameterDirection.Input);
         parameters.Add("p_EventId", t.Eventid,dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dbContext.Connection.Execute("Booking_Package.UpdateBooking", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
         DynamicParameters parameters = new DynamicParameters();
 
         parameters.Add("p_BookingId",id,dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.DeleteBooking",parameters,commandType:CommandType.StoredProcedure);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dbContext.Connection.Execute("Booking_Package.DeleteBooking",parameters,commandType:CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
     public bool DeleteUserFromBooking(int userId, int eventId)
