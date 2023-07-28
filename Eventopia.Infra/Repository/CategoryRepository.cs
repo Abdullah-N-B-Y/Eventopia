@@ -30,9 +30,9 @@ public class CategoryRepository : IRepository<Category>
 
 	public void Delete(int id)
 	{
-		var parameters = new DynamicParameters();
+		var parameters = new DynamicParameters(); 
 		parameters.Add("CATEGORY_ID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-		var result = _dBContext.Connection.Execute("Course_Package.DeleteCourse", parameters, commandType: CommandType.StoredProcedure);
+		var result = _dBContext.Connection.Execute("CATEGORY_PACKAGE.DeleteCategory", parameters, commandType: CommandType.StoredProcedure);
 	}
 
 	public List<Category> GetAll()
