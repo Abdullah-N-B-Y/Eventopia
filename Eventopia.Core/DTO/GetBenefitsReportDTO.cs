@@ -8,7 +8,7 @@ namespace Eventopia.Core.DTO
 {
     public class GetBenefitsReportDTO
     {
-        public decimal MonthlyBenefits { get; set; }
-        public decimal AnnualBenefits { get; set; }
+        public decimal? MonthlyBenefits { get; set; }
+        public decimal? AnnualBenefits { get; set; }
     }
 }

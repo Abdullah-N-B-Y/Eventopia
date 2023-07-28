@@ -59,38 +59,37 @@ public class AdminRepository : IAdminRepository
     public StatisticsDTO GetStatistics()
     {
         var parameters = new DynamicParameters();
-        parameters.Add("p_num_users", DbType.Int32, direction: ParameterDirection.Output);
-        parameters.Add("p_num_events", DbType.Int32, direction: ParameterDirection.Output);
-        parameters.Add("p_event_id", DbType.Int32, direction: ParameterDirection.Output);
-        parameters.Add("p_max_attendees", DbType.Int32, direction: ParameterDirection.Output);
+        parameters.Add("p_UsersNumber", DbType.Int32, direction: ParameterDirection.Output);
+        parameters.Add("p_EventsNumber", DbType.Int32, direction: ParameterDirection.Output);
+        parameters.Add("p_EventId", DbType.Int32, direction: ParameterDirection.Output);
+        parameters.Add("p_MaxAttendance", DbType.Int32, direction: ParameterDirection.Output);
 
         _dbContext.Connection.Execute("Admin_Package.GetStats", parameters, commandType: CommandType.StoredProcedure);
 
         var statistics = new StatisticsDTO
         {
-            NumberOfUsers = parameters.Get<int>("p_num_users"),
-            NumberOfEvents = parameters.Get<int>("p_num_events"),
-            MaxEventID = parameters.Get<int>("p_event_id"),
-            MaxEventAttendees = parameters.Get<int>("p_max_attendees")
+            NumberOfUsers = parameters.Get<int>("p_UsersNumber"),
+            NumberOfEvents = parameters.Get<int>("p_EventsNumber"),
+            MaxEventID = parameters.Get<int>("p_EventId"),
+            MaxEventAttendees = parameters.Get<int>("p_MaxAttendance")
         };
-
         return statistics;
     }
 
     public GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("p_start_date", startDate, DbType.Date, ParameterDirection.Input);
-        parameters.Add("p_end_date", endDate, DbType.Date, ParameterDirection.Input);
-        parameters.Add("p_monthly_benefits", DbType.Decimal, direction: ParameterDirection.Output);
-        parameters.Add("p_annual_benefits", DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_StartDate", startDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_EndDate", endDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_MonthlyBenefits", DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_AnnualBenefits", DbType.Decimal, direction: ParameterDirection.Output);
 
         _dbContext.Connection.Execute("Admin_Package.GetBenefitsReport", parameters, commandType: CommandType.StoredProcedure);
 
         var benefits = new GetBenefitsReportDTO
         {
-            MonthlyBenefits = parameters.Get<decimal>("p_monthly_benefits"),
-            AnnualBenefits = parameters.Get<decimal>("p_annual_benefits")
+            MonthlyBenefits = parameters.Get<decimal>("p_MonthlyBenefits"),
+            AnnualBenefits = parameters.Get<decimal>("p_AnnualBenefits")
         };
 
         return benefits;

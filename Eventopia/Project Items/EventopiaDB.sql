@@ -847,13 +847,12 @@ AS
     PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
+    PROCEDURE GetStats(p_UsersNumber OUT NUMBER, p_EventsNumber OUT Event.ID%TYPE, p_EventId OUT Event.ID%TYPE, p_MaxAttendance OUT NUMBER);
+    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT NUMBER, p_AnnualBenefits OUT NUMBER);
 
-    PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER);
-    PROCEDURE GetBenefitsReport(p_start_date IN DATE, p_end_date IN DATE, p_monthly_benefits OUT NUMBER, p_annual_benefits OUT NUMBER);
-
-
-    
 END Admin_Package;
+
+
 CREATE OR REPLACE PACKAGE BODY Admin_Package
 AS
     
@@ -885,7 +884,7 @@ AS
                 p_IsSuccessed := 0;
             END IF;
     END BannedUser; 
-
+    
     PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)
     AS
         v_Id NUMBER;
@@ -899,34 +898,33 @@ AS
 			p_IsSuccessed := 1;
 		END IF;
     END UnbannedUser; 
-
-        
-    PROCEDURE GetStats(p_num_users OUT NUMBER, p_num_events OUT NUMBER, p_event_id OUT Event.ID%TYPE, p_max_attendees OUT NUMBER) AS
+    
+    PROCEDURE GetStats(p_UsersNumber OUT NUMBER, p_EventsNumber OUT Event.ID%TYPE, p_EventId OUT Event.ID%TYPE, p_MaxAttendance OUT NUMBER)
+    AS
     BEGIN
-        -- The number of registered users
-        SELECT COUNT(*) INTO p_num_users FROM User_;
 
-        -- The number of events
-        SELECT COUNT(*) INTO p_num_events FROM Event;
+        SELECT COUNT(*) INTO p_UsersNumber FROM User_;
 
-        -- The Event(ID) with the most attendees
+        SELECT COUNT(*) INTO p_EventsNumber FROM Event;
+
         SELECT EventID, COUNT(*) AS AttendeesCount
-        INTO p_event_id, p_max_attendees
+        INTO p_EventId, p_MaxAttendance
         FROM Booking
         GROUP BY EventID
         ORDER BY COUNT(*) DESC
         FETCH FIRST 1 ROWS ONLY;
     END GetStats;
     
-    PROCEDURE GetBenefitsReport(p_start_date IN DATE, p_end_date IN DATE, p_monthly_benefits OUT NUMBER, p_annual_benefits OUT NUMBER) AS
+    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT NUMBER, p_AnnualBenefits OUT NUMBER)
+    AS
     BEGIN
-        SELECT SUM(Amount) INTO p_monthly_benefits
+        SELECT SUM(Amount) INTO p_MonthlyBenefits
         FROM Payment
-        WHERE PaymentDate >= p_start_date AND PaymentDate <= p_end_date;
+        WHERE PaymentDate >= p_StartDate AND PaymentDate <= p_EndDate;
 
-        SELECT SUM(Amount) INTO p_annual_benefits
+        SELECT SUM(Amount) INTO p_AnnualBenefits
         FROM Payment
-        WHERE EXTRACT(YEAR FROM PaymentDate) = EXTRACT(YEAR FROM p_start_date);
+        WHERE EXTRACT(YEAR FROM PaymentDate) = EXTRACT(YEAR FROM p_StartDate);
     END GetBenefitsReport;
 
 END Admin_Package;
