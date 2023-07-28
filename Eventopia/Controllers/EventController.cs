@@ -19,7 +19,7 @@ public class EventController : ControllerBase
 
     [HttpPost]
     [Route("SearchEventsBetweenDates")]
-    [Authorize(Policy = "AdminOnly")]
+    //[Authorize(Policy = "AdminOnly")]
     public ActionResult<List<Event>> SearchEventsBetweenDates(SearchBetweenDatesDTO searchDTO)
     {
         // Call the backend logic to get the events within the date range
@@ -32,7 +32,7 @@ public class EventController : ControllerBase
 
     [HttpPost]
     [Route("SearchEventsByName")]
-    [AllowAnonymous] 
+    //[AllowAnonymous] 
     public ActionResult<List<Event>> SearchEventsByName([FromBody] string eventName)
     {
         // Call the backend logic to search events by name
