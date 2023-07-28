@@ -874,9 +874,16 @@ AS
 
     PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)
     AS
+        v_id NUMBER;
         BEGIN
-            UPDATE User_ SET UserStatus = 'Banned' WHERE ID = p_UserId;
+            UPDATE User_ SET UserStatus = 'Banned' WHERE ID = p_UserId RETURNING ID INTO v_id;
             COMMIT;
+            IF v_id IS NOT NULL
+            THEN
+                p_IsSuccessed := 1;
+            ELSE
+                p_IsSuccessed := 0;
+            END IF;
     END BannedUser; 
 
     PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)

@@ -30,9 +30,9 @@ public class AdminController : ControllerBase
 
     [HttpPut]
     [Route("UnbannedUser/{id}")]
-    public void UnbannedUser(int id)
+    public bool UnbannedUser(int id)
     {
-        _adminService.UnbannedUser(id);
+        return _adminService.UnbannedUser(id);
     }
 
     [HttpGet]

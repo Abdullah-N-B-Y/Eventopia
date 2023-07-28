@@ -26,7 +26,8 @@ public class AdminRepository : IAdminRepository
 
         _dbContext.Connection.Execute("Admin_Package.EventAcceptation", parameters, commandType: CommandType.StoredProcedure);
 
-        return parameters.Get<int>("p_IsSuccessed") == 1;
+        int a = parameters.Get<int>("p_IsSuccessed");
+        return a == 1;
     }
 
     public bool BannedUser(int userId)

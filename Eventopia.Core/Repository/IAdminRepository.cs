@@ -5,7 +5,6 @@ namespace Eventopia.Core.Repository;
 public interface IAdminRepository
 {
     bool EventAcceptation(int id, string status);
-
     bool BannedUser(int userId);
     bool UnbannedUser(int userId);
 
