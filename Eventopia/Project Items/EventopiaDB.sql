@@ -1123,7 +1123,7 @@ AS
     AS
         BEGIN
             UPDATE COMMENTS SET 
-            id = p_ID, 
+            content = p_Content,
             EventId = Event_id, 
             UserId = User_Id;
             COMMIT;
