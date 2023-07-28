@@ -36,11 +36,6 @@ public class EventService : IEventService
         _eventRepository.Delete(id);
     }
 
-    public void Delete(decimal id)
-    {
-        throw new NotImplementedException();
-    }
-
     public List<Event> GetAll()
     {
         return _eventRepository.GetAll();
@@ -49,11 +44,6 @@ public class EventService : IEventService
     public Event GetById(int id)
     {
         return _eventRepository.GetById(id);
-    }
-
-    public Event GetById(decimal id)
-    {
-        throw new NotImplementedException();
     }
 
     public void Update(Event @event)

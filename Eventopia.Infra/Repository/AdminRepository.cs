@@ -88,8 +88,8 @@ public class AdminRepository : IAdminRepository
 
         var benefits = new GetBenefitsReportDTO
         {
-            MonthlyBenefits = parameters.Get<decimal>("p_MonthlyBenefits"),
-            AnnualBenefits = parameters.Get<decimal>("p_AnnualBenefits")
+            MonthlyBenefits = parameters.Get<decimal?>("p_MonthlyBenefits"),
+            AnnualBenefits = parameters.Get<decimal?>("p_AnnualBenefits")
         };
 
         return benefits;

@@ -33,9 +33,11 @@ public class BookingRepository : IBookingRepository
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("p_BookingId", dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_BookingId", id, dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        return _dbContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
+        var result = _dbContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
     }
 
     public List<Booking> GetAll()
