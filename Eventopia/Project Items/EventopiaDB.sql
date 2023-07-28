@@ -354,6 +354,7 @@ CREATE OR REPLACE PACKAGE BODY User_Package AS
 END User_Package;
 
 
+
 -- EVENT PACKAGE SPECIFICATION
 CREATE OR REPLACE PACKAGE Event_Package AS
   -- Procedure to get all events
@@ -705,6 +706,8 @@ CREATE OR REPLACE PACKAGE Booking_Package AS
     PROCEDURE UpdateBooking(p_BookingId IN Booking.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE);
     -- Delete Procedure
     PROCEDURE DeleteBooking(p_BookingId IN Booking.ID%TYPE);
+    -- Delete Procedure
+    PROCEDURE DeleteUserFromBooking(p_UserId IN NUMBER, p_EventId IN NUMBER,  p_Is_successed OUT NUMBER);
     -- Get All Procedures
     PROCEDURE GetAllBooking;
 
@@ -717,7 +720,7 @@ CREATE OR REPLACE PACKAGE BODY Booking_Package AS
     AS
 	Id NUMBER;
     	BEGIN
-        	INSERT INTO Booking VALUES(DEFAULT, p_BookingDate, p_UserId, p_EventId) RETURNING ID INTO Id;
+        	INSERT INTO Booking VALUES(DEFAULT, p_BookingDate, p_UserId, p_EventId) RETURNING ID INTO p_Is_successed;
         	COMMIT;
 		IF p_Is_successed IS NULL
 		THEN
@@ -756,7 +759,21 @@ CREATE OR REPLACE PACKAGE BODY Booking_Package AS
             WHERE ID = p_BookingId;
             COMMIT;
     END;
-
+    
+    -- Delete Procedure
+    PROCEDURE DeleteUserFromBooking(p_UserId IN NUMBER, p_EventId IN NUMBER, p_Is_successed OUT NUMBER)
+    AS
+        BEGIN
+            DELETE FROM Booking
+            WHERE UserID = p_UserId AND EventId = p_EventId RETURNING ID INTO p_Is_successed;
+            COMMIT;
+            IF p_Is_successed IS NULL
+            THEN
+                p_Is_successed := 0;
+            ELSE
+                p_Is_successed := 1;
+            END IF;
+    END;
     --GetAll Procedure
     PROCEDURE GetAllBooking
     AS
