@@ -23,18 +23,22 @@ public class BookingRepository : IBookingRepository
         parameters.Add("p_EventId", booking.Eventid, dbType:DbType.Int32, direction:ParameterDirection.Input);
 
         parameters.Add("p_Is_successed", dbType:DbType.Int32, direction:ParameterDirection.Output);
-        int isSuccessed = parameters.Get<int>("p_Is_successed");
 
         int numberOfAffectedColumns = _dbContext.Connection.Execute("Booking_Package.CreateBooking", parameters, commandType: CommandType.StoredProcedure);
-    }
+
+		int isSuccessed = parameters.Get<int>("p_Is_successed");
+        Console.WriteLine("createnewbooking status: " + isSuccessed);
+	}
 
     public Booking GetById(int id)
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("p_BookingId", dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_BookingId", id, dbType:DbType.Int32,direction:ParameterDirection.Input);
 
-        return _dbContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
+        var result = _dbContext.Connection.Query<Booking>("Booking_Package.GetBookingById", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
     }
 
     public List<Booking> GetAll()
