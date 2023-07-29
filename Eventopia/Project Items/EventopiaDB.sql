@@ -682,65 +682,82 @@ END Profile_Package;
 
 
 -- TESTIMONIAL PACKAGE
-CREATE OR REPLACE PACKAGE Testimonial_Package AS
-  -- Procedure to get all testimonials
-  PROCEDURE GetAllTestimonials;
-  
-  -- Procedure to get a testimonial by ID
-  PROCEDURE GetTestimonialByID(p_TestimonialID IN NUMBER);
-  
-  -- Procedure to delete a testimonial by ID
-  PROCEDURE DeleteTestimonialByID(p_TestimonialID IN NUMBER);
-  
-  -- Procedure to update a testimonial by ID
-  PROCEDURE UpdateTestimonialByID(p_TestimonialID IN NUMBER, p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER);
-  
-  -- Procedure to create a new testimonial
-  PROCEDURE CreateTestimonial(p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER);
+CREATE OR REPLACE PACKAGE Testimonial_Package
+AS
+    PROCEDURE GetAllTestimonials;
+    PROCEDURE GetTestimonialByID(p_TestimonialID IN NUMBER);
+    PROCEDURE DeleteTestimonialByID(p_TestimonialID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateTestimonialByID(p_TestimonialID IN NUMBER, p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateTestimonial(p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
 END Testimonial_Package;
 
--- TESTIMONIAL PACKAGE BODY
-CREATE OR REPLACE PACKAGE BODY Testimonial_Package AS
-  -- Procedure to get all testimonials
-  PROCEDURE GetAllTestimonials AS
-    cur_all SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_all FOR 'SELECT * FROM Testimonial';
-    DBMS_SQL.RETURN_RESULT(cur_all);
-  END;
-  
-  -- Procedure to get a testimonial by ID
-  PROCEDURE GetTestimonialByID(p_TestimonialID IN NUMBER) AS
-    cur_item SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_item FOR 'SELECT * FROM Testimonial WHERE ID = :id' USING p_TestimonialID;
-    DBMS_SQL.RETURN_RESULT(cur_item);
-  END;
-  
-  -- Procedure to delete a testimonial by ID
-  PROCEDURE DeleteTestimonialByID(p_TestimonialID IN NUMBER) AS
-  BEGIN
-    DELETE FROM Testimonial WHERE ID = p_TestimonialID;
-  END;
-  
-  -- Procedure to update a testimonial by ID
-  PROCEDURE UpdateTestimonialByID(p_TestimonialID IN NUMBER, p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER) AS
-  BEGIN
-    UPDATE Testimonial SET
-      Content = p_Content,
-      CreationDate = p_CreationDate,
-      Status = p_Status,
-      UserID = p_UserID
-    WHERE ID = p_TestimonialID;
-  END;
-  
-  -- Procedure to create a new testimonial
-  PROCEDURE CreateTestimonial(p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER) AS
-  BEGIN
-    INSERT INTO Testimonial (Content, CreationDate, Status, UserID)
-    VALUES (p_Content, p_CreationDate, p_Status, p_UserID);
-  END;
-  
+CREATE OR REPLACE PACKAGE BODY Testimonial_Package
+AS
+
+    PROCEDURE GetAllTestimonials
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT * FROM Testimonial;
+                DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllTestimonials;
+    
+    PROCEDURE GetTestimonialByID(p_TestimonialID IN NUMBER)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM Testimonial WHERE ID = p_TestimonialID;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetTestimonialByID;
+    
+    PROCEDURE DeleteTestimonialByID(p_TestimonialID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            DELETE FROM Testimonial WHERE ID = p_TestimonialID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END DeleteTestimonialByID;
+    
+    PROCEDURE UpdateTestimonialByID(p_TestimonialID IN NUMBER, p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            UPDATE Testimonial
+            SET
+                Content = p_Content,
+                CreationDate = p_CreationDate,
+                Status = p_Status,
+                UserID = p_UserID
+            WHERE ID = p_TestimonialID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END UpdateTestimonialByID;
+    
+    PROCEDURE CreateTestimonial(p_Content IN VARCHAR2, p_CreationDate IN DATE, p_Status IN VARCHAR2, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            INSERT INTO Testimonial (Content, CreationDate, Status, UserID)
+            VALUES (p_Content, p_CreationDate, p_Status, p_UserID) RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END CreateTestimonial;
+
 END Testimonial_Package;
 
 -- BOOKING PACKAGE
