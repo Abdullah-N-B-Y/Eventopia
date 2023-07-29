@@ -14,14 +14,14 @@ public class PageService : IService<Page>
 		_pageRepository = pageRepository;
 	}
 
-	public void CreateNew(Page page)
+	public bool CreateNew(Page page)
 	{
-		_pageRepository.CreateNew(page);
+		return _pageRepository.CreateNew(page);
 	}
 
-	public void Delete(int id)
+	public bool Delete(int id)
 	{
-		_pageRepository.Delete(id);
+		return _pageRepository.Delete(id);
 	}
 
 	public List<Page> GetAll()
@@ -34,8 +34,8 @@ public class PageService : IService<Page>
 		return _pageRepository.GetById(id);
 	}
 
-	public void Update(Page page)
+	public bool Update(Page page)
 	{
-		_pageRepository.Update(page);
+		return _pageRepository.Update(page);
 	}
 }

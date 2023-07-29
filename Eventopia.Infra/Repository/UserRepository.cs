@@ -17,9 +17,10 @@ public class UserRepository : IUserRepository
 		_dBContext = dbContext;
 	}
 
-	public void CreateNew(User user)
+	public bool CreateNew(User user)
 	{
 		DynamicParameters parameters = new DynamicParameters();
+
 		parameters.Add("p_Username", user.Username, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Password", user.Password, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Email", user.Email, dbType: DbType.String, direction: ParameterDirection.Input);
@@ -27,15 +28,25 @@ public class UserRepository : IUserRepository
 		parameters.Add("p_UserStatus", user.Userstatus, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_RoleID", user.Roleid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-		var result = _dBContext.Connection.Execute("USER_PACKAGE.CreateUser", parameters, commandType: CommandType.StoredProcedure);
-	}
+        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
 
-	public void Delete(int id)
+        _dBContext.Connection.Execute("User_Package.CreateUser", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
+
+	public bool Delete(int id)
 	{
 		var parameters = new DynamicParameters();
+
 		parameters.Add("p_UserID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-		var result = _dBContext.Connection.Execute("User_Package.DeleteUserById", parameters, commandType: CommandType.StoredProcedure);
-	}
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("User_Package.DeleteUserById", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
 
 	public List<User> GetAll()
 	{
@@ -51,15 +62,18 @@ public class UserRepository : IUserRepository
 		return result.FirstOrDefault();
 	}
 
-	public User GetUserByUserName(string username)
+	public User GetUserByUserName(string name)
 	{
-            var parameters = new DynamicParameters();
-		parameters.Add("User_Name", username, dbType: DbType.String, direction: ParameterDirection.Input);
+        var parameters = new DynamicParameters();
+
+		parameters.Add("p_Name", name, dbType: DbType.String, direction: ParameterDirection.Input);
+
 		IEnumerable<User> result = _dBContext.Connection.Query<User>("User_Package.GetUserByUserName", parameters, commandType: CommandType.StoredProcedure);
+		
 		return result.FirstOrDefault();
 	}
 
-	public void Update(User user)
+	public bool Update(User user)
 	{
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_UserID", user.Id, dbType: DbType.String, direction: ParameterDirection.Input);
@@ -70,37 +84,45 @@ public class UserRepository : IUserRepository
 		parameters.Add("p_UserStatus", user.Userstatus, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_RoleID", user.Roleid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-		var result = _dBContext.Connection.Execute("USER_PACKAGE.UpdateUserByID", parameters, commandType: CommandType.StoredProcedure);
-	}
+        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
 
-    public void UpdateUserProfile(Profile profile, string password)
-        {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("p_UserId", profile.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            parameters.Add("p_Password", password, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        _dBContext.Connection.Execute("User_Package.UpdateUserByID", parameters, commandType: CommandType.StoredProcedure);
 
-            parameters.Add("p_IsUpdated", dbType: DbType.Int32, direction: ParameterDirection.Output);
-            int p_IsUpdated = parameters.Get<int>("p_IsUpdated");
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
 
-            var result = _dBContext.Connection.Execute("USER_PACKAGE.UpdateUserProfile", parameters, commandType: CommandType.StoredProcedure);
-        }
+    public bool UpdateUserProfile(Profile profile, string password)
+    {
+		DynamicParameters parameters = new DynamicParameters();
 
-    public void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
-        {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("p_UserId", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            parameters.Add("p_OldPassword", updatePasswordDTO.OldPassword, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("p_NewPassword", updatePasswordDTO.NewPassword, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("p_ConfirmPassword", updatePasswordDTO.ConfirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_UserId", profile.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_Password", password, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-            parameters.Add("p_IsUpdated", dbType: DbType.Int32, direction: ParameterDirection.Output);
-            int p_IsUpdated = parameters.Get<int>("p_IsUpdated");
+		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            var result = _dBContext.Connection.Execute("USER_PACKAGE.UpdatePassword", parameters, commandType: CommandType.StoredProcedure);
-        }
+		_dBContext.Connection.Execute("USER_PACKAGE.UpdateUserProfile", parameters, commandType: CommandType.StoredProcedure);
+
+		return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
+
+	public bool UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
+	{
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_UserId", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_OldPassword", updatePasswordDTO.OldPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_NewPassword", updatePasswordDTO.NewPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_ConfirmPassword", updatePasswordDTO.ConfirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("User_Package.UpdatePassword", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
 
     public List<RegisteredUsersDetailsDTO> GetAllRegisteredUsersDetails()
     {

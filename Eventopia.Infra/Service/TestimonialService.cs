@@ -19,19 +19,19 @@ public class TestimonialService : IService<Testimonial>
         return _testimonialRepository.GetAll();
     }
 
-    public void CreateNew(Testimonial testimonial)
+    public bool CreateNew(Testimonial testimonial)
     {
-        _testimonialRepository.CreateNew(testimonial);
+        return _testimonialRepository.CreateNew(testimonial);
     }
 
-    public void Update(Testimonial testimonial)
+    public bool Update(Testimonial testimonial)
     {
-        _testimonialRepository.Update(testimonial);
+        return _testimonialRepository.Update(testimonial);
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
-        _testimonialRepository.Delete(id);
+        return _testimonialRepository.Delete(id);
     }
 
     public Testimonial GetById(int id)

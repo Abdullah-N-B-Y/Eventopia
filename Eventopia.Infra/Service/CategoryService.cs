@@ -13,14 +13,14 @@ public class CategoryService : IService<Category>
 		_categoryRepository = categoryRepository;
 	}
 
-	public void CreateNew(Category category)
+	public bool CreateNew(Category category)
 	{
-		_categoryRepository.CreateNew(category);
+		return _categoryRepository.CreateNew(category);
 	}
 
-	public void Delete(int id)
+	public bool Delete(int id)
 	{
-		_categoryRepository.Delete(id);
+		return _categoryRepository.Delete(id);
 	}
 
 	public List<Category> GetAll()
@@ -33,8 +33,8 @@ public class CategoryService : IService<Category>
 		return _categoryRepository.GetById(id);
 	}
 
-	public void Update(Category category)
+	public bool Update(Category category)
 	{
-		_categoryRepository.Update(category);
+		return _categoryRepository.Update(category);
 	}
 }

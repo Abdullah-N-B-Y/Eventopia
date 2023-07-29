@@ -6,7 +6,7 @@ namespace Eventopia.Core.Repository;
 public interface IUserRepository : IRepository<User>
 {
 	User GetUserByUserName(string username);
-	void UpdateUserProfile(Profile profile, string password);
-	void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
+	bool UpdateUserProfile(Profile profile, string password);
+    bool UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
 	List<RegisteredUsersDetailsDTO> GetAllRegisteredUsersDetails();
 }

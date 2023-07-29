@@ -26,14 +26,14 @@ public class EventService : IEventService
         return _eventRepository.SearchEventsByName(eventName);
     }
     
-    public void CreateNew(Event @event)
+    public bool CreateNew(Event @event)
     {
-        _eventRepository.CreateNew(@event);
+        return _eventRepository.CreateNew(@event);
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
-        _eventRepository.Delete(id);
+        return _eventRepository.Delete(id);
     }
 
     public List<Event> GetAll()
@@ -46,8 +46,8 @@ public class EventService : IEventService
         return _eventRepository.GetById(id);
     }
 
-    public void Update(Event @event)
+    public bool Update(Event @event)
     {
-        _eventRepository.Update(@event);
+        return _eventRepository.Update(@event);
     }
 }

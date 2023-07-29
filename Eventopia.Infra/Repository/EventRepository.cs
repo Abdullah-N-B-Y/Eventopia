@@ -2,7 +2,6 @@
 using Eventopia.Core.Common;
 using Eventopia.Core.Data;
 using Eventopia.Core.Repository;
-using SixLabors.ImageSharp;
 using System.Data;
 
 namespace Eventopia.Infra.Repository;
@@ -35,31 +34,41 @@ public class EventRepository : IEventRepository
         return result.ToList();
     }
 
-    public void CreateNew(Event @event)
+    public bool CreateNew(Event eventObj)
 	{
 		DynamicParameters parameters = new DynamicParameters();
-		parameters.Add("p_Name", @event.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_AttendingCost", @event.Attendingcost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_StartDate", @event.Startdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-		parameters.Add("p_EndDate", @event.Enddate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-		parameters.Add("p_Status", @event.Status, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_EventDescription", @event.Eventdescription, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_ImagePath", @event.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_EventCapacity", @event.Eventcapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_Latitude", @event.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_Longitude", @event.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_EventCreatorID", @event.Eventcreatorid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_CategoryID", @event.Categoryid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
-        var result = _dBContext.Connection.Execute("EVENT_PACKAGE.CreateEvent", parameters, commandType: CommandType.StoredProcedure);
+		parameters.Add("p_Name", eventObj.Name, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_AttendingCost", eventObj.Attendingcost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_StartDate", eventObj.Startdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_EndDate", eventObj.Enddate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_EventDescription", eventObj.Eventdescription, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", eventObj.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_EventCapacity", eventObj.Eventcapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_Latitude", eventObj.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_Longitude", eventObj.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_EventCreatorID", eventObj.Eventcreatorid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_CategoryID", eventObj.Categoryid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("EVENT_PACKAGE.CreateEvent", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
 		var parameters = new DynamicParameters();
+
 		parameters.Add("p_EventID", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		var result = _dBContext.Connection.Execute("EVENT_PACKAGE.DeleteEventByID", parameters, commandType: CommandType.StoredProcedure);
-	}
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("EVENT_PACKAGE.DeleteEventByID", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
 
     public List<Event> GetAll()
     {
@@ -75,23 +84,28 @@ public class EventRepository : IEventRepository
 		return result.FirstOrDefault();
 	}
 
-    public void Update(Event @event)
+    public bool Update(Event eventObj)
     {
         DynamicParameters parameters = new DynamicParameters();
-        parameters.Add("p_EventID", @event.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_Name", @event.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_AttendingCost", @event.Attendingcost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_StartDate", @event.Startdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-		parameters.Add("p_EndDate", @event.Enddate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-		parameters.Add("p_Status", @event.Status, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_EventDescription", @event.Eventdescription, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_ImagePath", @event.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_EventCapacity", @event.Eventcapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_Latitude", @event.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_Longitude", @event.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_EventCreatorID", @event.Eventcreatorid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_CategoryID", @event.Categoryid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
-		var result = _dBContext.Connection.Execute("EVENT_PACKAGE.UpdateEventByID", parameters, commandType: CommandType.StoredProcedure);
+        parameters.Add("p_EventID", eventObj.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_Name", eventObj.Name, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_AttendingCost", eventObj.Attendingcost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_StartDate", eventObj.Startdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_EndDate", eventObj.Enddate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_Status", eventObj.Status, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_EventDescription", eventObj.Eventdescription, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", eventObj.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_EventCapacity", eventObj.Eventcapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_Latitude", eventObj.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_Longitude", eventObj.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_EventCreatorID", eventObj.Eventcreatorid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_CategoryID", eventObj.Categoryid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("EVENT_PACKAGE.UpdateEventByID", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 }

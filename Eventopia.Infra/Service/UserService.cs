@@ -14,14 +14,14 @@ public class UserService : IUserService
 		_userRepository = userRepository;
 	}
 
-	public void CreateNew(User user)
+	public bool CreateNew(User user)
 	{
-		_userRepository.CreateNew(user);
+		return _userRepository.CreateNew(user);
 	}
 
-	public void Delete(int id)
+	public bool Delete(int id)
 	{
-		_userRepository.Delete(id);
+		return _userRepository.Delete(id);
 	}
 
 	public List<User> GetAll()
@@ -39,19 +39,19 @@ public class UserService : IUserService
 		return _userRepository.GetUserByUserName(username);
 	}
 
-	public void Update(User user)
+	public bool Update(User user)
 	{
-		_userRepository.Update(user);
+		return _userRepository.Update(user);
 	}
 
-    public void UpdateUserProfile(Profile profile, string password)
+    public bool UpdateUserProfile(Profile profile, string password)
     {
-		_userRepository.UpdateUserProfile(profile, password);
+		return _userRepository.UpdateUserProfile(profile, password);
     }
 
-    public void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
+    public bool UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
     {
-		_userRepository.UpdatePassword(id, updatePasswordDTO);
+		return _userRepository.UpdatePassword(id, updatePasswordDTO);
     }
 
     public List<RegisteredUsersDetailsDTO> GetAllRegisteredUsersDetails()

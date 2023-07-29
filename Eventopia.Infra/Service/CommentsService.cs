@@ -13,14 +13,14 @@ public class CommentsService: ICommentsService
 		_commentsRepository = commentsRepository;
 	}
 
-	public void CreateNew(Comment comment)
+	public bool CreateNew(Comment comment)
 	{
-		_commentsRepository.CreateNew(comment);
+		return _commentsRepository.CreateNew(comment);
 	}
 
-	public void Delete(int id)
+	public bool Delete(int id)
 	{
-		_commentsRepository.Delete(id);
+		return _commentsRepository.Delete(id);
 	}
 
 	public List<Comment> GetAll()
@@ -48,8 +48,8 @@ public class CommentsService: ICommentsService
 		return _commentsRepository.GetUserCommentsOnEvent(eventId, userId);
 	}
 
-	public void Update(Comment comment)
+	public bool Update(Comment comment)
 	{
-		_commentsRepository.Update(comment);
+		return _commentsRepository.Update(comment);
 	}
 }

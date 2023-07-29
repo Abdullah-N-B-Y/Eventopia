@@ -24,18 +24,18 @@ public class ProfileService : IService<Profile>
         return _profileRepository.GetAll();
     }
 
-    public void CreateNew(Profile profile)
+    public bool CreateNew(Profile profile)
     {
-        _profileRepository.CreateNew(profile);
+        return _profileRepository.CreateNew(profile);
     }
 
-    public void Update(Profile profile)
+    public bool Update(Profile profile)
     {
-        _profileRepository.Update(profile);
+        return _profileRepository.Update(profile);
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
-        _profileRepository.Delete(id);
+        return _profileRepository.Delete(id);
     }
 }

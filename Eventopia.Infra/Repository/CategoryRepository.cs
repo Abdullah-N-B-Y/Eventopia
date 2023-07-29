@@ -47,7 +47,7 @@ public class CategoryRepository : IRepository<Category>
 
 	public List<Category> GetAll()
 	{
-		IEnumerable<Category> result = _dBContext.Connection.Query<Category>("CATEGORY_PACKAGE.GetAllCategories", commandType: CommandType.StoredProcedure);
+		IEnumerable<Category> result = _dBContext.Connection.Query<Category>("Category_Package.GetAllCategories", commandType: CommandType.StoredProcedure);
 		return result.ToList();
 	}
 
@@ -69,6 +69,10 @@ public class CategoryRepository : IRepository<Category>
 		parameters.Add("CREATION_DATE", category.Creationdate, dbType: DbType.Date, direction: ParameterDirection.Input);
 		parameters.Add("ADMIN_ID", category.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-		var result = _dBContext.Connection.Execute("CATEGORY_PACKAGE.UpdateCategory", parameters, commandType: CommandType.StoredProcedure);
-	}
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("Category_Package.UpdateCategory", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
 }

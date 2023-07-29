@@ -15,32 +15,38 @@ public class ProfileRepository : IRepository<Profile>
         _dBContext = dBContext;
     }
 
-    public void CreateNew(Profile profile)
+    public bool CreateNew(Profile profile)
     {
         DynamicParameters parameters = new DynamicParameters();
-        parameters.Add("FIRSTNAME", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("LASTNAME", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("IMAGEPATH", profile.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("PHONENUMBER", profile.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("GENDER", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("DATEOFBIRTH", profile.Dateofbirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-        parameters.Add("BIO", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("RATE", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("USERID", profile.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
-        var result = _dBContext.Connection.Execute("PROFILE_PACKAGE.CreateProfile", parameters, commandType: CommandType.StoredProcedure);
+        parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_ImagePath", profile.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_Gender", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_DateOfBirth", profile.Dateofbirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        parameters.Add("p_Bio", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_Rate", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", profile.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("PROFILE_PACKAGE.CreateProfile", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
-    public void Delete(int id)
+    public bool Delete(int id)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("PROFILE_ID", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        var result = _dBContext.Connection.Execute("PROFILE_PACKAGE.DeleteProfileByID", parameters, commandType: CommandType.StoredProcedure);
-    }
 
-    public void Delete(decimal id)
-    {
-        throw new NotImplementedException();
+        parameters.Add("p_ProfileId", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("PROFILE_PACKAGE.DeleteProfileByID", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
     public List<Profile> GetAll()
@@ -52,30 +58,30 @@ public class ProfileRepository : IRepository<Profile>
     public Profile GetById(int id)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("PROFILE_ID", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_ProfileId", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
         IEnumerable<Profile> result = _dBContext.Connection.Query<Profile>("PROFILE_PACKAGE.GetProfileByID", parameters, commandType: CommandType.StoredProcedure);
         return result.FirstOrDefault();
     }
 
-    public Profile GetById(decimal id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Update(Profile profile)
+    public bool Update(Profile profile)
     {
         DynamicParameters parameters = new DynamicParameters();
-        parameters.Add("PROFILE_ID", profile.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("FIRSTNAME", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("LASTNAME", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("IMAGEPATH", profile.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("PHONENUMBER", profile.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("GENDER", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("DATEOFBIRTH", profile.Dateofbirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-        parameters.Add("BIO", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("RATE", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("USERID", profile.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
-        var result = _dBContext.Connection.Execute("PROFILE_PACKAGE.UpdateProfileByID", parameters, commandType: CommandType.StoredProcedure);
+        parameters.Add("p_ProfileId", profile.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_ImagePath", profile.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_Gender", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_DateOfBirth", profile.Dateofbirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        parameters.Add("p_Bio", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_Rate", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", profile.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("PROFILE_PACKAGE.UpdateProfileByID", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 }

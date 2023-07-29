@@ -16,22 +16,30 @@ public class CommentsRepository : ICommentsRepository
 		_dBContext = dBContext;
 	}
 
-	public void CreateNew(Comment comment)
+	public bool CreateNew(Comment comment)
 	{
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_Content", comment.Content, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("Event_Id", comment.Eventid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("User_Id", comment.Userid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-		_dBContext.Connection.Execute("Comments_Package.CreateNewComment", parameters, commandType: CommandType.StoredProcedure);
-	}
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-	public void Delete(int id)
+        _dBContext.Connection.Execute("Comments_Package.CreateNewComment", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
+
+	public bool Delete(int id)
 	{
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_ID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
+		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
 		_dBContext.Connection.Execute("Comments_Package.DeleteComment", parameters, commandType: CommandType.StoredProcedure);
+
+		return parameters.Get<int>("p_IsSuccessed") == 1;
 	}
 
 	public List<Comment> GetAll()
@@ -73,7 +81,7 @@ public class CommentsRepository : ICommentsRepository
 		return _dBContext.Connection.Query<Comment>("Comments_Package.GetByEventAndUserId", parameters, commandType: CommandType.StoredProcedure).ToList();
 	}
 
-	public void Update(Comment comment)
+	public bool Update(Comment comment)
 	{
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_ID", comment.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
@@ -81,6 +89,10 @@ public class CommentsRepository : ICommentsRepository
 		parameters.Add("Event_Id", comment.Eventid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("User_Id", comment.Userid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-		_dBContext.Connection.Execute("Comments_Package.UpdateComment", parameters, commandType: CommandType.StoredProcedure);
-	}
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+        _dBContext.Connection.Execute("Comments_Package.UpdateComment", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<int>("p_IsSuccessed") == 1;
+    }
 }
