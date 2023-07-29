@@ -356,83 +356,92 @@ END User_Package;
 
 
 -- EVENT PACKAGE SPECIFICATION
-CREATE OR REPLACE PACKAGE Event_Package AS
-  -- Procedure to get all events
-  PROCEDURE GetAllEvents;
 
-  -- Procedure to get an event by ID
-  PROCEDURE GetEventByID(p_EventID IN NUMBER);
+create or replace PACKAGE Event_Package AS
 
-  -- Procedure to delete an event by ID
-  PROCEDURE DeleteEventByID(p_EventID IN NUMBER);
+    PROCEDURE GetAllEvents;
+    PROCEDURE GetEventByID(p_EventID IN NUMBER);
+    PROCEDURE DeleteEventByID(p_EventID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
 
-  -- Procedure to update an event by ID
-  PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER);
-
-  -- Procedure to create a new event
-  PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER);
-  
-  -- Procedure to get events between two dates
-  PROCEDURE GetEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
-
-  -- Procedure to search events by name
-  PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
 END Event_Package;
 
--- EVENT PACKAGE BODY
 CREATE OR REPLACE PACKAGE BODY Event_Package AS
-  -- Procedure to get all events
-  PROCEDURE GetAllEvents AS
-    cur_all SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_all FOR 'SELECT * FROM Event';
-    DBMS_SQL.RETURN_RESULT(cur_all);
-  END;
 
-  -- Procedure to get an event by ID
-  PROCEDURE GetEventByID(p_EventID IN NUMBER) AS
-    cur_item SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_item FOR 'SELECT * FROM Event WHERE ID = :id' USING p_EventID;
-    DBMS_SQL.RETURN_RESULT(cur_item);
-  END;
+    PROCEDURE GetAllEvents
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR 
+                SELECT * FROM Event;
+            DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllEvents;
 
-  -- Procedure to delete an event by ID
-  PROCEDURE DeleteEventByID(p_EventID IN NUMBER) AS
-  BEGIN
-    EXECUTE IMMEDIATE 'DELETE FROM Event WHERE ID = :id' USING p_EventID;
-  END;
+    PROCEDURE GetEventByID(p_EventID IN NUMBER)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM Event WHERE ID = p_EventID ;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetEventByID;
 
-  -- Procedure to update an event by ID
-  PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER) AS
-  BEGIN
-    EXECUTE IMMEDIATE 'UPDATE Event SET Name = :name, AttendingCost = :attendingcost, StartDate = :startdate, EndDate = :enddate, Status = :status, EventDescription = :eventdescription, ImagePath = :imagepath, EventCapacity = :eventcapacity, Latitude = :latitude, Longitude = :longitude, EventCreatorID = :eventcreatorid, CategoryID = :categoryid WHERE ID = :id'
-      USING p_Name, p_AttendingCost, p_StartDate, p_EndDate, p_Status, p_EventDescription, p_ImagePath, p_EventCapacity, p_Latitude, p_Longitude, p_EventCreatorID, p_CategoryID, p_EventID;
-  END;
+    PROCEDURE DeleteEventByID(p_EventID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            DELETE FROM Event WHERE ID = p_EventID  RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END DeleteEventByID;
 
-  -- Procedure to create a new event
-  PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER) AS
-  BEGIN
-    EXECUTE IMMEDIATE 'INSERT INTO Event (Name, AttendingCost, StartDate, EndDate, Status, EventDescription, ImagePath, EventCapacity, Latitude, Longitude, EventCreatorID, CategoryID) VALUES (:name, :attendingcost, :startdate, :enddate, :status, :eventdescription, :imagepath, :eventcapacity, :latitude, :longitude, :eventcreatorid, :categoryid)'
-      USING p_Name, p_AttendingCost, p_StartDate, p_EndDate, p_Status, p_EventDescription, p_ImagePath, p_EventCapacity, p_Latitude, p_Longitude, p_EventCreatorID, p_CategoryID;
-  END;
+    PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            UPDATE Event 
+            SET
+                Name = p_Name,
+                AttendingCost = p_AttendingCost,
+                StartDate = p_StartDate,
+                EndDate = p_EndDate,
+                Status = 'Pending',
+                EventDescription = p_EventDescription,
+                ImagePath = p_ImagePath,
+                EventCapacity = p_EventCapacity,
+                Latitude = p_Latitude,
+                Longitude = p_Longitude,
+                EventCreatorID = p_EventCreatorID,
+                CategoryID = p_CategoryID
+            WHERE ID = p_EventID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END UpdateEventByID;
 
-  -- Procedure to get events between two dates
-  PROCEDURE GetEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE) AS
-    cur_events SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_events FOR 'SELECT * FROM Event WHERE StartDate >= :startDate AND EndDate <= :endDate'
-      USING p_StartDate, p_EndDate;
-    DBMS_SQL.RETURN_RESULT(cur_events);
-  END;
-
-  -- Procedure to search events by name
-  PROCEDURE SearchEventsByName(p_Name IN VARCHAR2) AS
-    cur_events SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_events FOR 'SELECT * FROM Event WHERE Name LIKE :eventName' USING '%' || p_Name || '%';
-    DBMS_SQL.RETURN_RESULT(cur_events);
-  END;
+    PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            INSERT INTO Event (Name, AttendingCost, StartDate, EndDate, Status, EventDescription, ImagePath, EventCapacity, Latitude, Longitude, EventCreatorID, CategoryID)
+            VALUES 
+                (p_Name, p_AttendingCost, p_StartDate, p_EndDate, p_Status, p_EventDescription, p_ImagePath, p_EventCapacity, p_Latitude, p_Longitude, p_EventCreatorID, p_CategoryID)
+                RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END CreateEvent;
 
 END Event_Package;
 
