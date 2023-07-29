@@ -219,136 +219,169 @@ join Role_ r on u.RoleId = r.ID;
 
 -- USER PACKAGE
 CREATE OR REPLACE PACKAGE User_Package AS
-  -- Procedure to get all users
-  PROCEDURE GetAllUsers;
 
-  -- Procedure to get a user by ID
-  PROCEDURE GetUserByID(p_UserID IN NUMBER);
-  
-  PROCEDURE GetUserByUserName(User_Name IN VARCHAR2);
+    PROCEDURE GetAllUsers;
 
-  -- Procedure to delete a user by ID
-  PROCEDURE DeleteUserByID(p_UserID IN NUMBER);
+    PROCEDURE GetUserByID(p_UserID IN NUMBER);
 
-  -- Procedure to update a user by ID
-  PROCEDURE UpdateUserByID(p_UserID IN NUMBER, p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER);
+    PROCEDURE GetUserByUserName(p_Name IN VARCHAR2);
 
-  -- Procedure to create a new user
-  PROCEDURE CreateUser(p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER);
+    PROCEDURE DeleteUserByID(p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
 
-  PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER);
-    
-  PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsUpdated OUT NUMBER);
+    PROCEDURE UpdateUserByID(p_UserID IN NUMBER, p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER, p_IsSuccessed OUT NUMBER);
 
-  PROCEDURE GetAllRegisteredUsersDetails;
+    PROCEDURE CreateUser(p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER, p_IsSuccessed OUT NUMBER);
+
+    PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsSuccessed OUT NUMBER);
+
+    PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsSuccessed OUT NUMBER);
+
+    PROCEDURE GetAllRegisteredUsersDetails;
 
 END User_Package;
 
--- USER PACKAGE BODY
-CREATE OR REPLACE PACKAGE BODY User_Package AS
-  -- Procedure to get all users
-  PROCEDURE GetAllUsers AS
-    cur_all SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_all FOR 'SELECT * FROM User_';
-    DBMS_SQL.RETURN_RESULT(cur_all);
-  END;
+CREATE OR REPLACE PACKAGE BODY User_Package 
+AS
 
-  -- Procedure to get a user by ID
-  PROCEDURE GetUserByID(p_UserID IN NUMBER) AS
-    cur_item SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_item FOR 'SELECT * FROM User_ WHERE ID = :id' USING p_UserID;
-    DBMS_SQL.RETURN_RESULT(cur_item);
-  END;
+    PROCEDURE GetAllUsers
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR 
+                SELECT * FROM User_;
+                DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllUsers;
 
-  PROCEDURE GetUserByUserName(User_Name IN VARCHAR2)
-  As
-    cur_item SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_item FOR 'SELECT * FROM User_ WHERE Username = :user_name' USING User_Name;
-    DBMS_SQL.RETURN_RESULT(cur_item);
-  END;
-  
-  -- Procedure to delete a user by ID
-  PROCEDURE DeleteUserByID(p_UserID IN NUMBER) AS
-  BEGIN
-    EXECUTE IMMEDIATE 'DELETE FROM User_ WHERE ID = :id' USING p_UserID;
-  END;
+    PROCEDURE GetUserByID(p_UserID IN NUMBER)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM User_ WHERE ID = p_UserID;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetUserByID;
 
-  -- Procedure to update a user by ID
-  PROCEDURE UpdateUserByID(p_UserID IN NUMBER, p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER) AS
-  BEGIN
-    EXECUTE IMMEDIATE 'UPDATE User_ SET Username = :username, Password = :password, Email = :email, VerfiicationCode = :verificationcode, UserStatus = :userstatus, RoleID = :roleid WHERE ID = :id'
-      USING p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID, p_UserID;
-  END;
+    PROCEDURE GetUserByUserName(p_Name IN VARCHAR2)
+      As
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM User_ WHERE Username = p_Name;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetUserByUserName;
 
-  -- Procedure to create a new user
-  PROCEDURE CreateUser(p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER) AS
-  BEGIN
-    EXECUTE IMMEDIATE 'INSERT INTO User_ (Username, Password, Email, VerfiicationCode, UserStatus, RoleID) VALUES (:username, :password, :email, :verificationcode, :userstatus, :roleid)'
-      USING p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID;
-  END;
-  
-  --Satrday 22, 7 2023 
+    PROCEDURE DeleteUserByID(p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            DELETE FROM User_ WHERE ID = p_UserID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END DeleteUserByID;
 
-  PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsUpdated OUT NUMBER)
-      AS
+    PROCEDURE UpdateUserByID(p_UserID IN NUMBER, p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            UPDATE User_ 
+            SET 
+                Username = p_Username,
+                Password = p_Password,
+                Email = p_Email,
+                VerfiicationCode = p_VerificationCode,
+                UserStatus = p_UserStatus,
+                RoleID = p_RoleID
+                WHERE ID = p_UserID RETURNING ID INTO v_IsSuccessed;
+                IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END UpdateUserByID;
+
+    PROCEDURE CreateUser(p_Username IN VARCHAR2, p_Password IN VARCHAR2, p_Email IN VARCHAR2, p_VerificationCode IN VARCHAR2, p_UserStatus IN VARCHAR2, p_RoleID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            INSERT INTO User_ 
+            VALUES (DEFAULT, p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID) RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL THEN
+                    p_IsSuccessed := 1;
+            ELSE
+                    p_IsSuccessed := 0;
+            END IF; 
+    END CreateUser;
+
+    PROCEDURE UpdateUserProfile(p_UserId IN User_.ID%TYPE, p_Password IN User_.Password%TYPE, p_FirstName IN NVARCHAR2,  p_LastName IN NVARCHAR2, p_PhoneNumber IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
         v_Password User_.Password%TYPE;
         BEGIN
             SELECT Password INTO v_Password
             FROM User_
             WHERE ID = p_UserId;
-      
-            IF v_Password = p_Password
-            THEN
+            IF v_Password = p_Password THEN
                 UPDATE Profile
-                SET FirstName = p_FirstName,
-                         LastName = p_LastName,
-                         PhoneNumber = p_PhoneNumber
-                WHERE ID = p_UserId;
-                p_IsUpdated := 1;
+                SET
+                    FirstName = p_FirstName,
+                    LastName = p_LastName,
+                    PhoneNumber = p_PhoneNumber
+                WHERE ID = p_UserId RETURNING ID INTO v_IsSuccessed;
+                IF v_IsSuccessed IS NOT NULL THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
             ELSE
-                p_IsUpdated := 0;
+                p_IsSuccessed := 0;
             END IF;
             EXCEPTION
-              WHEN NO_DATA_FOUND THEN
-                -- Handle the case when the user with the given p_UserId is not found
-                p_IsUpdated := 0;
-      END UpdateUserProfile;
-        
-      PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsUpdated OUT NUMBER)
-      AS
+                WHEN NO_DATA_FOUND
+                THEN
+                    p_IsSuccessed := 0;
+    END UpdateUserProfile;
+
+    PROCEDURE UpdatePassword(p_UserId IN User_.ID%TYPE, p_OldPassword IN User_.Password%TYPE, p_NewPassword IN User_.Password%TYPE, p_ConfirmPassword IN User_.Password%TYPE,  p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
         v_Password User_.Password%TYPE;
         BEGIN
             SELECT Password INTO v_Password
             FROM User_ 
             WHERE ID = p_UserId;
-      
             IF v_Password = p_OldPassword AND p_NewPassword = p_ConfirmPassword
             THEN
                 UPDATE User_ 
                 SET Password = p_NewPassword
-                WHERE ID = p_UserId;
-                p_IsUpdated := 1;
+                WHERE ID = p_UserId RETURNING ID INTO v_IsSuccessed;
+                IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
             ELSE 
-                p_IsUpdated := 0;    
+                p_IsSuccessed := 0;    
             END IF;
             EXCEPTION
-              WHEN NO_DATA_FOUND THEN
-                -- Handle the case when the user with the given p_UserId is not found
-                p_IsUpdated := 0;
-      END UpdatePassword;
+                WHEN NO_DATA_FOUND THEN
+                    p_IsSuccessed := 0;
+    END UpdatePassword;
 
-      PROCEDURE GetAllRegisteredUsersDetails
-      AS
+    PROCEDURE GetAllRegisteredUsersDetails
+    AS
         cur_all SYS_REFCURSOR;
         BEGIN
             OPEN cur_all FOR
                 SELECT u.Username,u.Email,u.UserStatus, p.FirstName,p.LastName,p.ImagePath,p.PhoneNumber,p.Gender,p.DateOfBirth,p.Rate
                 FROM User_ u
                 JOIN Profile p ON u.ID = p.UserId;
-        Dbms_sql.return_result(cur_all);
+                Dbms_sql.return_result(cur_all);
     END GetAllRegisteredUsersDetails;
 
 END User_Package;
