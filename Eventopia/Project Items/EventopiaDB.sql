@@ -596,69 +596,88 @@ END Page_Package;
 
 -- PROFILE PACKAGE
 CREATE OR REPLACE PACKAGE Profile_Package AS
-  -- Procedure to get all profiles
-  PROCEDURE GetAllProfiles;
-  
-  -- Procedure to get a profile by ID
-  PROCEDURE GetProfileByID(p_ProfileID IN NUMBER);
-  
-  -- Procedure to delete a profile by ID
-  PROCEDURE DeleteProfileByID(p_ProfileID IN NUMBER);
-  
-  -- Procedure to update a profile by ID
-  PROCEDURE UpdateProfileByID(p_ProfileID IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER);
-  
-  -- Procedure to create a new profile
-  PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER);
+    PROCEDURE GetAllProfiles;
+    PROCEDURE GetProfileByID(p_ProfileId IN NUMBER);
+    PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
 END Profile_Package;
 
--- PROFILE PACKAGE BODY
-CREATE OR REPLACE PACKAGE BODY Profile_Package AS
-  -- Procedure to get all profiles
-  PROCEDURE GetAllProfiles AS
-    cur_all SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_all FOR 'SELECT * FROM Profile';
-    DBMS_SQL.RETURN_RESULT(cur_all);
-  END;
-  
-  -- Procedure to get a profile by ID
-  PROCEDURE GetProfileByID(p_ProfileID IN NUMBER) AS
-    cur_item SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_item FOR 'SELECT * FROM Profile WHERE ID = :id' USING p_ProfileID;
-    DBMS_SQL.RETURN_RESULT(cur_item);
-  END;
-  
-  -- Procedure to delete a profile by ID
-  PROCEDURE DeleteProfileByID(p_ProfileID IN NUMBER) AS
-  BEGIN
-    DELETE FROM Profile WHERE ID = p_ProfileID;
-  END;
-  
-  -- Procedure to update a profile by ID
-  PROCEDURE UpdateProfileByID(p_ProfileID IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER) AS
-  BEGIN
-    UPDATE Profile SET
-      FirstName = p_FirstName,
-      LastName = p_LastName,
-      ImagePath = p_ImagePath,
-      PhoneNumber = p_PhoneNumber,
-      Gender = p_Gender,
-      DateOfBirth = p_DateOfBirth,
-      Bio = p_Bio,
-      Rate = p_Rate,
-      UserID = p_UserID
-    WHERE ID = p_ProfileID;
-  END;
-  
-  -- Procedure to create a new profile
-  PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER) AS
-  BEGIN
-    INSERT INTO Profile (FirstName, LastName, ImagePath, PhoneNumber, Gender, DateOfBirth, Bio, Rate, UserID)
-    VALUES (p_FirstName, p_LastName, p_ImagePath, p_PhoneNumber, p_Gender, p_DateOfBirth, p_Bio, p_Rate, p_UserID);
-  END;
-  
+CREATE OR REPLACE PACKAGE BODY Profile_Package
+AS
+
+    PROCEDURE GetAllProfiles
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT * FROM Profile;
+                DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllProfiles;
+
+    PROCEDURE GetProfileByID(p_ProfileId IN NUMBER)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+            SELECT * FROM Profile WHERE ID = p_ProfileId;
+            DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetProfileByID;
+
+    PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            DELETE FROM Profile WHERE ID = p_ProfileId RETURNING ID INTO v_IsSuccessed;
+            COMMIT;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END DeleteProfileByID;
+
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+        UPDATE Profile
+        SET
+            FirstName = p_FirstName,
+            LastName = p_LastName,
+            ImagePath = p_ImagePath,
+            PhoneNumber = p_PhoneNumber,
+            Gender = p_Gender,
+            DateOfBirth = p_DateOfBirth,
+            Bio = p_Bio,
+            Rate = p_Rate,
+            UserID = p_UserID
+        WHERE ID = p_ProfileId RETURNING ID INTO v_IsSuccessed;
+        COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END UpdateProfileByID;
+
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            INSERT INTO Profile 
+            VALUES (DEFAULT,p_FirstName, p_LastName, p_ImagePath, p_PhoneNumber, p_Gender, p_DateOfBirth, p_Bio, p_Rate, p_UserID) RETURNING ID INTO v_IsSuccessed;
+            COMMIT;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END CreateProfile;
+
 END Profile_Package;
 
 
