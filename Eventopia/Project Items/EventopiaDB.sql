@@ -517,14 +517,13 @@ END CATEGORY_PACKAGE;
 CREATE OR REPLACE PACKAGE Page_Package
 AS
     PROCEDURE GetAllPages;
-    PROCEDURE GetPageById(PAGE_ID IN NUMBER);
-    PROCEDURE CreatePage(CONTENT_1 IN VARCHAR2, CONTENT_2 IN VARCHAR2, IMAGEPATH IN VARCHAR2, ADMIN_ID IN NUMBER);
-    PROCEDURE UpdatePage(PAGE_ID IN NUMBER, CONTENT_1 IN VARCHAR2, CONTENT_2 IN VARCHAR2, IMAGEPATH IN VARCHAR2, ADMIN_ID IN NUMBER);
-    PROCEDURE DeletePage(PAGE_ID IN NUMBER);
-    
+    PROCEDURE GetPageById(p_PageId IN NUMBER);
+    PROCEDURE CreatePage(p_Content1 IN VARCHAR2, p_Content2 IN VARCHAR2, p_ImagePath IN VARCHAR2, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdatePage(p_PageId IN NUMBER, p_Content1 IN VARCHAR2, p_Content2 IN VARCHAR2, p_ImagePath IN VARCHAR2, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE DeletePage(p_PageId IN NUMBER, p_IsSuccessed OUT NUMBER);
 END Page_Package;
 
--- PAGE PACKAGE BODY
+
 CREATE OR REPLACE PACKAGE BODY Page_Package
 AS
     PROCEDURE GetAllPages
@@ -535,42 +534,63 @@ AS
         select * from Page;
         Dbms_sql.return_result(cur_all);
     END GetAllPages;
-    
-    PROCEDURE GetPageById(PAGE_ID IN NUMBER)
+
+    PROCEDURE GetPageById(p_PageId IN NUMBER)
     AS
         cur_item SYS_REFCURSOR;
         BEGIN
         open cur_item for
         select * from PAGE
-        where id = PAGE_ID;
+        where id = p_PageId;
         Dbms_sql.return_result(cur_item); 
     END GetPageById;
-       
-    PROCEDURE CreatePage(CONTENT_1 IN VARCHAR2, CONTENT_2 IN VARCHAR2, IMAGEPATH IN VARCHAR2, ADMIN_ID IN NUMBER)
+
+    PROCEDURE CreatePage(p_Content1 IN VARCHAR2, p_Content2 IN VARCHAR2, p_ImagePath IN VARCHAR2, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
+        v_IsSuccessed NUMBER;
         ID NUMBER;
         BEGIN
-        INSERT INTO PAGE(CONTENT1, CONTENT2, BackgroundImagePath, ADMINID) VALUES (CONTENT_1, CONTENT_2, IMAGEPATH, ADMIN_ID);
+        INSERT INTO PAGE(CONTENT1, CONTENT2, BackgroundImagePath, ADMINID) VALUES (p_Content1, p_Content2, p_ImagePath, p_AdminId) RETURNING ID INTO v_IsSuccessed;
         COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
     END CreatePage;
-    
-    PROCEDURE UpdatePage(PAGE_ID IN NUMBER, CONTENT_1 IN VARCHAR2, CONTENT_2 IN VARCHAR2, IMAGEPATH IN VARCHAR2, ADMIN_ID IN NUMBER)
+
+    PROCEDURE UpdatePage(p_PageId IN NUMBER, p_Content1 IN VARCHAR2, p_Content2 IN VARCHAR2, p_ImagePath IN VARCHAR2, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
+        v_IsSuccessed NUMBER;
         BEGIN
-        UPDATE PAGE
-        SET CONTENT1=CONTENT_1, CONTENT2=CONTENT_2, BackgroundImagePath=IMAGEPATH, ADMINID=ADMIN_ID
-        WHERE ID=PAGE_ID;
-        COMMIT;
+            UPDATE PAGE
+            SET CONTENT1=p_Content1, CONTENT2=p_Content2, BackgroundImagePath=p_ImagePath, ADMINID=p_AdminId
+            WHERE ID=p_PageId RETURNING ID INTO v_IsSuccessed;
+            COMMIT;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
     END UpdatePage;
-    
-    PROCEDURE DeletePage(PAGE_ID IN NUMBER)
-    AS 
+
+    PROCEDURE DeletePage(p_PageId IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
         BEGIN
         DELETE from PAGE
-        WHERE ID = PAGE_ID;
+        WHERE ID = p_PageId RETURNING ID INTO v_IsSuccessed;
         COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
     END DeletePage;
-    
+
 END Page_Package;
 
 
