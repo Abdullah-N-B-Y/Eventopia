@@ -1227,3 +1227,46 @@ BEGIN
     END Pay;
     
 END Payment_Package;
+
+
+CREATE OR REPLACE PACKAGE ProfileSetting_Package
+AS
+    --PROCEDURE SetActivityStatus(p_UserId IN NUMBER, p_ActivityStatus IN ProfileSetting.ActivityStatus%TYPE, p_RealActivityStatus OUT ProfileSetting.ActivityStatus%TYPE);
+    PROCEDURE SetTheme(p_UserId IN NUMBER, p_Theme IN ProfileSetting.Theme%TYPE);
+    PROCEDURE GetTheme(p_UserId IN NUMBER, p_Theme OUT ProfileSetting.Theme%TYPE);
+END ProfileSetting_Package;
+
+CREATE OR REPLACE PACKAGE BODY ProfileSetting_Package
+AS
+    --PROCEDURE SetActivityStatus(p_UserId IN NUMBER, p_ActivityStatus IN ProfileSetting.ActivityStatus%TYPE, p_RealActivityStatus OUT ProfileSetting.ActivityStatus%TYPE);
+    
+    PROCEDURE SetTheme(p_UserId IN NUMBER, p_Theme IN ProfileSetting.Theme%TYPE)
+    AS
+        BEGIN
+            UPDATE ProfileSetting ps
+            SET ps.Theme = p_Theme
+            WHERE ps.ProfileId = (
+                SELECT p.ID
+                FROM User_ u
+                JOIN Profile p ON u.ID = p.UserId
+                WHERE u.ID = p_UserId
+            );
+    END SetTheme;
+
+    PROCEDURE GetTheme(p_UserId IN NUMBER, p_Theme OUT ProfileSetting.Theme%TYPE)
+    AS
+        --v_Theme ProfileSetting.Theme%TYPE;
+        BEGIN
+            SELECT Theme
+            INTO p_Theme
+            FROM ProfileSetting ps
+            WHERE ps.ProfileId = (
+                SELECT p.ID
+                FROM User_ u
+                JOIN Profile p ON u.ID = p.UserId
+                WHERE u.ID = p_UserId
+            );
+    END GetTheme;
+    
+END ProfileSetting_Package;
+
