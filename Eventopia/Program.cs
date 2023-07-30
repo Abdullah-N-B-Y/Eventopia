@@ -1,3 +1,5 @@
+using Eventopia.API.Filters;
+using Eventopia.API.Middleware;
 using Eventopia.Core.Common;
 using Eventopia.Core.Data;
 using Eventopia.Core.Repository;
@@ -17,8 +19,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
 
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddControllers(options => options.Filters.Add<ErrorHandlingFilterAttribute>());
+		builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
 		builder.Services.AddScoped<IDbContext, DbContext>();
