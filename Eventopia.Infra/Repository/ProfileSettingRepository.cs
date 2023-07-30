@@ -26,6 +26,14 @@ public class ProfileSettingRepository : IProfileSettingRepository
 
     public string GetTheme(int userId)
     {
-        throw new NotImplementedException();
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+        parameters.Add("p_Theme", dbType: DbType.String, direction: ParameterDirection.Output);
+
+        _dbContext.Connection.Execute("ProfileSetting_Package.GetTheme", parameters, commandType: CommandType.StoredProcedure);
+
+        return parameters.Get<string>("p_Theme");
     }
 }
