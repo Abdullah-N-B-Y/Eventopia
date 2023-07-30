@@ -40,12 +40,12 @@ namespace Eventopia.API.Filters
 				// Optionally, add more specific details or error codes for generic exceptions
 			}
 			// Handle any other generic exceptions not caught by previous conditions
-			//else if (exception is Exception)
-			//{
-			//	problemDetails.Title = "Unexpected unhandled exception in application";
-			//	problemDetails.Status = (int)HttpStatusCode.InternalServerError;
-			//	// Optionally, add more specific details or error codes for generic exceptions
-			//}
+			else if (exception is Exception)
+			{
+				problemDetails.Title = "Unexpected unhandled exception in application";
+				problemDetails.Status = (int)HttpStatusCode.InternalServerError;
+				// Optionally, add more specific details or error codes for generic exceptions
+			}
 
 			context.Result = new ObjectResult(problemDetails);
 			context.ExceptionHandled = true;
