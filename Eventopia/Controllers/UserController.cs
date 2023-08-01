@@ -85,4 +85,18 @@ public class UserController : ControllerBase
 	{
 		return _userService.GetUserByEmail(email);
 	}
+
+	[HttpPost]
+	[Route("ForgotPassword")]
+	public bool ForgotPassword(string email)
+	{
+		return _userService.ForgotPassword(email);
+	}
+
+	[HttpPost]
+	[Route("ResetForgottenPassword")]
+	public bool ResetForgottenPassword(string email, string resetToken, string newPassword)
+	{
+		return _userService.ResetForgottenPassword(email, resetToken, newPassword);
+	}
 }

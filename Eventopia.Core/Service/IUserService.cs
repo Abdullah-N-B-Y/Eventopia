@@ -10,5 +10,7 @@ public interface IUserService : IService<User>
 	bool UpdateUserProfile(Profile profile, string password);
     bool UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
     List<RegisteredUsersDetailsDTO> GetAllRegisteredUsersDetails();
+	bool ForgotPassword(string email);
+	bool ResetForgottenPassword(string email, string token, string newPassword);
 }
 

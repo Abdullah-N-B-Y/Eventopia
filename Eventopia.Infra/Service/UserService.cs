@@ -65,4 +65,42 @@ public class UserService : IUserService
 	{
 		return _userRepository.GetUserByEmail(email);
 	}
+
+	public bool ForgotPassword(string email)
+	{
+		User user = _userRepository.GetUserByEmail(email);
+		if (user == null)
+			return false; // Maybe replace with EmailNotFoundException
+
+		string verificationToken = Guid.NewGuid().ToString();
+		user.Verfiicationcode = verificationToken;
+
+		_userRepository.Update(user);
+
+		string emailSubject = "Password Reset Request";
+		string emailBody = $"The following code is your account password reset verification code.\n\n" +
+			$"{verificationToken}\n\n" +
+			$"This is a one time use verification code.";
+
+		EmailUtility.SendEmailAsync(emailSubject, emailBody, email);
+
+		return true;
+	}
+
+	public bool ResetForgottenPassword(string email, string resetToken, string newPassword)
+	{
+		User user = _userRepository.GetUserByEmail(email);
+		if (user == null)
+			return false; // Maybe replace with EmailNotFoundException
+
+		if (user.Verfiicationcode != resetToken)
+			return false; //maybe replace with InvalidVerificationCodeException
+
+		user.Password = newPassword;
+		user.Verfiicationcode = "";
+
+		_userRepository.Update(user);
+
+		return true;
+	}
 }
