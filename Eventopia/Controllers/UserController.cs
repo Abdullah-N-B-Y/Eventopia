@@ -78,4 +78,11 @@ public class UserController : ControllerBase
     {
         return _userService.GetAllRegisteredUsersDetails();
     }
+
+	[HttpGet]
+	[Route("GetUserByEmail/{email}")]
+	public User GetUserByEmail(string email)
+	{
+		return _userService.GetUserByEmail(email);
+	}
 }
