@@ -225,6 +225,8 @@ CREATE OR REPLACE PACKAGE User_Package AS
     PROCEDURE GetUserByID(p_UserID IN NUMBER);
 
     PROCEDURE GetUserByUserName(p_Name IN VARCHAR2);
+    
+    PROCEDURE GetUserByEmail(p_Email IN VARCHAR2);
 
     PROCEDURE DeleteUserByID(p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
 
@@ -269,6 +271,15 @@ AS
                 SELECT * FROM User_ WHERE Username = p_Name;
                 DBMS_SQL.RETURN_RESULT(cur_item);
     END GetUserByUserName;
+
+    PROCEDURE GetUserByEmail(p_Email IN VARCHAR2)
+        As
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM User_ WHERE Email = p_Email;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetUserByEmail;
 
     PROCEDURE DeleteUserByID(p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS

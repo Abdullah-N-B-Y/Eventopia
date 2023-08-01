@@ -84,7 +84,7 @@ public class UserRepository : IUserRepository
 		parameters.Add("p_UserStatus", user.Userstatus, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_RoleID", user.Roleid, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("User_Package.UpdateUserByID", parameters, commandType: CommandType.StoredProcedure);
 
@@ -128,4 +128,15 @@ public class UserRepository : IUserRepository
     {
 		return _dBContext.Connection.Query<RegisteredUsersDetailsDTO>("User_Package.GetAllRegisteredUsersDetails", commandType: CommandType.StoredProcedure).ToList();
     }
+
+	public User GetUserByEmail(string email)
+	{
+		var parameters = new DynamicParameters();
+
+		parameters.Add("p_Email", email, dbType: DbType.String, direction: ParameterDirection.Input);
+
+		IEnumerable<User> result = _dBContext.Connection.Query<User>("User_Package.GetUserByEmail", parameters, commandType: CommandType.StoredProcedure);
+
+		return result.FirstOrDefault();
+	}
 }

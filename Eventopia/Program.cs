@@ -1,5 +1,4 @@
 using Eventopia.API.Filters;
-using Eventopia.API.Middleware;
 using Eventopia.Core.Common;
 using Eventopia.Core.Data;
 using Eventopia.Core.Repository;
