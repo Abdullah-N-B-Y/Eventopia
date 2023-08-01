@@ -65,7 +65,7 @@ public class AuthController : ControllerBase
 			Email = registerDTO.Email,
 			Password = registerDTO.Password,
 			Userstatus = registerDTO.UserStatus,
-			Verfiicationcode = registerDTO.VerificationCode,
+			Verfiicationcode = "",
 			Roleid = registerDTO.RoleId
 		};
 
