@@ -6,7 +6,8 @@ namespace Eventopia.Core.Service;
 public interface IUserService : IService<User>
 {
 	User GetUserByUserName(string username);
-    bool UpdateUserProfile(Profile profile, string password);
+	User GetUserByEmail(string email);
+	bool UpdateUserProfile(Profile profile, string password);
     bool UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO);
     List<RegisteredUsersDetailsDTO> GetAllRegisteredUsersDetails();
 }

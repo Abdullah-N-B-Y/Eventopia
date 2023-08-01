@@ -2,6 +2,8 @@
 using Eventopia.Core.DTO;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
+using Eventopia.Infra.Repository;
+using Eventopia.Infra.Utility;
 
 namespace Eventopia.Infra.Service;
 
@@ -58,4 +60,9 @@ public class UserService : IUserService
     {
 		return _userRepository.GetAllRegisteredUsersDetails();
     }
+
+	public User GetUserByEmail(string email)
+	{
+		return _userRepository.GetUserByEmail(email);
+	}
 }
