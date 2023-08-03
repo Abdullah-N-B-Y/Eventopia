@@ -124,7 +124,9 @@ public partial class ModelContext : DbContext
 
             entity.ToTable("CATEGORY");
 
-            entity.Property(e => e.Id)
+			entity.HasIndex(e => e.Name, "UQ_CATEGORY_NAME").IsUnique();
+
+			entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
