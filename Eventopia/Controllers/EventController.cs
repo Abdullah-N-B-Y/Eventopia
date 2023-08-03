@@ -3,6 +3,7 @@ using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -22,38 +23,26 @@ public class EventController : ControllerBase
     //[Authorize(Policy = "AdminOnly")]
     public ActionResult<List<Event>> SearchEventsBetweenDates([FromBody] SearchBetweenDatesDTO searchDTO)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
-		// Call the backend logic to get the events within the date range
 		List<Event> eventsInRange = ((IEventService)_eventService).GetEventsBetweenDates(searchDTO); 
 
-        // Return the result to the admin
         return Ok(eventsInRange);
     }
 
 
     [HttpPost]
     [Route("SearchEventsByName")]
-    //[AllowAnonymous] 
-    public ActionResult<List<Event>> SearchEventsByName(string eventName)
+    public IActionResult SearchEventsByName(
+		[Required(ErrorMessage = "Name is required.")]
+	    [MaxLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+		string eventName)
     {
-        // Call the backend logic to search events by name
-        List<Event> eventsByName = _eventService.SearchEventsByName(eventName);
-
-        // Return the result
-        return Ok(eventsByName);
+        return Ok(_eventService.SearchEventsByName(eventName));
     }
 
     [HttpPost]
     [Route("CreateNewEvent")]
     public IActionResult CreateNewEvent([FromBody] Event eventt)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_eventService.CreateNew(eventt);
 
         return Ok();
@@ -61,9 +50,12 @@ public class EventController : ControllerBase
 
     [HttpGet]
     [Route("GetEventByID/{id}")]
-    public Event GetEventByID(int id)
+    public IActionResult GetEventByID(
+		[Required(ErrorMessage = "EventId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
+		int id)
     {
-        return _eventService.GetById(id);
+		return Ok(_eventService.GetById(id));
     }
 
     [HttpGet]
@@ -77,18 +69,18 @@ public class EventController : ControllerBase
     [Route("UpdateEvent")]
     public IActionResult UpdateEvent([FromBody] Event eventt)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_eventService.Update(eventt);
         return Ok();
     }
 
     [HttpDelete]
     [Route("DeleteEvent/{id}")]
-    public void DeleteEvent(int id)
+    public IActionResult DeleteEvent(
+		[Required(ErrorMessage = "EventId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
+		int id)
     {
-        _eventService.Delete(id);
+		_eventService.Delete(id);
+        return Ok();
     }
 }

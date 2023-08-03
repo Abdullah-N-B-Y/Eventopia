@@ -1,6 +1,6 @@
 ﻿using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -17,15 +17,24 @@ public class ProfileSettingController : ControllerBase
 
     [HttpPut]
     [Route("SetTheme/{userId}")]
-    public void SetTheme(int userId, string theme)
+    public IActionResult SetTheme(
+		[Required(ErrorMessage = "UserId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+		int userId,
+		[MaxLength(50, ErrorMessage = "Theme cannot exceed 50 characters.")]
+		string theme)
     {
-        _profileSettingService.SetTheme(userId, theme);
+		_profileSettingService.SetTheme(userId, theme);
+        return Ok();
     }
 
     [HttpGet]
 	[Route("GetTheme/{userId}")]
-	public string GetTheme(int userId) 
+	public IActionResult GetTheme(
+		[Required(ErrorMessage = "UserId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+		int userId) 
     {
-        return _profileSettingService.GetTheme(userId);
+		return Ok(_profileSettingService.GetTheme(userId));
     }
 }

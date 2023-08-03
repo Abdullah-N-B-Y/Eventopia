@@ -2,6 +2,7 @@
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers
 {
@@ -25,20 +26,18 @@ namespace Eventopia.API.Controllers
 
 		[HttpGet]
 		[Route("GetCategoryById/{id}")]
-		public Category GetCategoryById(int id)
+		public IActionResult GetCategoryById(
+			[Required(ErrorMessage = "CategoryId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "CategoryId must be a positive number.")]
+			int id)
 		{
-			return _categoryService.GetById(id);
+			return Ok(_categoryService.GetById(id));
 		}
 
 		[HttpPost]
 		[Route("CreateCategory")]
 		public IActionResult CreateCategory([FromBody] Category category)
 		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
-
 			_categoryService.CreateNew(category);
 			return Ok();
 		}
@@ -47,19 +46,19 @@ namespace Eventopia.API.Controllers
 		[Route("UpdateCategory")]
 		public IActionResult UpdateCategory([FromBody] Category category)
 		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
 			_categoryService.Update(category);
 			return Ok();
 		}
 
 		[HttpDelete]
 		[Route("DeleteCategory/{id}")]
-		public void DeleteCategory(int id)
+		public IActionResult DeleteCategory(
+			[Required(ErrorMessage = "CategoryId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "CategoryId must be a positive number.")]
+			int id)
 		{
 			_categoryService.Delete(id);
+			return Ok();
 		}
 
 	}

@@ -2,6 +2,7 @@
 using Eventopia.Core.Service;
 using Eventopia.Infra.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers
 {
@@ -20,11 +21,6 @@ namespace Eventopia.API.Controllers
         [Route("CreateNewBooking")]
         public IActionResult CreateNewBooking([FromBody] Booking booking)
         {
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
-
 			_bookingService.CreateNew(booking);
 
             return Ok();
@@ -32,9 +28,12 @@ namespace Eventopia.API.Controllers
 
         [HttpGet]
         [Route("GetBookingByID/{id}")]
-        public Booking GetBookingByID(int id)
+        public IActionResult GetBookingByID(
+			[Required(ErrorMessage = "BookingId is required.")]
+		    [Range(1, int.MaxValue, ErrorMessage = "BookingId must be a positive number.")]
+			int id)
         {
-            return _bookingService.GetById(id);
+			return Ok(_bookingService.GetById(id));
         }
 
         [HttpGet]
@@ -48,27 +47,33 @@ namespace Eventopia.API.Controllers
         [Route("UpdateBooking")]
         public IActionResult UpdateBooking([FromBody] Booking booking) 
         {
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
-
 			_bookingService.Update(booking);
             return Ok();
         }
 
         [HttpDelete]
         [Route("DeleteBooking/{id}")]
-        public void DeleteBooking(int id)
+        public IActionResult DeleteBooking(
+			[Required(ErrorMessage = "BookingId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "BookingId must be a positive number.")]
+			int id)
         {
             _bookingService.Delete(id);
+            return Ok();
         }
 
         [HttpDelete]
         [Route("DeleteUserFromBooking/{userId}/{eventId}")]
-        public void DeleteUserFromBooking(int userId, int eventId)
+        public IActionResult DeleteUserFromBooking(
+			[Required(ErrorMessage = "UserId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+			int userId,
+			[Required(ErrorMessage = "EventId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
+			int eventId)
         {
-            _bookingService.DeleteUserFromBooking(userId, eventId);
+			_bookingService.DeleteUserFromBooking(userId, eventId);
+            return Ok();
         }
     }
 }

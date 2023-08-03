@@ -1,6 +1,7 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers
 {
@@ -19,19 +20,19 @@ namespace Eventopia.API.Controllers
 		[Route("CreateNewComment")]
 		public IActionResult CreateNewComment([FromBody] Comment comment)
 		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
 			_commentsService.CreateNew(comment);
 			return Ok();
 		}
 
 		[HttpDelete]
 		[Route("DeleteComment/{id}")]
-		public void DeleteComment(int id)
+		public IActionResult DeleteComment(
+			[Required(ErrorMessage = "CommentId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "CommentId must be a positive number.")]
+			int id)
 		{
 			_commentsService.Delete(id);
+			return Ok();
 		}
 
 		[HttpGet]
@@ -43,40 +44,51 @@ namespace Eventopia.API.Controllers
 
 		[HttpGet]
 		[Route("GetById/{id}")]
-		public Comment GetById(int id)
+		public IActionResult GetById(
+			[Required(ErrorMessage = "CommentId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "CommentId must be a positive number.")]
+			int id)
 		{
-			return _commentsService.GetById(id);
+			return Ok(_commentsService.GetById(id));
 		}
 
 		[HttpGet]
 		[Route("GetEventComments/{eventId}")]
-		public List<Comment> GetEventComments(int eventId)
+		public IActionResult GetEventComments(
+			[Required(ErrorMessage = "EventId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
+			int eventId)
 		{
-			return _commentsService.GetEventComments(eventId);
+			return Ok(_commentsService.GetEventComments(eventId));
 		}
 
 		[HttpGet]
 		[Route("GetUserComments/{userId}")]
-		public List<Comment> GetUserComments(int userId)
+		public IActionResult GetUserComments(
+			[Required(ErrorMessage = "UserId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+			int userId)
 		{
-			return _commentsService.GetUserComments(userId);
+			return Ok(_commentsService.GetUserComments(userId));
 		}
 
 		[HttpGet]
 		[Route("GetUserCommentsOnEvent/{eventId}/{userId}")]
-		public List<Comment> GetUserCommentsOnEvent(int eventId, int userId)
+		public IActionResult GetUserCommentsOnEvent(
+			[Required(ErrorMessage = "EventId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
+			int eventId,
+			[Required(ErrorMessage = "UserId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+			int userId)
 		{
-			return _commentsService.GetUserCommentsOnEvent(eventId, userId);
+			return Ok(_commentsService.GetUserCommentsOnEvent(eventId, userId));
 		}
 
 		[HttpPut]
 		[Route("UpdateComment")]
 		public IActionResult UpdateComment([FromBody] Comment comment)
 		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
 			_commentsService.Update(comment);
 
 			return Ok();

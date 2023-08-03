@@ -2,6 +2,7 @@
 using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -20,19 +21,19 @@ public class UserController : ControllerBase
 	[Route("CreateNewUser")]
 	public IActionResult CreateNewUser([FromBody] User user)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_userService.CreateNew(user);
 		return Ok();
 	}
 
 	[HttpDelete]
 	[Route("DeleteUser/{id}")]
-	public void DeleteUser(int id)
+	public IActionResult DeleteUser(
+		[Required(ErrorMessage = "UserId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+		int id)
 	{
 		_userService.Delete(id);
+		return Ok();
 	}
 	
 	[HttpGet]
@@ -44,50 +45,52 @@ public class UserController : ControllerBase
 
 	[HttpGet]
 	[Route("GetUserById/{id}")]
-	public User GetUserById(int id)
+	public IActionResult GetUserById(
+		[Required(ErrorMessage = "UserId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+		int id)
 	{
-		return _userService.GetById(id);
+		return Ok(_userService.GetById(id));
 	}
 
 	[HttpGet]
-	[Route("GetUserByUserName")]
-	public User GetUserByUserName(string username)
+	[Route("GetUserByUserName/{username}")]
+	public IActionResult GetUserByUserName(
+		[Required(ErrorMessage = "Username is required")]
+		[StringLength(50, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 50 characters")]
+		string username)
 	{
-		return _userService.GetUserByUserName(username);
+		return Ok(_userService.GetUserByUserName(username));
 	}
 
 	[HttpPut]
 	[Route("UpdateUser")]
 	public IActionResult UpdateUser([FromBody] User user)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_userService.Update(user);
 		return Ok();
 	}
 
     [HttpPut]
     [Route("UpdateUserProfile/{password}")]
-    public IActionResult UpdateUserProfile([FromBody] Profile profile, string password)
+    public IActionResult UpdateUserProfile([FromBody] Profile profile,
+		[StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters and less than 50")]
+		[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$",
+			ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")]
+		[Required(ErrorMessage = "Password is required")]
+		string password)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_userService.UpdateUserProfile(profile, password);
 		return Ok();
     }
 
     [HttpPut]
     [Route("UpdatePassword/{id}")]
-    public IActionResult UpdatePassword(int id, [FromBody] UpdatePasswordDTO updatePasswordDTO)
+    public IActionResult UpdatePassword([FromBody] UpdatePasswordDTO updatePasswordDTO,
+		[Required(ErrorMessage = "UserId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+		int id)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_userService.UpdatePassword(id, updatePasswordDTO);
 		return Ok();
     }
@@ -101,29 +104,50 @@ public class UserController : ControllerBase
 
 	[HttpGet]
 	[Route("GetUserByEmail/{email}")]
-	public User GetUserByEmail(string email)
+	public IActionResult GetUserByEmail(
+		[Required(ErrorMessage = "Email is required")]
+		[EmailAddress(ErrorMessage = "Invalid email address")]
+		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
+		string email)
 	{
-		return _userService.GetUserByEmail(email);
+		return Ok(_userService.GetUserByEmail(email));
 	}
 
 	[HttpPost]
 	[Route("ForgotPassword")]
-	public bool ForgotPassword(string email)
+	public IActionResult ForgotPassword(
+		[Required(ErrorMessage = "Email is required")]
+		[EmailAddress(ErrorMessage = "Invalid email address")]
+		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
+		string email)
 	{
-		return _userService.ForgotPassword(email);
+		return Ok(_userService.ForgotPassword(email));
 	}
 
 	[HttpPost]
 	[Route("CheckPasswordResetToken")]
-	public bool CheckPasswordResetToken(string email, string token)
+	public IActionResult CheckPasswordResetToken(
+		[Required(ErrorMessage = "Email is required")]
+		[EmailAddress(ErrorMessage = "Invalid email address")]
+		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
+		string email, string token)
 	{
-		return _userService.CheckPasswordResetToken(email, token);
+		return Ok(_userService.CheckPasswordResetToken(email, token));
 	}
 
 	[HttpPost]
 	[Route("ResetForgottenPassword")]
-	public bool ResetForgottenPassword(string email, string resetToken, string newPassword)
+	public IActionResult ResetForgottenPassword(
+		[Required(ErrorMessage = "Email is required")]
+		[EmailAddress(ErrorMessage = "Invalid email address")]
+		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
+		string email,
+		[StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters and less than 50")]
+		[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$",
+			ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")]
+		[Required(ErrorMessage = "Password is required")]
+		string newPassword)
 	{
-		return _userService.ResetForgottenPassword(email, newPassword);
+		return Ok(_userService.ResetForgottenPassword(email, newPassword));
 	}
 }

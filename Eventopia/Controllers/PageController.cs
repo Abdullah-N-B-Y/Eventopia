@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Eventopia.Core.Data;
 using Eventopia.Core.Service;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -25,19 +25,18 @@ public class PageController : ControllerBase
 
 	[HttpGet]
 	[Route("GetPageById/{id}")]
-	public Page GetPageById(int id)
+	public IActionResult GetPageById(
+		[Required(ErrorMessage = "PageId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "PageId must be a positive number.")]
+		int id)
 	{
-		return _pageService.GetById(id);
+		return Ok(_pageService.GetById(id));
 	}
 
 	[HttpPost]
 	[Route("CreatePage")]
 	public IActionResult CreatePage([FromBody] Page page)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_pageService.CreateNew(page);
 		return Ok();
 	}
@@ -46,19 +45,19 @@ public class PageController : ControllerBase
 	[Route("UpdatePage")]
 	public IActionResult UpdatePage([FromBody] Page page)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_pageService.Update(page);
 		return Ok();
 	}
 
 	[HttpDelete]
 	[Route("DeletePage/{id}")]
-	public void DeletePage(int id)
+	public IActionResult DeletePage(
+		[Required(ErrorMessage = "PageId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "PageId must be a positive number.")]
+		int id)
 	{
 		_pageService.Delete(id);
+		return Ok();
 	}
 
 }

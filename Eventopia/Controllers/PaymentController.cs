@@ -19,10 +19,6 @@ public class PaymentController : ControllerBase
     [Route("Pay/{eventId}")]
     public IActionResult Pay(int eventId, [FromBody] Bank bank)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_paymentService.Pay(eventId, bank);
         return Ok();
     }

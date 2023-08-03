@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Eventopia.Core.Data;
 using Eventopia.Core.Service;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -24,19 +25,18 @@ public class TestimonialController : ControllerBase
 
     [HttpGet]
     [Route("GetTestimonialByID/{id}")]
-    public Testimonial GetTestimonialByID(int id)
+    public IActionResult GetTestimonialByID(
+		[Required(ErrorMessage = "TestimonialId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "TestimonialId must be a positive number.")]
+		int id)
     {
-        return _testimonialService.GetById(id);
+		return Ok(_testimonialService.GetById(id));
     }
 
     [HttpPost]
     [Route("CreateNewTestimonial")]
     public IActionResult CreateNewTestimonial([FromBody] Testimonial testimonial)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_testimonialService.CreateNew(testimonial);
         return Ok();
     }
@@ -45,18 +45,18 @@ public class TestimonialController : ControllerBase
     [Route("UpdateTestimonial")]
     public IActionResult UpdateTestimonial([FromBody] Testimonial testimonial)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
 		_testimonialService.Update(testimonial);
         return Ok();
     }
 
     [HttpDelete]
     [Route("DeleteTestimonial/{id}")]
-    public void DeleteTestimonial(int id)
+    public IActionResult DeleteTestimonial(
+		[Required(ErrorMessage = "TestimonialId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "TestimonialId must be a positive number.")]
+		int id)
     {
-        _testimonialService.Delete(id);
+		_testimonialService.Delete(id);
+        return Ok();    
     }
 }

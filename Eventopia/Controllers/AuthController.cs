@@ -2,6 +2,7 @@
 using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -21,11 +22,6 @@ public class AuthController : ControllerBase
 	[Route("Login")]
 	public IActionResult Login([FromBody] LoginDTO loginDTO)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
-
 		var token = _authService.Login(loginDTO);
 		if (token == null)
 		{
@@ -41,11 +37,6 @@ public class AuthController : ControllerBase
 	[Route("Register")]
 	public IActionResult Register([FromBody] RegisterDTO registerDTO)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
-
 		bool usernameExists = _authService.CheckUsernameExists(registerDTO.Username);
 		if(usernameExists)
 		{
@@ -76,15 +67,22 @@ public class AuthController : ControllerBase
 
 	[HttpPost]
 	[Route("CheckUsernameExists")]
-	public bool CheckUsernameExists([FromBody] string username)
+	public IActionResult CheckUsernameExists(
+		[Required(ErrorMessage = "Username is required")]
+		[StringLength(50, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 50 characters")]
+		string username)
 	{
-		return _authService.CheckUsernameExists(username);
+		return Ok(_authService.CheckUsernameExists(username));
 	}
 
 	[HttpPost]
 	[Route("CheckEmailExists")]
-	public bool CheckEmailExists([FromBody] string email)
+	public IActionResult CheckEmailExists(
+		[Required(ErrorMessage = "Email is required")]
+		[EmailAddress(ErrorMessage = "Invalid email address")]
+		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
+		string email)
 	{
-		return _authService.CheckEmailExists(email);
+		return Ok(_authService.CheckEmailExists(email));
 	}
 }

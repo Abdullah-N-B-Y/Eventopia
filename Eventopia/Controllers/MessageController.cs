@@ -1,6 +1,7 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -19,19 +20,17 @@ public class MessageController : ControllerBase
     [Route("CreateNewMessage")]
     public IActionResult CreateNewMessage([FromBody] Message message)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
-
         return Ok(_messageService.CreateNew(message));
     }
 
     [HttpGet]
     [Route("GetMessageByID/{id}")]
-    public Message GetMessageByID(int id)
+    public IActionResult GetMessageByID(
+		[Required(ErrorMessage = "MessageId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "MessageId must be a positive number.")]
+		int id)
     {
-        return _messageService.GetById(id);
+		return Ok(_messageService.GetById(id));
     }
 
     [HttpGet]
@@ -45,17 +44,16 @@ public class MessageController : ControllerBase
     [Route("UpdateMessage")]
     public IActionResult UpdateMessage([FromBody] Message message)
     {
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
         return Ok(_messageService.Update(message));
     }
 
     [HttpDelete]
     [Route("DeleteMessage/{id}")]
-    public bool DeleteMessage(int id)
+    public IActionResult DeleteMessage(
+		[Required(ErrorMessage = "MessageId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "MessageId must be a positive number.")]
+		int id)
     {
-        return _messageService.Delete(id);
+		return Ok(_messageService.Delete(id));
     }
 }
