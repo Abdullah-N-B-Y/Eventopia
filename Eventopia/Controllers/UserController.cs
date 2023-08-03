@@ -114,9 +114,16 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
+	[Route("CheckPasswordResetToken")]
+	public bool CheckPasswordResetToken(string email, string token)
+	{
+		return _userService.CheckPasswordResetToken(email, token);
+	}
+
+	[HttpPost]
 	[Route("ResetForgottenPassword")]
 	public bool ResetForgottenPassword(string email, string resetToken, string newPassword)
 	{
-		return _userService.ResetForgottenPassword(email, resetToken, newPassword);
+		return _userService.ResetForgottenPassword(email, newPassword);
 	}
 }

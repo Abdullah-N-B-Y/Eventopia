@@ -87,14 +87,22 @@ public class UserService : IUserService
 		return true;
 	}
 
-	public bool ResetForgottenPassword(string email, string resetToken, string newPassword)
+	public bool CheckPasswordResetToken(string email, string token)
 	{
 		User user = _userRepository.GetUserByEmail(email);
 		if (user == null)
 			return false; // Maybe replace with EmailNotFoundException
-
-		if (user.Verfiicationcode != resetToken)
+		if (user.Verfiicationcode != token)
 			return false; //maybe replace with InvalidVerificationCodeException
+
+		return true;
+	}
+
+	public bool ResetForgottenPassword(string email, string newPassword)
+	{
+		User user = _userRepository.GetUserByEmail(email);
+		if (user == null)
+			return false; // Maybe replace with EmailNotFoundException
 
 		user.Password = newPassword;
 		user.Verfiicationcode = "";
