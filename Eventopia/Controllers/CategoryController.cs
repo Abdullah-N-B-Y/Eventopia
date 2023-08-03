@@ -48,6 +48,10 @@ namespace Eventopia.API.Controllers
 		[Route("CreateCategory")]
 		public IActionResult CreateCategory([FromBody] Category category)
 		{
+			Category cat = _categoryService.GetCategoryByName(category.Name);
+			if(cat == null)
+				return Conflict("CategoryName Already Exists");
+
 			_categoryService.CreateNew(category);
 			return Ok();
 		}
@@ -56,6 +60,10 @@ namespace Eventopia.API.Controllers
 		[Route("UpdateCategory")]
 		public IActionResult UpdateCategory([FromBody] Category category)
 		{
+			Category cat = _categoryService.GetCategoryByName(category.Name);
+			if (cat == null)
+				return Conflict("CategoryName Already Exists");
+
 			_categoryService.Update(category);
 			return Ok();
 		}
