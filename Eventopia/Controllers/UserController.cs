@@ -1,6 +1,7 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
+using Eventopia.Infra.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -32,7 +33,9 @@ public class UserController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
 		int id)
 	{
-		_userService.Delete(id);
+		if(!_userService.Delete(id))
+			return NotFound();
+
 		return Ok();
 	}
 	
@@ -50,7 +53,10 @@ public class UserController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
 		int id)
 	{
-		return Ok(_userService.GetById(id));
+		User user = _userService.GetById(id);
+		if(user == null)
+			return NotFound();
+		return Ok(user);
 	}
 
 	[HttpGet]
@@ -60,14 +66,18 @@ public class UserController : ControllerBase
 		[StringLength(50, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 50 characters")]
 		string username)
 	{
-		return Ok(_userService.GetUserByUserName(username));
+		User user = _userService.GetUserByUserName(username);
+		if (user == null)
+			return NotFound();
+		return Ok(user);
 	}
 
 	[HttpPut]
 	[Route("UpdateUser")]
 	public IActionResult UpdateUser([FromBody] User user)
 	{
-		_userService.Update(user);
+		if (!_userService.Update(user))
+			return NotFound();
 		return Ok();
 	}
 
@@ -80,7 +90,9 @@ public class UserController : ControllerBase
 		[Required(ErrorMessage = "Password is required")]
 		string password)
     {
-		_userService.UpdateUserProfile(profile, password);
+		if (!_userService.UpdateUserProfile(profile, password))
+			return NotFound();
+
 		return Ok();
     }
 
@@ -91,7 +103,9 @@ public class UserController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
 		int id)
     {
-		_userService.UpdatePassword(id, updatePasswordDTO);
+		if (!_userService.UpdatePassword(id, updatePasswordDTO))
+			return NotFound();
+		;
 		return Ok();
     }
 
@@ -110,7 +124,10 @@ public class UserController : ControllerBase
 		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
 		string email)
 	{
-		return Ok(_userService.GetUserByEmail(email));
+		User user = _userService.GetUserByEmail(email);
+		if (user == null)
+			return NotFound();
+		return Ok(user);
 	}
 
 	[HttpPost]
@@ -121,7 +138,10 @@ public class UserController : ControllerBase
 		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
 		string email)
 	{
-		return Ok(_userService.ForgotPassword(email));
+		bool success = _userService.ForgotPassword(email);
+		if (!success)
+			return NotFound("Email not found");
+		return Ok();
 	}
 
 	[HttpPost]
@@ -132,7 +152,10 @@ public class UserController : ControllerBase
 		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
 		string email, string token)
 	{
-		return Ok(_userService.CheckPasswordResetToken(email, token));
+		bool success = _userService.CheckPasswordResetToken(email, token);
+		if (!success)
+			return NotFound("Email or token not found");
+		return Ok();
 	}
 
 	[HttpPost]
@@ -148,6 +171,9 @@ public class UserController : ControllerBase
 		[Required(ErrorMessage = "Password is required")]
 		string newPassword)
 	{
-		return Ok(_userService.ResetForgottenPassword(email, newPassword));
+		bool success = _userService.ResetForgottenPassword(email, newPassword);
+		if (!success)
+			return NotFound("Email not found");
+		return Ok();
 	}
 }

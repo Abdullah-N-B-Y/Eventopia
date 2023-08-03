@@ -15,6 +15,7 @@ namespace Eventopia.Infra.Service
 
 		public bool CreateNew(ContactUsEntry entry)
 		{
+			entry.Adminid = 1;
 			return _contactUsEntriesRepository.CreateNew(entry);
 		}
 

@@ -30,7 +30,10 @@ public class TestimonialController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "TestimonialId must be a positive number.")]
 		int id)
     {
-		return Ok(_testimonialService.GetById(id));
+        Testimonial testimonial = _testimonialService.GetById(id);
+		if (testimonial == null)
+			return NotFound();
+		return Ok(testimonial);
     }
 
     [HttpPost]
@@ -45,7 +48,9 @@ public class TestimonialController : ControllerBase
     [Route("UpdateTestimonial")]
     public IActionResult UpdateTestimonial([FromBody] Testimonial testimonial)
     {
-		_testimonialService.Update(testimonial);
+		bool success = _testimonialService.Update(testimonial);
+		if (!success)
+			return NotFound();
         return Ok();
     }
 
@@ -56,7 +61,9 @@ public class TestimonialController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "TestimonialId must be a positive number.")]
 		int id)
     {
-		_testimonialService.Delete(id);
+        bool success = _testimonialService.Delete(id);
+        if(!success)
+            return NotFound();
         return Ok();    
     }
 }

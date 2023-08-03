@@ -30,7 +30,11 @@ public class PageController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "PageId must be a positive number.")]
 		int id)
 	{
-		return Ok(_pageService.GetById(id));
+		Page page = _pageService.GetById(id);
+		if(page == null)
+			return NotFound();
+		
+		return Ok(page);
 	}
 
 	[HttpPost]
@@ -56,7 +60,8 @@ public class PageController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "PageId must be a positive number.")]
 		int id)
 	{
-		_pageService.Delete(id);
+		if(!_pageService.Delete(id))
+			return NotFound();
 		return Ok();
 	}
 

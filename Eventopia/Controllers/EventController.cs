@@ -21,11 +21,9 @@ public class EventController : ControllerBase
     [HttpPost]
     [Route("SearchEventsBetweenDates")]
     //[Authorize(Policy = "AdminOnly")]
-    public ActionResult<List<Event>> SearchEventsBetweenDates([FromBody] SearchBetweenDatesDTO searchDTO)
+    public IActionResult SearchEventsBetweenDates([FromBody] SearchBetweenDatesDTO searchDTO)
     {
-		List<Event> eventsInRange = ((IEventService)_eventService).GetEventsBetweenDates(searchDTO); 
-
-        return Ok(eventsInRange);
+        return Ok(_eventService.GetEventsBetweenDates(searchDTO));
     }
 
 
@@ -55,7 +53,10 @@ public class EventController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
 		int id)
     {
-		return Ok(_eventService.GetById(id));
+        Event eventt = _eventService.GetById(id);
+        if (eventt == null)
+            return NotFound();
+		return Ok(eventt);
     }
 
     [HttpGet]
@@ -80,7 +81,8 @@ public class EventController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
 		int id)
     {
-		_eventService.Delete(id);
+		if(!_eventService.Delete(id))
+            return NotFound();
         return Ok();
     }
 }

@@ -30,7 +30,10 @@ public class ProfileController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "ProfileId must be a positive number.")]
 		int id)
     {
-		return Ok(_profileService.GetById(id));
+        Profile profile = _profileService.GetById(id);
+        if(profile == null)
+            return NotFound();
+		return Ok(profile);
     }
 
     [HttpPost]
@@ -56,7 +59,8 @@ public class ProfileController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "ProfileId must be a positive number.")]
 		int id)
     {
-		_profileService.Delete(id);
+        if(!_profileService.Delete(id))
+            return NotFound();
         return Ok();
     }
 }

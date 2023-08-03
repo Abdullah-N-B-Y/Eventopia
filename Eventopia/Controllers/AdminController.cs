@@ -24,7 +24,9 @@ public class AdminController : ControllerBase
         int id
         , string status)
     {
-		return Ok(_adminService.EventAcceptation(id, status));
+        if(!_adminService.EventAcceptation(id, status))
+            return NotFound("EventId not found");
+		return Ok();
     }
 
     [HttpPut]
@@ -34,7 +36,8 @@ public class AdminController : ControllerBase
 	    [Range(1, int.MaxValue, ErrorMessage = "userId must be a positive number.")]
 		int id)
     {
-		_adminService.BannedUser(id);
+        if(!_adminService.BannedUser(id))
+		    return NotFound();
         return Ok();
     }
 
@@ -45,7 +48,9 @@ public class AdminController : ControllerBase
         [Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")] 
         int id)
     {
-        return Ok(_adminService.UnbannedUser(id));
+        if(!_adminService.UnbannedUser(id))
+            return NotFound();
+        return Ok();
     }
 
     [HttpGet]

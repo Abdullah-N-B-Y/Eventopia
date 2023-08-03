@@ -36,6 +36,6 @@ public class TestimonialService : IService<Testimonial>
 
     public Testimonial GetById(int id)
     {
-        throw new NotImplementedException();
+        return _testimonialRepository.GetById(id);
     }
 }

@@ -30,7 +30,10 @@ public class MessageController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "MessageId must be a positive number.")]
 		int id)
     {
-		return Ok(_messageService.GetById(id));
+        Message message = _messageService.GetById(id);
+        if(message == null)
+            return NotFound();
+		return Ok(message);
     }
 
     [HttpGet]
@@ -54,6 +57,8 @@ public class MessageController : ControllerBase
 		[Range(1, int.MaxValue, ErrorMessage = "MessageId must be a positive number.")]
 		int id)
     {
-		return Ok(_messageService.Delete(id));
+        if (!_messageService.Delete(id))
+            return NotFound();
+		return Ok();
     }
 }

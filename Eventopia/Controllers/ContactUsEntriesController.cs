@@ -30,7 +30,10 @@ namespace Eventopia.API.Controllers
 			[Range(1, int.MaxValue, ErrorMessage = "ContactUsEntryId must be a positive number.")]
 		int id)
 		{
-			return Ok(_contactUsEntriesService.GetById(id));
+			ContactUsEntry entry = _contactUsEntriesService.GetById(id);
+			if(entry == null)
+				return NotFound();
+			return Ok(entry);
 		}
 
 		[HttpPost]
@@ -56,7 +59,8 @@ namespace Eventopia.API.Controllers
 			[Range(1, int.MaxValue, ErrorMessage = "ContactUsEntryId must be a positive number.")]
 		int id)
 		{
-			_contactUsEntriesService.Delete(id);
+			if(!_contactUsEntriesService.Delete(id))
+				return NotFound();
 			return Ok();
 		}
 	}

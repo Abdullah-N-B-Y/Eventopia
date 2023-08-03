@@ -31,7 +31,10 @@ namespace Eventopia.API.Controllers
 			[Range(1, int.MaxValue, ErrorMessage = "CategoryId must be a positive number.")]
 			int id)
 		{
-			return Ok(_categoryService.GetById(id));
+			Category category = _categoryService.GetById(id);
+			if(category == null)
+				return NotFound();
+			return Ok(category);
 		}
 
 		[HttpGet]
@@ -41,7 +44,10 @@ namespace Eventopia.API.Controllers
 			[MaxLength(50, ErrorMessage = "Name cannot exceed 50 characters.")]
 			string name)
 		{
-			return Ok(_categoryService.GetCategoryByName(name));
+			Category category = _categoryService.GetCategoryByName(name);
+			if (category == null)
+				return NotFound();
+			return Ok(category);
 		}
 
 		[HttpPost]
@@ -75,7 +81,9 @@ namespace Eventopia.API.Controllers
 			[Range(1, int.MaxValue, ErrorMessage = "CategoryId must be a positive number.")]
 			int id)
 		{
-			_categoryService.Delete(id);
+			if(!_categoryService.Delete(id))
+				return NotFound();
+
 			return Ok();
 		}
 

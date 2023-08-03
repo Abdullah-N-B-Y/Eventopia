@@ -1,6 +1,5 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
-using Eventopia.Infra.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -33,7 +32,10 @@ namespace Eventopia.API.Controllers
 		    [Range(1, int.MaxValue, ErrorMessage = "BookingId must be a positive number.")]
 			int id)
         {
-			return Ok(_bookingService.GetById(id));
+            Booking booking = _bookingService.GetById(id);
+            if(booking == null)
+                return NotFound();
+			return Ok(booking);
         }
 
         [HttpGet]
@@ -58,7 +60,8 @@ namespace Eventopia.API.Controllers
 			[Range(1, int.MaxValue, ErrorMessage = "BookingId must be a positive number.")]
 			int id)
         {
-            _bookingService.Delete(id);
+            if(!_bookingService.Delete(id))
+                return NotFound();
             return Ok();
         }
 
@@ -72,7 +75,8 @@ namespace Eventopia.API.Controllers
 			[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
 			int eventId)
         {
-			_bookingService.DeleteUserFromBooking(userId, eventId);
+            if(!_bookingService.DeleteUserFromBooking(userId, eventId))
+			    return NotFound("UserId or EventId not found");
             return Ok();
         }
     }

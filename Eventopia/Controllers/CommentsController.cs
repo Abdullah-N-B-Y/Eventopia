@@ -31,7 +31,9 @@ namespace Eventopia.API.Controllers
 			[Range(1, int.MaxValue, ErrorMessage = "CommentId must be a positive number.")]
 			int id)
 		{
-			_commentsService.Delete(id);
+			if (!_commentsService.Delete(id))
+				return NotFound();
+			
 			return Ok();
 		}
 
@@ -43,13 +45,16 @@ namespace Eventopia.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("GetById/{id}")]
-		public IActionResult GetById(
+		[Route("GetCommentById/{id}")]
+		public IActionResult GetCommentById(
 			[Required(ErrorMessage = "CommentId is required.")]
 			[Range(1, int.MaxValue, ErrorMessage = "CommentId must be a positive number.")]
 			int id)
 		{
-			return Ok(_commentsService.GetById(id));
+			Comment comment = _commentsService.GetById(id);
+			if(comment == null)
+				return NotFound();
+			return Ok(comment);
 		}
 
 		[HttpGet]
