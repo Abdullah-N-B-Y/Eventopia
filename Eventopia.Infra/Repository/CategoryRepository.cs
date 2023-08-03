@@ -7,7 +7,7 @@ using System.Data;
 
 namespace Eventopia.Infra.Repository;
 
-public class CategoryRepository : IRepository<Category>
+public class CategoryRepository : ICategoryRepository
 {
 	private readonly IDbContext _dBContext;
 
@@ -56,6 +56,14 @@ public class CategoryRepository : IRepository<Category>
 		var parameters = new DynamicParameters();
 		parameters.Add("CATEGORY_ID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		IEnumerable<Category> result = _dBContext.Connection.Query<Category>("CATEGORY_PACKAGE.GetCategoryById", parameters, commandType: CommandType.StoredProcedure);
+		return result.FirstOrDefault();
+	}
+
+	public Category GetCategoryByName(string name)
+	{
+		var parameters = new DynamicParameters();
+		parameters.Add("p_CategoryName", name, dbType: DbType.String, direction: ParameterDirection.Input);
+		IEnumerable<Category> result = _dBContext.Connection.Query<Category>("CATEGORY_PACKAGE.GetCategoryByName", parameters, commandType: CommandType.StoredProcedure);
 		return result.FirstOrDefault();
 	}
 

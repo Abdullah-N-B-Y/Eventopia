@@ -10,9 +10,9 @@ namespace Eventopia.API.Controllers
 	[ApiController]
 	public class CategoryController : ControllerBase
 	{
-		private readonly IService<Category> _categoryService;
+		private readonly ICategoryService _categoryService;
 
-		public CategoryController(IService<Category> categoryService)
+		public CategoryController(ICategoryService categoryService)
 		{
 			_categoryService = categoryService;
 		}
@@ -32,6 +32,16 @@ namespace Eventopia.API.Controllers
 			int id)
 		{
 			return Ok(_categoryService.GetById(id));
+		}
+
+		[HttpGet]
+		[Route("GetCategoryByName/{name}")]
+		public IActionResult GetCategoryByName(
+			[Required(ErrorMessage = "Name is required.")]
+			[MaxLength(50, ErrorMessage = "Name cannot exceed 50 characters.")]
+			string name)
+		{
+			return Ok(_categoryService.GetCategoryByName(name));
 		}
 
 		[HttpPost]

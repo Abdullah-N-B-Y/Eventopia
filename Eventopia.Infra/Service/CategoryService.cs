@@ -4,11 +4,11 @@ using Eventopia.Core.Service;
 
 namespace Eventopia.Infra.Service;
 
-public class CategoryService : IService<Category>
+public class CategoryService : ICategoryService
 {
-	private readonly IRepository<Category> _categoryRepository;
+	private readonly ICategoryRepository _categoryRepository;
 
-	public CategoryService(IRepository<Category> categoryRepository)
+	public CategoryService(ICategoryRepository categoryRepository)
 	{
 		_categoryRepository = categoryRepository;
 	}
@@ -31,6 +31,11 @@ public class CategoryService : IService<Category>
 	public Category GetById(int id)
 	{
 		return _categoryRepository.GetById(id);
+	}
+
+	public Category GetCategoryByName(string name)
+	{
+		return _categoryRepository.GetCategoryByName(name);
 	}
 
 	public bool Update(Category category)

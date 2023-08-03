@@ -89,8 +89,10 @@ CREATE TABLE Category (
   CreationDate DATE,
   AdminId NUMBER,
   
+  Constraint UQ_CATEGORY_NAME UNIQUE (Name),
   Constraint FK_CATEGORY_ADMINID FOREIGN KEY (AdminId) REFERENCES User_(ID) ON DELETE CASCADE
 );
+
 
 -- EVENT Table
 CREATE TABLE Event (
@@ -497,6 +499,7 @@ CREATE OR REPLACE PACKAGE CATEGORY_PACKAGE
 AS
     PROCEDURE GetAllCategories;
     PROCEDURE GetCategoryById(CATEGORY_ID IN NUMBER);
+    PROCEDURE GetCategoryByName(p_CategoryName IN VARCHAR2);
     PROCEDURE CreateCategory(NAME_ IN VARCHAR2, IMAGE_PATH IN VARCHAR2, DESCRIPTION_ IN VARCHAR2, CREATION_DATE IN DATE, ADMIN_ID NUMBER);
     PROCEDURE UpdateCategory(CATEGORY_ID IN NUMBER, NAME_ IN VARCHAR2, IMAGE_PATH IN VARCHAR2, DESCRIPTION_ IN VARCHAR2, CREATION_DATE IN DATE, ADMIN_ID NUMBER);
     PROCEDURE DeleteCategory(CATEGORY_ID IN NUMBER);
@@ -525,6 +528,17 @@ AS
         Dbms_sql.return_result(cur_item);
     
     END getCategoryById;
+    
+    PROCEDURE GetCategoryByName(p_CategoryName IN VARCHAR2)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+        open cur_item for
+        select * from category
+        where Name = p_CategoryName;
+        Dbms_sql.return_result(cur_item);
+    
+    END GetCategoryByName;
     
     PROCEDURE CreateCategory(NAME_ IN VARCHAR2, IMAGE_PATH IN VARCHAR2, DESCRIPTION_ IN VARCHAR2, CREATION_DATE IN DATE, ADMIN_ID NUMBER)
     AS
