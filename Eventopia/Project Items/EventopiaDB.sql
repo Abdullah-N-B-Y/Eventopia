@@ -179,8 +179,10 @@ CREATE TABLE Contact_Us_Entries (
   Subject VARCHAR2(100),
   Content VARCHAR2(500),
   Email VARCHAR2(100),
-  PhoneNumber NUMBER
---  PhoneNumber Varchar2(13)
+  PhoneNumber NUMBER,
+  AdminId NUMBER,
+  
+  Constraint FK_CONTACTENTRIES_ADMINID FOREIGN KEY (AdminId) REFERENCES User_(ID) ON DELETE CASCADE
 );
 
 --insert into Role_(ROLENAME) Values('Admin');
@@ -1217,7 +1219,7 @@ END Comments_Package;
 
 
 
-
+-- PAYMENT PACKAGE
 CREATE OR REPLACE PACKAGE Payment_Package
 AS
 
@@ -1254,6 +1256,7 @@ BEGIN
 END Payment_Package;
 
 
+-- PROFILESETTING PACKAGE
 CREATE OR REPLACE PACKAGE ProfileSetting_Package
 AS
     --PROCEDURE SetActivityStatus(p_UserId IN NUMBER, p_ActivityStatus IN ProfileSetting.ActivityStatus%TYPE, p_RealActivityStatus OUT ProfileSetting.ActivityStatus%TYPE);
@@ -1295,3 +1298,83 @@ AS
     
 END ProfileSetting_Package;
 
+
+-- CONTACT_US_ENTRIES
+CREATE OR REPLACE PACKAGE CONTACT_US_ENTRIES_Package
+AS
+    PROCEDURE GetAllEntries;
+    PROCEDURE GetEntryByID(p_EntryID IN NUMBER);
+    PROCEDURE DeleteEntryByID(p_EntryID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateEntryByID(p_EntryID IN NUMBER, p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateEntry(p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+END CONTACT_US_ENTRIES_Package;
+
+CREATE OR REPLACE PACKAGE BODY CONTACT_US_ENTRIES_Package
+AS
+
+    PROCEDURE GetAllEntries
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT * FROM CONTACT_US_ENTRIES;
+                DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllEntries;
+    
+    PROCEDURE GetEntryByID(p_EntryID IN NUMBER)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM CONTACT_US_ENTRIES WHERE ID = p_EntryID;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetEntryByID;
+    
+    PROCEDURE DeleteEntryByID(p_EntryID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            DELETE FROM CONTACT_US_ENTRIES WHERE ID = p_EntryID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END DeleteEntryByID;
+    
+    PROCEDURE UpdateEntryByID(p_EntryID IN NUMBER, p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            UPDATE CONTACT_US_ENTRIES
+            SET
+                Subject = p_Subject,
+                Content = p_Content,
+                Email = p_Email,
+                PhoneNumber = p_PhoneNumber,
+                AdminId = p_AdminId
+            WHERE ID = p_EntryID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END UpdateEntryByID;
+    
+    PROCEDURE CreateEntry(p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            INSERT INTO CONTACT_US_ENTRIES (Subject, Content, Email, PhoneNumber, AdminId)
+            VALUES (p_Subject, p_Content, p_Email, p_PhoneNumber, p_AdminId) RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END CreateEntry;
+
+END CONTACT_US_ENTRIES_Package;
