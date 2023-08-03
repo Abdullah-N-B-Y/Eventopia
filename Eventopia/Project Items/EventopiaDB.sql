@@ -530,7 +530,7 @@ AS
     END getCategoryById;
     
     PROCEDURE GetCategoryByName(p_CategoryName IN VARCHAR2)
-    AS
+    AS 
         cur_item SYS_REFCURSOR;
         BEGIN
         open cur_item for
