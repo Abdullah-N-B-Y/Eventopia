@@ -33,8 +33,8 @@ public class AdminService : IAdminService
         return _adminRepository.GetStatistics();
     }
 
-    public GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate)
+    public GetBenefitsReportDTO GetBenefitsReport(SearchBetweenDatesDTO searchDTO)
     {
-        return _adminRepository.GetBenefitsReport(startDate, endDate);
+        return _adminRepository.GetBenefitsReport(searchDTO);
     }
 }

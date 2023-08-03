@@ -76,11 +76,11 @@ public class AdminRepository : IAdminRepository
         return statistics;
     }
 
-    public GetBenefitsReportDTO GetBenefitsReport(DateTime startDate, DateTime endDate)
+    public GetBenefitsReportDTO GetBenefitsReport(SearchBetweenDatesDTO searchDTO)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("p_StartDate", startDate, DbType.Date, ParameterDirection.Input);
-        parameters.Add("p_EndDate", endDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_StartDate", searchDTO.Startdate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_EndDate", searchDTO.Enddate, DbType.Date, ParameterDirection.Input);
         parameters.Add("p_MonthlyBenefits", DbType.Decimal, direction: ParameterDirection.Output);
         parameters.Add("p_AnnualBenefits", DbType.Decimal, direction: ParameterDirection.Output);
 

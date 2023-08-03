@@ -1,4 +1,5 @@
-﻿using Eventopia.Core.Service;
+﻿using Eventopia.Core.DTO;
+using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventopia.API.Controllers;
@@ -44,8 +45,13 @@ public class AdminController : ControllerBase
 
     [HttpGet]
     [Route("BenefitsReport")]
-    public IActionResult GetBenefitsReport(DateTime startDate, DateTime endDate)
+    public IActionResult GetBenefitsReport([FromBody] SearchBetweenDatesDTO searchDTO)
     {
-        return Ok(_adminService.GetBenefitsReport(startDate, endDate));
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		return Ok(_adminService.GetBenefitsReport(searchDTO));
     }
 }
