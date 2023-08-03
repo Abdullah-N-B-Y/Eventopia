@@ -17,8 +17,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-
-        builder.Services.AddControllers(options => options.Filters.Add<ErrorHandlingFilterAttribute>());
+        builder.Services.AddControllers(options =>
+		{
+			options.Filters.Add<ErrorHandlingFilterAttribute>();
+			options.Filters.Add<ValidateModelStateActionFilter>();
+		});
 		builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
