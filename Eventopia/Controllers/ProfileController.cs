@@ -31,16 +31,26 @@ public class ProfileController : ControllerBase
 
     [HttpPost]
     [Route("CreateNewProfile")]
-    public void CreateNewProfile(Profile profile)
+    public IActionResult CreateNewProfile([FromBody] Profile profile)
     {
-        _profileService.CreateNew(profile);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_profileService.CreateNew(profile);
+        return Ok();
     }
 
     [HttpPut]
     [Route("UpdateProfile")]
-    public void UpdateProfile(Profile profile)
+    public IActionResult UpdateProfile([FromBody] Profile profile)
     {
-        _profileService.Update(profile);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_profileService.Update(profile);
+        return Ok();
     }
 
     [HttpDelete]

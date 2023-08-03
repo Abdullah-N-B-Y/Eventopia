@@ -18,9 +18,14 @@ public class UserController : ControllerBase
 
 	[HttpPost]
 	[Route("CreateNewUser")]
-	public void CreateNewUser(User user)
+	public IActionResult CreateNewUser([FromBody] User user)
 	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
 		_userService.CreateNew(user);
+		return Ok();
 	}
 
 	[HttpDelete]
@@ -53,23 +58,38 @@ public class UserController : ControllerBase
 
 	[HttpPut]
 	[Route("UpdateUser")]
-	public void UpdateUser(User user)
+	public IActionResult UpdateUser([FromBody] User user)
 	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
 		_userService.Update(user);
+		return Ok();
 	}
 
     [HttpPut]
     [Route("UpdateUserProfile/{password}")]
-    public void UpdateUserProfile(Profile profile, string password)
+    public IActionResult UpdateUserProfile([FromBody] Profile profile, string password)
     {
-        _userService.UpdateUserProfile(profile, password);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_userService.UpdateUserProfile(profile, password);
+		return Ok();
     }
 
     [HttpPut]
     [Route("UpdatePassword/{id}")]
-    public void UpdatePassword(int id, UpdatePasswordDTO updatePasswordDTO)
+    public IActionResult UpdatePassword(int id, [FromBody] UpdatePasswordDTO updatePasswordDTO)
     {
-        _userService.UpdatePassword(id, updatePasswordDTO);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_userService.UpdatePassword(id, updatePasswordDTO);
+		return Ok();
     }
 
     [HttpGet]

@@ -20,10 +20,14 @@ public class EventController : ControllerBase
     [HttpPost]
     [Route("SearchEventsBetweenDates")]
     //[Authorize(Policy = "AdminOnly")]
-    public ActionResult<List<Event>> SearchEventsBetweenDates(SearchBetweenDatesDTO searchDTO)
+    public ActionResult<List<Event>> SearchEventsBetweenDates([FromBody] SearchBetweenDatesDTO searchDTO)
     {
-        // Call the backend logic to get the events within the date range
-        List<Event> eventsInRange = ((IEventService)_eventService).GetEventsBetweenDates(searchDTO); 
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		// Call the backend logic to get the events within the date range
+		List<Event> eventsInRange = ((IEventService)_eventService).GetEventsBetweenDates(searchDTO); 
 
         // Return the result to the admin
         return Ok(eventsInRange);
@@ -33,7 +37,7 @@ public class EventController : ControllerBase
     [HttpPost]
     [Route("SearchEventsByName")]
     //[AllowAnonymous] 
-    public ActionResult<List<Event>> SearchEventsByName([FromBody] string eventName)
+    public ActionResult<List<Event>> SearchEventsByName(string eventName)
     {
         // Call the backend logic to search events by name
         List<Event> eventsByName = _eventService.SearchEventsByName(eventName);
@@ -44,9 +48,15 @@ public class EventController : ControllerBase
 
     [HttpPost]
     [Route("CreateNewEvent")]
-    public void CreateNewEvent(Event eventt)
+    public IActionResult CreateNewEvent([FromBody] Event eventt)
     {
-        _eventService.CreateNew(eventt);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_eventService.CreateNew(eventt);
+
+        return Ok();
     }
 
     [HttpGet]
@@ -65,9 +75,14 @@ public class EventController : ControllerBase
 
     [HttpPut]
     [Route("UpdateEvent")]
-    public void UpdateEvent(Event eventt)
+    public IActionResult UpdateEvent([FromBody] Event eventt)
     {
-        _eventService.Update(eventt);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_eventService.Update(eventt);
+        return Ok();
     }
 
     [HttpDelete]

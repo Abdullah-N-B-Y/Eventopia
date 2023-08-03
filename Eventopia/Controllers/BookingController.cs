@@ -18,9 +18,16 @@ namespace Eventopia.API.Controllers
 
         [HttpPost]
         [Route("CreateNewBooking")]
-        public void CreateNewBooking(Booking booking)
+        public IActionResult CreateNewBooking([FromBody] Booking booking)
         {
-            _bookingService.CreateNew(booking);
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			_bookingService.CreateNew(booking);
+
+            return Ok();
         }
 
         [HttpGet]
@@ -39,9 +46,15 @@ namespace Eventopia.API.Controllers
 
         [HttpPut]
         [Route("UpdateBooking")]
-        public void UpdateBooking(Booking booking) 
+        public IActionResult UpdateBooking([FromBody] Booking booking) 
         {
-            _bookingService.Update(booking);
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			_bookingService.Update(booking);
+            return Ok();
         }
 
         [HttpDelete]

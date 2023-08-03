@@ -17,9 +17,14 @@ namespace Eventopia.API.Controllers
 
 		[HttpPost]
 		[Route("CreateNewComment")]
-		public void CreateNewComment(Comment comment)
+		public IActionResult CreateNewComment([FromBody] Comment comment)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 			_commentsService.CreateNew(comment);
+			return Ok();
 		}
 
 		[HttpDelete]
@@ -66,9 +71,15 @@ namespace Eventopia.API.Controllers
 
 		[HttpPut]
 		[Route("UpdateComment")]
-		public void UpdateComment(Comment comment)
+		public IActionResult UpdateComment([FromBody] Comment comment)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 			_commentsService.Update(comment);
+
+			return Ok();
 		}
 
 	}

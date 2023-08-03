@@ -17,9 +17,14 @@ public class MessageController : ControllerBase
 
     [HttpPost]
     [Route("CreateNewMessage")]
-    public bool CreateNewMessage([FromBody] Message message)
+    public IActionResult CreateNewMessage([FromBody] Message message)
     {
-        return _messageService.CreateNew(message);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+        return Ok(_messageService.CreateNew(message));
     }
 
     [HttpGet]
@@ -38,9 +43,13 @@ public class MessageController : ControllerBase
 
     [HttpPut]
     [Route("UpdateMessage")]
-    public bool UpdateMessage(Message message)
+    public IActionResult UpdateMessage([FromBody] Message message)
     {
-        return _messageService.Update(message);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+        return Ok(_messageService.Update(message));
     }
 
     [HttpDelete]

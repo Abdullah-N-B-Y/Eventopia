@@ -32,16 +32,27 @@ namespace Eventopia.API.Controllers
 
 		[HttpPost]
 		[Route("CreateCategory")]
-		public void CreateCategory(Category category)
+		public IActionResult CreateCategory([FromBody] Category category)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
 			_categoryService.CreateNew(category);
+			return Ok();
 		}
 
 		[HttpPut]
 		[Route("UpdateCategory")]
-		public void UpdateCategory(Category category)
+		public IActionResult UpdateCategory([FromBody] Category category)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 			_categoryService.Update(category);
+			return Ok();
 		}
 
 		[HttpDelete]

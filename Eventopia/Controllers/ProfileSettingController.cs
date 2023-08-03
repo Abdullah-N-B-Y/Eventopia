@@ -16,13 +16,15 @@ public class ProfileSettingController : ControllerBase
     }
 
     [HttpPut]
+    [Route("SetTheme/{userId}")]
     public void SetTheme(int userId, string theme)
     {
         _profileSettingService.SetTheme(userId, theme);
     }
 
     [HttpGet]
-    public string GetTheme(int userId) 
+	[Route("GetTheme/{userId}")]
+	public string GetTheme(int userId) 
     {
         return _profileSettingService.GetTheme(userId);
     }

@@ -31,16 +31,26 @@ public class TestimonialController : ControllerBase
 
     [HttpPost]
     [Route("CreateNewTestimonial")]
-    public void CreateNewTestimonial(Testimonial testimonial)
+    public IActionResult CreateNewTestimonial([FromBody] Testimonial testimonial)
     {
-        _testimonialService.CreateNew(testimonial);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_testimonialService.CreateNew(testimonial);
+        return Ok();
     }
 
     [HttpPut]
     [Route("UpdateTestimonial")]
-    public void UpdateTestimonial(Testimonial testimonial)
+    public IActionResult UpdateTestimonial([FromBody] Testimonial testimonial)
     {
-        _testimonialService.Update(testimonial);
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		_testimonialService.Update(testimonial);
+        return Ok();
     }
 
     [HttpDelete]

@@ -32,16 +32,26 @@ public class PageController : ControllerBase
 
 	[HttpPost]
 	[Route("CreatePage")]
-	public void CreatePage(Page page)
+	public IActionResult CreatePage([FromBody] Page page)
 	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
 		_pageService.CreateNew(page);
+		return Ok();
 	}
 
 	[HttpPut]
 	[Route("UpdatePage")]
-	public void UpdatePage(Page page)
+	public IActionResult UpdatePage([FromBody] Page page)
 	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
 		_pageService.Update(page);
+		return Ok();
 	}
 
 	[HttpDelete]
