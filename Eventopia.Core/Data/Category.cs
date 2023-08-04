@@ -13,16 +13,16 @@ public partial class Category
 	public string? Name { get; set; }
 
 	[MaxLength(100, ErrorMessage = "ImagePath cannot exceed 100 characters.")]
-	public string? Imagepath { get; set; }
+	public string? ImagePath { get; set; }
 
 	[MaxLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
 	public string? Description { get; set; }
 
-    public DateTime? Creationdate { get; set; }
+    public DateTime? CreationDate { get; set; }
 
 	[Required(ErrorMessage = "AdminId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "AdminId must be a positive number.")]
-	public decimal? Adminid { get; set; }
+	public decimal? AdminId { get; set; }
 
     public virtual User? Admin { get; set; }
 

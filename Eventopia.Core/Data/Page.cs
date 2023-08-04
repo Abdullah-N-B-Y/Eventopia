@@ -15,11 +15,11 @@ public partial class Page
 	public string? Content2 { get; set; }
 
 	[MaxLength(100, ErrorMessage = "BackgroundImagePath cannot exceed 100 characters.")]
-	public string? Backgroundimagepath { get; set; }
+	public string? BackgroundImagePath { get; set; }
 
 	[Required(ErrorMessage = "AdminId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "AdminId must be a positive number.")]
-	public decimal? Adminid { get; set; }
+	public decimal? AdminId { get; set; }
 
     public virtual User? Admin { get; set; }
 }

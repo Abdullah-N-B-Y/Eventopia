@@ -12,11 +12,11 @@ public partial class Notification
 	[MaxLength(500, ErrorMessage = "Content cannot exceed 500 characters.")]
 	public string? Content { get; set; }
 
-    public DateTime? Receiveddate { get; set; }
+    public DateTime? ReceivedDate { get; set; }
 
 	[Required(ErrorMessage = "ReceiverId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "ReceiverId must be a positive number.")]
-	public decimal? Receiverid { get; set; }
+	public decimal? ReceiverId { get; set; }
 
     public virtual User? Receiver { get; set; }
 }

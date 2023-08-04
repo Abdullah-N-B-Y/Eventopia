@@ -9,7 +9,7 @@ public partial class Payment
     public decimal? Id { get; set; }
 
 	[Required(ErrorMessage = "PaymentDate is required.")]
-	public DateTime? Paymentdate { get; set; }
+	public DateTime? PaymentDate { get; set; }
 
 	[Required(ErrorMessage = "Amount is required.")]
 	[Range(0, double.MaxValue, ErrorMessage = "Amount must be a non-negative number.")]
@@ -25,7 +25,7 @@ public partial class Payment
 
 	[Required(ErrorMessage = "PaymentDate is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
-	public decimal? Userid { get; set; }
+	public decimal? UserId { get; set; }
 
     public virtual User? User { get; set; }
 }

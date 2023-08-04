@@ -19,15 +19,15 @@ public class ProfileRepository : IRepository<Profile>
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_ImagePath", profile.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_FirstName", profile.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_LastName", profile.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_ImagePath", profile.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_PhoneNumber", profile.PhoneNumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
         parameters.Add("p_Gender", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_DateOfBirth", profile.Dateofbirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        parameters.Add("p_DateOfBirth", profile.DateOfBirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Bio", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_Rate", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", profile.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", profile.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -68,15 +68,15 @@ public class ProfileRepository : IRepository<Profile>
         DynamicParameters parameters = new DynamicParameters();
 
         parameters.Add("p_ProfileId", profile.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_ImagePath", profile.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_FirstName", profile.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_LastName", profile.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_ImagePath", profile.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_PhoneNumber", profile.PhoneNumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
         parameters.Add("p_Gender", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_DateOfBirth", profile.Dateofbirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        parameters.Add("p_DateOfBirth", profile.DateOfBirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Bio", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_Rate", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", profile.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", profile.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

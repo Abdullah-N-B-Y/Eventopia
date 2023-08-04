@@ -21,8 +21,8 @@ namespace Eventopia.Infra.Repository
 			parameters.Add("p_Subject", entry.Subject, dbType: DbType.String, direction: ParameterDirection.Input);
 			parameters.Add("p_Content", entry.Content, dbType: DbType.String, direction: ParameterDirection.Input);
 			parameters.Add("p_Email", entry.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-			parameters.Add("p_PhoneNumber", entry.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-			parameters.Add("p_AdminId", entry.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+			parameters.Add("p_PhoneNumber", entry.PhoneNumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+			parameters.Add("p_AdminId", entry.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 			parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -65,8 +65,8 @@ namespace Eventopia.Infra.Repository
 			parameters.Add("p_Subject", entry.Subject, dbType: DbType.String, direction: ParameterDirection.Input);
 			parameters.Add("p_Content", entry.Content, dbType: DbType.String, direction: ParameterDirection.Input);
 			parameters.Add("p_Email", entry.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-			parameters.Add("p_PhoneNumber", entry.Phonenumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-			parameters.Add("p_AdminId", entry.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+			parameters.Add("p_PhoneNumber", entry.PhoneNumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+			parameters.Add("p_AdminId", entry.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 			parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

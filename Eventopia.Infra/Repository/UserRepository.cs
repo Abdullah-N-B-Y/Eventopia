@@ -24,9 +24,9 @@ public class UserRepository : IUserRepository
 		parameters.Add("p_Username", user.Username, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Password", user.Password, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Email", user.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_VerificationCode", user.Verfiicationcode, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_UserStatus", user.Userstatus, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_RoleID", user.Roleid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_VerificationCode", user.VerificationCode, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_UserStatus", user.UserStatus, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_RoleID", user.RoleId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
 
@@ -80,9 +80,9 @@ public class UserRepository : IUserRepository
 		parameters.Add("p_Username", user.Username, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Password", user.Password, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Email", user.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_VerificationCode", user.Verfiicationcode, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_UserStatus", user.Userstatus, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_RoleID", user.Roleid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_VerificationCode", user.VerificationCode, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_UserStatus", user.UserStatus, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_RoleID", user.RoleId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -97,9 +97,9 @@ public class UserRepository : IUserRepository
 
 		parameters.Add("p_UserId", profile.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("p_Password", password, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_FirstName", profile.Firstname, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_LastName", profile.Lastname, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_PhoneNumber", profile.Phonenumber, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_FirstName", profile.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_LastName", profile.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_PhoneNumber", profile.PhoneNumber, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

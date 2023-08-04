@@ -14,11 +14,11 @@ public partial class Comment
 
 	[Required(ErrorMessage = "EventId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
-	public decimal? Eventid { get; set; }
+	public decimal? EventId { get; set; }
 
 	[Required(ErrorMessage = "UserId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
-	public decimal? Userid { get; set; }
+	public decimal? UserId { get; set; }
 
 	public virtual Event? Event { get; set; }
 

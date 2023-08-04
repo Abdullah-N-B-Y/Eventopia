@@ -22,11 +22,11 @@ public partial class ContactUsEntry
 	public string? Email { get; set; }
 
 	[RegularExpression(@"^\d{10,15}$", ErrorMessage = "PhoneNumber must be a valid number with 10 to 15 digits.")]
-	public decimal? Phonenumber { get; set; }
+	public decimal? PhoneNumber { get; set; }
 
 	[Required(ErrorMessage = "AdminId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "AdminId must be a positive number.")]
-	public decimal? Adminid { get; set; }
+	public decimal? AdminId { get; set; }
 
     public virtual User? Admin { get; set; }
 }

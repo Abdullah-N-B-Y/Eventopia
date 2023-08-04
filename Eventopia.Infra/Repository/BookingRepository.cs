@@ -18,9 +18,9 @@ public class BookingRepository : IBookingRepository
     public bool CreateNew(Booking booking)
     {
         DynamicParameters parameters = new DynamicParameters();
-        parameters.Add("p_BookingDate", booking.Bookingdate, dbType:DbType.Date, direction:ParameterDirection.Input);
-        parameters.Add("p_UserId", booking.Userid, dbType:DbType.Int32, direction:ParameterDirection.Input);
-        parameters.Add("p_EventId", booking.Eventid, dbType:DbType.Int32, direction:ParameterDirection.Input);
+        parameters.Add("p_BookingDate", booking.BookingDate, dbType:DbType.Date, direction:ParameterDirection.Input);
+        parameters.Add("p_UserId", booking.UserId, dbType:DbType.Int32, direction:ParameterDirection.Input);
+        parameters.Add("p_EventId", booking.EventId, dbType:DbType.Int32, direction:ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -50,9 +50,9 @@ public class BookingRepository : IBookingRepository
         DynamicParameters parameters = new DynamicParameters();
 
         parameters.Add("p_BookingId",t.Id,dbType:DbType.Int32,direction:ParameterDirection.Input);
-        parameters.Add("p_BookingDate", t.Bookingdate,dbType:DbType.Date,direction:ParameterDirection.Input);
-        parameters.Add("p_UserId", t.Userid,dbType:DbType.Int32,direction:ParameterDirection.Input);
-        parameters.Add("p_EventId", t.Eventid,dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_BookingDate", t.BookingDate,dbType:DbType.Date,direction:ParameterDirection.Input);
+        parameters.Add("p_UserId", t.UserId,dbType:DbType.Int32,direction:ParameterDirection.Input);
+        parameters.Add("p_EventId", t.EventId,dbType:DbType.Int32,direction:ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

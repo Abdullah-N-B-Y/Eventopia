@@ -10,22 +10,22 @@ public partial class Profile
 
 	[Required(ErrorMessage = "FirstName is required.")]
 	[MaxLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
-	public string? Firstname { get; set; }
+	public string? FirstName { get; set; }
 
 	[Required(ErrorMessage = "LastName is required.")]
 	[MaxLength(50, ErrorMessage = "LastName cannot exceed 50 characters.")]
-	public string? Lastname { get; set; }
+	public string? LastName { get; set; }
 
 	[MaxLength(100, ErrorMessage = "ImagePath cannot exceed 100 characters.")]
-	public string? Imagepath { get; set; }
+	public string? ImagePath { get; set; }
 
 	[RegularExpression(@"^\d{10,15}$", ErrorMessage = "PhoneNumber must be a valid number with 10 to 15 digits.")]
-	public decimal? Phonenumber { get; set; }
+	public decimal? PhoneNumber { get; set; }
 
 	[MaxLength(10, ErrorMessage = "Gender cannot exceed 10 characters.")]
 	public string? Gender { get; set; }
 
-    public DateTime? Dateofbirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 
 	[MaxLength(500, ErrorMessage = "Bio cannot exceed 500 characters.")]
 	public string? Bio { get; set; }
@@ -35,7 +35,7 @@ public partial class Profile
 
 	[Required(ErrorMessage = "Userid is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "Userid must be a positive number.")]
-	public decimal? Userid { get; set; }
+	public decimal? UserId { get; set; }
 
     public virtual ICollection<Profilesetting> Profilesettings { get; set; } = new List<Profilesetting>();
 

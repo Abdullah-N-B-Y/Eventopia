@@ -79,8 +79,8 @@ public class AdminRepository : IAdminRepository
     public GetBenefitsReportDTO GetBenefitsReport(SearchBetweenDatesDTO searchDTO)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("p_StartDate", searchDTO.Startdate, DbType.Date, ParameterDirection.Input);
-        parameters.Add("p_EndDate", searchDTO.Enddate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_StartDate", searchDTO.StartDate, DbType.Date, ParameterDirection.Input);
+        parameters.Add("p_EndDate", searchDTO.EndDate, DbType.Date, ParameterDirection.Input);
         parameters.Add("p_MonthlyBenefits", DbType.Decimal, direction: ParameterDirection.Output);
         parameters.Add("p_AnnualBenefits", DbType.Decimal, direction: ParameterDirection.Output);
 

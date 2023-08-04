@@ -16,7 +16,7 @@ public partial class Profilesetting
 
 	[Required(ErrorMessage = "Profileid is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "ProfileId must be a positive number.")]
-	public decimal? Profileid { get; set; }
+	public decimal? ProfileId { get; set; }
 
     public virtual Profile? Profile { get; set; }
 }

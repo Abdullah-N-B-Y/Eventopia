@@ -412,7 +412,9 @@ create or replace PACKAGE Event_Package AS
     PROCEDURE DeleteEventByID(p_EventID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
-
+    PROCEDURE SearchEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
+    PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
+    
 END Event_Package;
 
 CREATE OR REPLACE PACKAGE BODY Event_Package AS
@@ -491,6 +493,26 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 END IF; 
     END CreateEvent;
 
+    PROCEDURE SearchEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN Date)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM Event WHERE StartDate >= p_StartDate AND EndDate <= p_EndDate;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END SearchEventsBetweenDates;
+    
+    PROCEDURE SearchEventsByName(p_Name IN VARCHAR2)
+    AS
+    cur_item SYS_REFCURSOR;
+    search_pattern VARCHAR2(300);
+        BEGIN
+        search_pattern := '%' || UPPER(p_Name) || '%';
+            OPEN cur_item FOR
+                SELECT * FROM Event WHERE UPPER(Name) LIKE search_pattern;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END SearchEventsByName;
+    
 END Event_Package;
 
 

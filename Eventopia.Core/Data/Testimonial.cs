@@ -12,7 +12,7 @@ public partial class Testimonial
 	[MaxLength(500, ErrorMessage = "Content cannot exceed 500 characters.")]
 	public string? Content { get; set; }
 
-    public DateTime? Creationdate { get; set; }
+    public DateTime? CreationDate { get; set; }
 
 	[Required(ErrorMessage = "Status is required.")]
 	[MaxLength(20, ErrorMessage = "Status cannot exceed 20 characters.")]
@@ -20,7 +20,7 @@ public partial class Testimonial
 
 	[Required(ErrorMessage = "UserId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
-	public decimal? Userid { get; set; }
+	public decimal? UserId { get; set; }
 
     public virtual User? User { get; set; }
 }

@@ -24,15 +24,15 @@ public partial class User
 	public string? Email { get; set; }
 
 	[MaxLength(50, ErrorMessage = "VerificationCode cannot exceed 50 characters.")]
-	public string? Verfiicationcode { get; set; }
+	public string? VerificationCode { get; set; }
 
 	[Required(ErrorMessage = "UserStatus is required.")]
 	[MaxLength(20, ErrorMessage = "UserStatus cannot exceed 20 characters.")]
-	public string? Userstatus { get; set; }
+	public string? UserStatus { get; set; }
 
 	[Required(ErrorMessage = "Roleid is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "RoleId must be a positive number.")]
-	public decimal? Roleid { get; set; }
+	public decimal? RoleId { get; set; }
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 

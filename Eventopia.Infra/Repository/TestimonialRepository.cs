@@ -19,9 +19,9 @@ public class TestimonialRepository : IRepository<Testimonial>
     {
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("p_Content", testimonial.Content, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_CreationDate", testimonial.Creationdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        parameters.Add("p_CreationDate", testimonial.CreationDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Status", testimonial.Status, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", testimonial.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", testimonial.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
 
@@ -67,9 +67,9 @@ public class TestimonialRepository : IRepository<Testimonial>
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("p_TestimonialID", testimonial.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
         parameters.Add("p_Content", testimonial.Content, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_CreationDate", testimonial.Creationdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        parameters.Add("p_CreationDate", testimonial.CreationDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Status", testimonial.Status, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", testimonial.Userid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", testimonial.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
 

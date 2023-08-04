@@ -55,9 +55,9 @@ public class AuthController : ControllerBase
 			Username = registerDTO.Username,
 			Email = registerDTO.Email,
 			Password = registerDTO.Password,
-			Userstatus = registerDTO.UserStatus,
-			Verfiicationcode = "",
-			Roleid = registerDTO.RoleId
+			UserStatus = registerDTO.UserStatus,
+			VerificationCode = "",
+			RoleId = registerDTO.RoleId
 		};
 
 		_userService.CreateNew(user);

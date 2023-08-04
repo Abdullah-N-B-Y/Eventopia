@@ -10,7 +10,7 @@ public partial class Role
 
 	[Required(ErrorMessage = "RoleName is required.")]
 	[MaxLength(50, ErrorMessage = "RoleName cannot exceed 50 characters.")]
-	public string? Rolename { get; set; }
+	public string? RoleName { get; set; }
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

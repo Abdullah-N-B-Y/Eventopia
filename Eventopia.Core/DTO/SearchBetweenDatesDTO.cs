@@ -6,9 +6,9 @@ namespace Eventopia.Core.DTO
     public class SearchBetweenDatesDTO
     {
 		[Required(ErrorMessage = "StartDate is required.")]
-		public DateTime? Startdate { get; set; }
+		public DateTime StartDate { get; set; }
 
 		[Required(ErrorMessage = "EndDate is required.")]
-		public DateTime? Enddate { get; set; }
+		public DateTime EndDate { get; set; }
     }
 }
