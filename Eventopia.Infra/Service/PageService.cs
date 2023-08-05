@@ -1,7 +1,8 @@
 ﻿using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
 using Eventopia.Core.Data;
-
+using Eventopia.Infra.Repository;
+using Eventopia.Infra.Utility;
 
 namespace Eventopia.Infra.Service;
 
@@ -21,17 +22,32 @@ public class PageService : IService<Page>
 
 	public bool Delete(int id)
 	{
+		Page page = _pageRepository.GetById(id);
+		if (page == null)
+			return false;
+		ImageUtility.DeleteImage(page.BackgroundImagePath, "Page");
 		return _pageRepository.Delete(id);
 	}
 
 	public List<Page> GetAll()
 	{
-		return _pageRepository.GetAll();
+		List<Page> pages = _pageRepository.GetAll();
+		foreach (Page page in pages)
+		{
+			byte[]? byteFile = ImageUtility.RetrieveImage(page.BackgroundImagePath, "Page");
+			page.RetrievedImageFile = byteFile;
+		}
+		return pages;
 	}
 
 	public Page GetById(int id)
 	{
-		return _pageRepository.GetById(id);
+		Page page = _pageRepository.GetById(id);
+		if (page == null)
+			return null;
+		byte[]? byteFile = ImageUtility.RetrieveImage(page.BackgroundImagePath, "Page");
+		page.RetrievedImageFile = byteFile;
+		return page;
 	}
 
 	public bool Update(Page page)

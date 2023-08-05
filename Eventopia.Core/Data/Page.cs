@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eventopia.Core.Data;
 
@@ -21,5 +23,11 @@ public partial class Page
 	[Range(1, int.MaxValue, ErrorMessage = "AdminId must be a positive number.")]
 	public decimal? AdminId { get; set; }
 
-    public virtual User? Admin { get; set; }
+	[NotMapped]
+	public virtual IFormFile? ReceivedImageFile { get; set; }
+
+	[NotMapped]
+	public virtual byte[]? RetrievedImageFile { get; set; }
+
+	public virtual User? Admin { get; set; }
 }
