@@ -69,6 +69,8 @@ public class Program
 		builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 		builder.Services.AddScoped<ICategoryService, CategoryService>();
 
+		builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+		builder.Services.AddScoped<IProfileService, ProfileService>();
 
 		builder.Services.AddAuthentication(opt => {
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

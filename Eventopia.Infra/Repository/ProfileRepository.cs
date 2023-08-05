@@ -6,7 +6,7 @@ using System.Data;
 
 namespace Eventopia.Infra.Repository;
 
-public class ProfileRepository : IRepository<Profile>
+public class ProfileRepository : IProfileRepository
 {
     private readonly IDbContext _dBContext;
 
@@ -22,12 +22,12 @@ public class ProfileRepository : IRepository<Profile>
         parameters.Add("p_FirstName", profile.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_LastName", profile.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_ImagePath", profile.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_PhoneNumber", profile.PhoneNumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_PhoneNumber", profile.PhoneNumber, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_Gender", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_DateOfBirth", profile.DateOfBirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Bio", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_Rate", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", profile.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", profile.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -40,7 +40,7 @@ public class ProfileRepository : IRepository<Profile>
     {
         var parameters = new DynamicParameters();
 
-        parameters.Add("p_ProfileId", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_ProfileId", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -58,25 +58,33 @@ public class ProfileRepository : IRepository<Profile>
     public Profile GetById(int id)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("p_ProfileId", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_ProfileId", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
         IEnumerable<Profile> result = _dBContext.Connection.Query<Profile>("PROFILE_PACKAGE.GetProfileByID", parameters, commandType: CommandType.StoredProcedure);
         return result.FirstOrDefault();
     }
 
-    public bool Update(Profile profile)
+	public Profile GetProfileByPhoneNumber(string phoneNumber)
+	{
+		var parameters = new DynamicParameters();
+		parameters.Add("p_PhoneNumber", phoneNumber, dbType: DbType.String, direction: ParameterDirection.Input);
+		IEnumerable<Profile> result = _dBContext.Connection.Query<Profile>("PROFILE_PACKAGE.GetProfileByPhoneNumber", parameters, commandType: CommandType.StoredProcedure);
+		return result.FirstOrDefault();
+	}
+
+	public bool Update(Profile profile)
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("p_ProfileId", profile.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_ProfileId", profile.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
         parameters.Add("p_FirstName", profile.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_LastName", profile.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_ImagePath", profile.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_PhoneNumber", profile.PhoneNumber, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_PhoneNumber", profile.PhoneNumber, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_Gender", profile.Gender, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_DateOfBirth", profile.DateOfBirth, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Bio", profile.Bio, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_Rate", profile.Rate, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", profile.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", profile.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

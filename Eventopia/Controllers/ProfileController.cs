@@ -9,9 +9,9 @@ namespace Eventopia.API.Controllers;
 [ApiController]
 public class ProfileController : ControllerBase
 {
-    private readonly IService<Profile> _profileService;
+    private readonly IProfileService _profileService;
 
-    public ProfileController(IService<Profile> profileService)
+    public ProfileController(IProfileService profileService)
     {
         _profileService = profileService;
     }
@@ -35,6 +35,19 @@ public class ProfileController : ControllerBase
             return NotFound();
 		return Ok(profile);
     }
+
+	[HttpGet]
+	[Route("GetProfileByPhoneNumber/{phoneNumber}")]
+	public IActionResult GetProfileByPhoneNumber(
+		[Required(ErrorMessage = "PhoneNumber is required.")]
+		[RegularExpression(@"^\+?[0-9]{10,12}$", ErrorMessage = "Invalid phone number. It should contain 10 to 12 digits and may start with a '+' symbol.")]
+		string phoneNumber)
+	{
+		Profile profile = _profileService.GetProfileByPhoneNumber(phoneNumber);
+		if (profile == null)
+			return NotFound();
+		return Ok(profile);
+	}
 
     [HttpPost]
     [Route("CreateNewProfile")]

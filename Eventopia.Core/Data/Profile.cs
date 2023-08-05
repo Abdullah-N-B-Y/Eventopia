@@ -19,8 +19,9 @@ public partial class Profile
 	[MaxLength(100, ErrorMessage = "ImagePath cannot exceed 100 characters.")]
 	public string? ImagePath { get; set; }
 
-	[RegularExpression(@"^\d{10,15}$", ErrorMessage = "PhoneNumber must be a valid number with 10 to 15 digits.")]
-	public decimal? PhoneNumber { get; set; }
+	[Required(ErrorMessage = "PhoneNumber is required.")]
+	[RegularExpression(@"^\+?[0-9]{10,12}$", ErrorMessage = "Invalid phone number. It should contain 10 to 12 digits and may start with a '+' symbol.")]
+	public string? PhoneNumber { get; set; }
 
 	[MaxLength(10, ErrorMessage = "Gender cannot exceed 10 characters.")]
 	public string? Gender { get; set; }

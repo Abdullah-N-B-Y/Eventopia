@@ -27,7 +27,7 @@ CREATE TABLE Profile (
   FirstName VARCHAR2(50),
   LastName VARCHAR2(50),
   ImagePath VARCHAR2(100),
-  PhoneNumber NUMBER,
+  PhoneNumber VARCHAR2(13),
   Gender VARCHAR2(10),
   DateOfBirth DATE,
   Bio VARCHAR2(500),
@@ -699,9 +699,10 @@ END Page_Package;
 CREATE OR REPLACE PACKAGE Profile_Package AS
     PROCEDURE GetAllProfiles;
     PROCEDURE GetProfileByID(p_ProfileId IN NUMBER);
+    PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2);
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
 END Profile_Package;
 
 CREATE OR REPLACE PACKAGE BODY Profile_Package
@@ -725,6 +726,15 @@ AS
             DBMS_SQL.RETURN_RESULT(cur_item);
     END GetProfileByID;
 
+    PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+            SELECT * FROM Profile WHERE PhoneNumber = p_PhoneNumber;
+            DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetProfileByPhoneNumber;
+    
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
@@ -739,7 +749,7 @@ AS
                 END IF; 
     END DeleteProfileByID;
 
-    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN
@@ -764,7 +774,7 @@ AS
                 END IF; 
     END UpdateProfileByID;
 
-    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN

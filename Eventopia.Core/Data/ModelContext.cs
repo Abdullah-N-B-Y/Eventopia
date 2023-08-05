@@ -450,7 +450,8 @@ public partial class ModelContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("LASTNAME");
             entity.Property(e => e.PhoneNumber)
-                .HasColumnType("NUMBER")
+				.HasMaxLength(13)
+				.IsUnicode(false)
                 .HasColumnName("PHONENUMBER");
             entity.Property(e => e.Rate)
                 .HasColumnType("NUMBER")

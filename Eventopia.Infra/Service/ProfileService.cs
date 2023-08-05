@@ -5,11 +5,11 @@ using Eventopia.Core.Data;
 
 namespace Eventopia.Infra.Service;
 
-public class ProfileService : IService<Profile>
+public class ProfileService : IProfileService
 {
-    private readonly IRepository<Profile> _profileRepository;
+    private readonly IProfileRepository _profileRepository;
 
-    public ProfileService(IRepository<Profile> profileRepository)
+    public ProfileService(IProfileRepository profileRepository)
     {
         _profileRepository = profileRepository;
     }
@@ -38,4 +38,9 @@ public class ProfileService : IService<Profile>
     {
         return _profileRepository.Delete(id);
     }
+
+	public Profile GetProfileByPhoneNumber(string phoneNumber)
+	{
+		return _profileRepository.GetProfileByPhoneNumber(phoneNumber);
+	}
 }
