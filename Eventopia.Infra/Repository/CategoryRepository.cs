@@ -7,7 +7,7 @@ using System.Data;
 
 namespace Eventopia.Infra.Repository;
 
-public class CategoryRepository : IRepository<Category>
+public class CategoryRepository : ICategoryRepository
 {
 	private readonly IDbContext _dBContext;
 
@@ -20,10 +20,10 @@ public class CategoryRepository : IRepository<Category>
 	{
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_Name", category.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_ImagePath", category.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", category.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Description", category.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_CreateionDate", category.Creationdate, dbType: DbType.Date, direction: ParameterDirection.Input);
-		parameters.Add("p_AdminId", category.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_CreateionDate", category.CreationDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+		parameters.Add("p_AdminId", category.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -54,22 +54,30 @@ public class CategoryRepository : IRepository<Category>
 	public Category GetById(int id)
 	{
 		var parameters = new DynamicParameters();
-		parameters.Add("CATEGORY_ID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_CategoryId", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		IEnumerable<Category> result = _dBContext.Connection.Query<Category>("CATEGORY_PACKAGE.GetCategoryById", parameters, commandType: CommandType.StoredProcedure);
+		return result.FirstOrDefault();
+	}
+
+	public Category GetCategoryByName(string name)
+	{
+		var parameters = new DynamicParameters();
+		parameters.Add("p_CategoryName", name, dbType: DbType.String, direction: ParameterDirection.Input);
+		IEnumerable<Category> result = _dBContext.Connection.Query<Category>("CATEGORY_PACKAGE.GetCategoryByName", parameters, commandType: CommandType.StoredProcedure);
 		return result.FirstOrDefault();
 	}
 
 	public bool Update(Category category)
 	{
 		DynamicParameters parameters = new DynamicParameters();
-		parameters.Add("CATEGORY_ID", category.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-		parameters.Add("NAME_", category.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("IMAGE_PATH", category.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("DESCRIPTION_", category.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("CREATION_DATE", category.Creationdate, dbType: DbType.Date, direction: ParameterDirection.Input);
-		parameters.Add("ADMIN_ID", category.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_CategoryId", category.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_Name", category.Name, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", category.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_Description", category.Description, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_CreateionDate", category.CreationDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+		parameters.Add("p_AdminId", category.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
+		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("Category_Package.UpdateCategory", parameters, commandType: CommandType.StoredProcedure);
 

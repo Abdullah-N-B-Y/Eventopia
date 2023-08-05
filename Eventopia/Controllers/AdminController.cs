@@ -1,5 +1,7 @@
-﻿using Eventopia.Core.Service;
+﻿using Eventopia.Core.DTO;
+using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -16,23 +18,39 @@ public class AdminController : ControllerBase
 
     [HttpPut]
     [Route("EventAcceptation/{id}/{status}")]
-    public bool EventAcceptation(int id, string status)
+    public IActionResult EventAcceptation(
+		[Required(ErrorMessage = "EventId is required.")]
+	    [Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
+        int id
+        , string status)
     {
-        return _adminService.EventAcceptation(id, status);
+        if(!_adminService.EventAcceptation(id, status))
+            return NotFound("EventId not found");
+		return Ok();
     }
 
     [HttpPut]
     [Route("BannedUser/{id}")]
-    public void BannedUser(int id)
+    public IActionResult BannedUser(
+		[Required(ErrorMessage = "UserId is required.")]
+	    [Range(1, int.MaxValue, ErrorMessage = "userId must be a positive number.")]
+		int id)
     {
-        _adminService.BannedUser(id);
+        if(!_adminService.BannedUser(id))
+		    return NotFound();
+        return Ok();
     }
 
     [HttpPut]
     [Route("UnbannedUser/{id}")]
-    public bool UnbannedUser(int id)
+    public IActionResult UnbannedUser(
+        [Required(ErrorMessage = "UserId is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")] 
+        int id)
     {
-        return _adminService.UnbannedUser(id);
+        if(!_adminService.UnbannedUser(id))
+            return NotFound();
+        return Ok();
     }
 
     [HttpGet]
@@ -42,10 +60,10 @@ public class AdminController : ControllerBase
         return Ok(_adminService.GetStatistics());
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("BenefitsReport")]
-    public IActionResult GetBenefitsReport(DateTime startDate, DateTime endDate)
+    public IActionResult GetBenefitsReport([FromBody] SearchBetweenDatesDTO searchDTO)
     {
-        return Ok(_adminService.GetBenefitsReport(startDate, endDate));
+		return Ok(_adminService.GetBenefitsReport(searchDTO));
     }
 }

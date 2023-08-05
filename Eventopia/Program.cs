@@ -17,8 +17,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-
-        builder.Services.AddControllers(options => options.Filters.Add<ErrorHandlingFilterAttribute>());
+        builder.Services.AddControllers(options =>
+		{
+			options.Filters.Add<ErrorHandlingFilterAttribute>();
+			options.Filters.Add<ValidateModelStateActionFilter>();
+		});
 		builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -42,7 +45,10 @@ public class Program
         builder.Services.AddScoped<IRepository<Testimonial>, TestimonialRepository>();
         builder.Services.AddScoped<IService<Testimonial>, TestimonialService>();
 
-        builder.Services.AddScoped<IEventRepository, EventRepository>();
+		builder.Services.AddScoped<IRepository<ContactUsEntry>, ContactUsEntriesRepository>();
+		builder.Services.AddScoped<IService<ContactUsEntry>, ContactUsEntriesService>();
+
+		builder.Services.AddScoped<IEventRepository, EventRepository>();
         builder.Services.AddScoped<IEventService, EventService>();
 
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
@@ -60,8 +66,11 @@ public class Program
         builder.Services.AddScoped<IBookingRepository, BookingRepository>();
         builder.Services.AddScoped<IBookingService, BookingService>();
 
+		builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+		builder.Services.AddScoped<ICategoryService, CategoryService>();
 
-        builder.Services.AddAuthentication(opt => {
+
+		builder.Services.AddAuthentication(opt => {
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 		}).AddJwtBearer(options => {

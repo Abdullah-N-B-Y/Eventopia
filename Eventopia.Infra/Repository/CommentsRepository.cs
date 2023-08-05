@@ -20,8 +20,8 @@ public class CommentsRepository : ICommentsRepository
 	{
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_Content", comment.Content, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("Event_Id", comment.Eventid, dbType: DbType.Int32, direction: ParameterDirection.Input);
-		parameters.Add("User_Id", comment.Userid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("Event_Id", comment.EventId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("User_Id", comment.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -86,8 +86,8 @@ public class CommentsRepository : ICommentsRepository
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_ID", comment.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("p_Content", comment.Content, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("Event_Id", comment.Eventid, dbType: DbType.Int32, direction: ParameterDirection.Input);
-		parameters.Add("User_Id", comment.Userid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("Event_Id", comment.EventId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("User_Id", comment.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

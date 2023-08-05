@@ -89,8 +89,10 @@ CREATE TABLE Category (
   CreationDate DATE,
   AdminId NUMBER,
   
+  Constraint UQ_CATEGORY_NAME UNIQUE (Name),
   Constraint FK_CATEGORY_ADMINID FOREIGN KEY (AdminId) REFERENCES User_(ID) ON DELETE CASCADE
 );
+
 
 -- EVENT Table
 CREATE TABLE Event (
@@ -177,8 +179,10 @@ CREATE TABLE Contact_Us_Entries (
   Subject VARCHAR2(100),
   Content VARCHAR2(500),
   Email VARCHAR2(100),
-  PhoneNumber NUMBER
---  PhoneNumber Varchar2(13)
+  PhoneNumber NUMBER,
+  AdminId NUMBER,
+  
+  Constraint FK_CONTACTENTRIES_ADMINID FOREIGN KEY (AdminId) REFERENCES User_(ID) ON DELETE CASCADE
 );
 
 --insert into Role_(ROLENAME) Values('Admin');
@@ -399,7 +403,7 @@ END User_Package;
 
 
 
--- EVENT PACKAGE SPECIFICATION
+-- EVENT PACKAGE
 
 create or replace PACKAGE Event_Package AS
 
@@ -408,7 +412,9 @@ create or replace PACKAGE Event_Package AS
     PROCEDURE DeleteEventByID(p_EventID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
-
+    PROCEDURE SearchEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
+    PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
+    
 END Event_Package;
 
 CREATE OR REPLACE PACKAGE BODY Event_Package AS
@@ -487,6 +493,26 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 END IF; 
     END CreateEvent;
 
+    PROCEDURE SearchEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN Date)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM Event WHERE StartDate >= p_StartDate AND EndDate <= p_EndDate;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END SearchEventsBetweenDates;
+    
+    PROCEDURE SearchEventsByName(p_Name IN VARCHAR2)
+    AS
+    cur_item SYS_REFCURSOR;
+    search_pattern VARCHAR2(300);
+        BEGIN
+        search_pattern := '%' || UPPER(p_Name) || '%';
+            OPEN cur_item FOR
+                SELECT * FROM Event WHERE UPPER(Name) LIKE search_pattern;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END SearchEventsByName;
+    
 END Event_Package;
 
 
@@ -496,10 +522,11 @@ END Event_Package;
 CREATE OR REPLACE PACKAGE CATEGORY_PACKAGE
 AS
     PROCEDURE GetAllCategories;
-    PROCEDURE GetCategoryById(CATEGORY_ID IN NUMBER);
-    PROCEDURE CreateCategory(NAME_ IN VARCHAR2, IMAGE_PATH IN VARCHAR2, DESCRIPTION_ IN VARCHAR2, CREATION_DATE IN DATE, ADMIN_ID NUMBER);
-    PROCEDURE UpdateCategory(CATEGORY_ID IN NUMBER, NAME_ IN VARCHAR2, IMAGE_PATH IN VARCHAR2, DESCRIPTION_ IN VARCHAR2, CREATION_DATE IN DATE, ADMIN_ID NUMBER);
-    PROCEDURE DeleteCategory(CATEGORY_ID IN NUMBER);
+    PROCEDURE GetCategoryById(p_CategoryID IN NUMBER);
+    PROCEDURE GetCategoryByName(p_CategoryName IN VARCHAR2);
+    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE DeleteCategory(p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     
 END CATEGORY_PACKAGE;
 
@@ -515,42 +542,73 @@ AS
         Dbms_sql.return_result(cur_all);
     END GetAllCategories;
     
-    PROCEDURE getCategoryById(CATEGORY_ID IN NUMBER)
+    PROCEDURE getCategoryById(p_CategoryID IN NUMBER)
     AS
         cur_item SYS_REFCURSOR;
         BEGIN
         open cur_item for
         select * from category
-        where id = CATEGORY_ID;
+        where id = p_CategoryID;
         Dbms_sql.return_result(cur_item);
     
     END getCategoryById;
     
-    PROCEDURE CreateCategory(NAME_ IN VARCHAR2, IMAGE_PATH IN VARCHAR2, DESCRIPTION_ IN VARCHAR2, CREATION_DATE IN DATE, ADMIN_ID NUMBER)
-    AS
-        id number;
+    PROCEDURE GetCategoryByName(p_CategoryName IN VARCHAR2)
+    AS 
+        cur_item SYS_REFCURSOR;
         BEGIN
-        INSERT INTO CATEGORY(NAME, IMAGEPATH, DESCRIPTION, CREATIONDATE, ADMINID) VALUES (NAME_, IMAGE_PATH, DESCRIPTION_, CREATION_DATE, ADMIN_ID);
+        open cur_item for
+        select * from category
+        where Name = p_CategoryName;
+        Dbms_sql.return_result(cur_item);
+    
+    END GetCategoryByName;
+    
+    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+        INSERT INTO CATEGORY(NAME, IMAGEPATH, DESCRIPTION, CREATIONDATE, ADMINID) VALUES (p_Name, p_ImagePath, p_Description, p_CreationDate, p_AdminId) RETURNING ID INTO v_IsSuccessed;
         COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     
     END CreateCategory;
     
-    PROCEDURE UpdateCategory(CATEGORY_ID IN NUMBER, NAME_ IN VARCHAR2, IMAGE_PATH IN VARCHAR2, DESCRIPTION_ IN VARCHAR2, CREATION_DATE IN DATE, ADMIN_ID NUMBER)
+    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
         UPDATE CATEGORY
-        SET NAME=NAME_, IMAGEPATH=IMAGE_PATH, DESCRIPTION=DESCRIPTION_, CREATIONDATE=CREATION_DATE, ADMINID=ADMIN_ID
-        WHERE ID = CATEGORY_ID;
+        SET NAME= p_Name, IMAGEPATH= p_ImagePath, DESCRIPTION= p_Description, CREATIONDATE= p_CreationDate, ADMINID= p_AdminId
+        WHERE ID = p_CategoryID RETURNING ID INTO v_IsSuccessed;
         COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     
     END UpdateCategory;
     
-    PROCEDURE DeleteCategory(CATEGORY_ID IN NUMBER)
+    PROCEDURE DeleteCategory(p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER)
         As
+        v_IsSuccessed NUMBER;
         BEGIN
         delete from CATEGORY
-        where ID = CATEGORY_ID;
+        where ID = p_CategoryID RETURNING ID INTO v_IsSuccessed;
         commit;
+        IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     
     END DeleteCategory;
 
@@ -566,7 +624,6 @@ AS
     PROCEDURE UpdatePage(p_PageId IN NUMBER, p_Content1 IN VARCHAR2, p_Content2 IN VARCHAR2, p_ImagePath IN VARCHAR2, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE DeletePage(p_PageId IN NUMBER, p_IsSuccessed OUT NUMBER);
 END Page_Package;
-
 
 CREATE OR REPLACE PACKAGE BODY Page_Package
 AS
@@ -808,15 +865,15 @@ END Testimonial_Package;
 CREATE OR REPLACE PACKAGE Booking_Package AS
 
     -- Create Procedure
-    PROCEDURE CreateBooking(p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_Is_successed OUT NUMBER);
+    PROCEDURE CreateBooking(p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_IsSuccessed OUT NUMBER);
     -- Read Procedure
     PROCEDURE GetBookingById(p_BookingId IN Booking.ID%TYPE);
     -- Update Procedure
-    PROCEDURE UpdateBooking(p_BookingId IN Booking.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE);
+    PROCEDURE UpdateBooking(p_BookingId IN Booking.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_IsSuccessed OUT NUMBER);
     -- Delete Procedure
-    PROCEDURE DeleteBooking(p_BookingId IN Booking.ID%TYPE);
+    PROCEDURE DeleteBooking(p_BookingId IN Booking.ID%TYPE, p_IsSuccessed OUT NUMBER);
     -- Delete Procedure
-    PROCEDURE DeleteUserFromBooking(p_UserId IN NUMBER, p_EventId IN NUMBER,  p_Is_successed OUT NUMBER);
+    PROCEDURE DeleteUserFromBooking(p_UserId IN NUMBER, p_EventId IN NUMBER,  p_IsSuccessed OUT NUMBER);
     -- Get All Procedures
     PROCEDURE GetAllBooking;
 
@@ -825,18 +882,18 @@ END Booking_Package;
 CREATE OR REPLACE PACKAGE BODY Booking_Package AS
 
     -- Create Procedure
-    PROCEDURE CreateBooking(p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_Is_successed OUT NUMBER)
+    PROCEDURE CreateBooking(p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_IsSuccessed OUT NUMBER)
     AS
-	Id NUMBER;
+	v_IsSuccessed NUMBER;
     	BEGIN
-        	INSERT INTO Booking VALUES(DEFAULT, p_BookingDate, p_UserId, p_EventId) RETURNING ID INTO p_Is_successed;
+        	INSERT INTO Booking VALUES(DEFAULT, p_BookingDate, p_UserId, p_EventId) RETURNING ID INTO v_IsSuccessed;
         	COMMIT;
-		IF p_Is_successed IS NULL
-		THEN
-			p_Is_successed := 0;
-		ELSE
-			p_Is_successed := 1;
-		END IF;
+		IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     END CreateBooking;
 
     -- Read Procedure
@@ -851,37 +908,52 @@ CREATE OR REPLACE PACKAGE BODY Booking_Package AS
     END GetBookingById;
 
     -- Update Procedure
-    PROCEDURE UpdateBooking(p_BookingId IN Booking.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE)
+    PROCEDURE UpdateBooking(p_BookingId IN Booking.ID%TYPE, p_BookingDate IN Booking.BookingDate%TYPE, p_UserId IN Booking.UserId%TYPE, p_EventId IN Booking.EventId%TYPE, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
             UPDATE Booking 
             SET BookingDate = p_BookingDate , UserId = p_UserId , EventId = p_EventId
-            WHERE ID = p_BookingId ;
+            WHERE ID = p_BookingId RETURNING ID INTO v_IsSuccessed;
             COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     END;
 
     -- Delete Procedure
-    PROCEDURE DeleteBooking(p_BookingId IN Booking.ID%TYPE)
+    PROCEDURE DeleteBooking(p_BookingId IN Booking.ID%TYPE, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
             DELETE FROM Booking
-            WHERE ID = p_BookingId;
+            WHERE ID = p_BookingId RETURNING ID INTO v_IsSuccessed;
             COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     END;
     
     -- Delete Procedure
-    PROCEDURE DeleteUserFromBooking(p_UserId IN NUMBER, p_EventId IN NUMBER, p_Is_successed OUT NUMBER)
+    PROCEDURE DeleteUserFromBooking(p_UserId IN NUMBER, p_EventId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
             DELETE FROM Booking
-            WHERE UserID = p_UserId AND EventId = p_EventId RETURNING ID INTO p_Is_successed;
+            WHERE UserID = p_UserId AND EventId = p_EventId  RETURNING ID INTO v_IsSuccessed;
             COMMIT;
-            IF p_Is_successed IS NULL
+            IF v_IsSuccessed IS NOT NULL
             THEN
-                p_Is_successed := 0;
+                p_IsSuccessed := 1;
             ELSE
-                p_Is_successed := 1;
-            END IF;
+                p_IsSuccessed := 0;
+            END IF; 
     END;
     --GetAll Procedure
     PROCEDURE GetAllBooking
@@ -896,17 +968,18 @@ CREATE OR REPLACE PACKAGE BODY Booking_Package AS
 END Booking_Package;
 
 
+-- MESSAGE PACKAGE
 CREATE OR REPLACE PACKAGE Message_Package
 AS
   
       -- Insert a new message
-      PROCEDURE CreateMessage(p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE);
+      PROCEDURE CreateMessage(p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE, p_IsSuccessed OUT NUMBER);
       -- Retrieve a message by ID
       PROCEDURE GetMessageById(p_Id IN Message.ID%TYPE) ;
       -- Update an existing message
-      PROCEDURE UpdateMessage(p_Id IN Message.ID%TYPE, p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE);
+      PROCEDURE UpdateMessage(p_Id IN Message.ID%TYPE, p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE, p_IsSuccessed OUT NUMBER);
       -- Delete a message
-      PROCEDURE DeleteMessage(p_Id IN Message.ID%TYPE);
+      PROCEDURE DeleteMessage(p_Id IN Message.ID%TYPE, p_IsSuccessed OUT NUMBER);
       -- Retrieve all messages
       PROCEDURE GetAllMessages;
   
@@ -915,11 +988,18 @@ END Message_Package;
 
 CREATE OR REPLACE PACKAGE BODY Message_Package IS
   
-      PROCEDURE CreateMessage(p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE)
+      PROCEDURE CreateMessage(p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
-            INSERT INTO Message VALUES (DEFAULT,p_Content, p_MessageDate,p_IsRead, p_IsDeleted, p_SenderId, p_ReceiverId);
+            INSERT INTO Message VALUES (DEFAULT,p_Content, p_MessageDate,p_IsRead, p_IsDeleted, p_SenderId, p_ReceiverId) RETURNING ID INTO v_IsSuccessed;
             COMMIT;
+            IF v_IsSuccessed IS NOT NULL
+            THEN
+                p_IsSuccessed := 1;
+            ELSE
+                p_IsSuccessed := 0;
+            END IF; 
     END CreateMessage;
   
     PROCEDURE GetMessageById(p_Id IN Message.ID%TYPE)  
@@ -932,8 +1012,9 @@ CREATE OR REPLACE PACKAGE BODY Message_Package IS
                 Dbms_sql.return_result(cur_item);
     END GetMessageById;
   
-    PROCEDURE UpdateMessage(p_Id IN Message.ID%TYPE, p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE)
+    PROCEDURE UpdateMessage(p_Id IN Message.ID%TYPE, p_Content IN Message.Content%TYPE, p_MessageDate IN Message.MessageDate%TYPE, p_IsRead IN Message.IsRead%TYPE, p_IsDeleted IN Message.IsDeleted%TYPE, p_SenderId IN Message.SenderId%TYPE, p_ReceiverId IN Message.ReceiverId%TYPE, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
             UPDATE Message SET 
             Content = p_Content,
@@ -942,11 +1023,17 @@ CREATE OR REPLACE PACKAGE BODY Message_Package IS
             IsDeleted = p_IsDeleted,
             SenderId = p_SenderId,
             ReceiverId = p_ReceiverId
-            WHERE ID = p_Id;
+            WHERE ID = p_Id  RETURNING ID INTO v_IsSuccessed;
             COMMIT;
+            IF v_IsSuccessed IS NOT NULL
+            THEN
+                p_IsSuccessed := 1;
+            ELSE
+                p_IsSuccessed := 0;
+            END IF; 
     END UpdateMessage;
   
-    PROCEDURE DeleteMessage(p_Id IN Message.ID%TYPE)
+    PROCEDURE DeleteMessage(p_Id IN Message.ID%TYPE, p_IsSuccessed OUT NUMBER)
     AS
         BEGIN
             DELETE FROM Message WHERE ID = p_Id;
@@ -1119,9 +1206,9 @@ AS
     PROCEDURE GetByEventId(Event_Id IN NUMBER);
     PROCEDURE GetByUserId(User_Id IN NUMBER);
     PROCEDURE GetByEventAndUserId(Event_Id IN NUMBER, User_Id IN NUMBER);
-    PROCEDURE CreateNewComment(p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER);
-    PROCEDURE UpdateComment(p_ID IN NUMBER, p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER);
-    PROCEDURE DeleteComment(p_ID IN NUMBER);
+    PROCEDURE CreateNewComment(p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateComment(p_ID IN NUMBER, p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE DeleteComment(p_ID IN NUMBER, p_IsSuccessed OUT NUMBER);
     
 END Comments_Package;
 
@@ -1176,39 +1263,59 @@ AS
             Dbms_sql.return_result(cur_item); 
     END GetByEventAndUserId;
     
-    PROCEDURE CreateNewComment(p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER)
+    PROCEDURE CreateNewComment(p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
-        INSERT INTO COMMENTS(Content, EventId, UserId) VALUES(p_Content, Event_Id, User_Id);
+        INSERT INTO COMMENTS(Content, EventId, UserId) VALUES(p_Content, Event_Id, User_Id) RETURNING ID INTO v_IsSuccessed;
         COMMIT;
+        IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     END CreateNewComment;
     
-    PROCEDURE UpdateComment(p_ID IN NUMBER, p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER)
+    PROCEDURE UpdateComment(p_ID IN NUMBER, p_Content IN VARCHAR2, Event_Id IN NUMBER, User_Id IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
             UPDATE COMMENTS SET 
             content = p_Content,
             EventId = Event_id, 
-            UserId = User_Id;
+            UserId = User_Id
+            WHERE ID = p_ID RETURNING ID INTO v_IsSuccessed;
             COMMIT;
+            IF v_IsSuccessed IS NOT NULL
+            THEN
+                p_IsSuccessed := 1;
+            ELSE
+                p_IsSuccessed := 0;
+            END IF; 
     END UpdateComment;
     
-    PROCEDURE DeleteComment(p_ID IN NUMBER)
+    PROCEDURE DeleteComment(p_ID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
+    v_IsSuccessed NUMBER;
         BEGIN
-            DELETE FROM COMMENTS WHERE ID = p_ID;
+            DELETE FROM COMMENTS WHERE ID = p_ID RETURNING ID INTO v_IsSuccessed;
+        IF v_IsSuccessed IS NOT NULL
+        THEN
+            p_IsSuccessed := 1;
+        ELSE
+            p_IsSuccessed := 0;
+        END IF; 
     END DeleteComment;
     
 END Comments_Package;
 
 
 
-
+-- PAYMENT PACKAGE
 CREATE OR REPLACE PACKAGE Payment_Package
 AS
-
     PROCEDURE Pay(p_EventId IN Event.ID%TYPE, p_CardNumber IN Bank.CardNumber%TYPE, p_CardHolder IN Bank.CardHolder%TYPE, p_ExpirationDate IN Bank.ExpirationDate%TYPE, p_CVV IN Bank.CVV%TYPE, p_IsPaid OUT NUMBER);
-
 END Payment_Package;
 
 CREATE OR REPLACE PACKAGE BODY Payment_Package
@@ -1240,6 +1347,7 @@ BEGIN
 END Payment_Package;
 
 
+-- PROFILESETTING PACKAGE
 CREATE OR REPLACE PACKAGE ProfileSetting_Package
 AS
     --PROCEDURE SetActivityStatus(p_UserId IN NUMBER, p_ActivityStatus IN ProfileSetting.ActivityStatus%TYPE, p_RealActivityStatus OUT ProfileSetting.ActivityStatus%TYPE);
@@ -1281,3 +1389,83 @@ AS
     
 END ProfileSetting_Package;
 
+
+-- CONTACT_US_ENTRIES
+CREATE OR REPLACE PACKAGE CONTACT_US_ENTRIES_Package
+AS
+    PROCEDURE GetAllEntries;
+    PROCEDURE GetEntryByID(p_EntryID IN NUMBER);
+    PROCEDURE DeleteEntryByID(p_EntryID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateEntryByID(p_EntryID IN NUMBER, p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateEntry(p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+END CONTACT_US_ENTRIES_Package;
+
+CREATE OR REPLACE PACKAGE BODY CONTACT_US_ENTRIES_Package
+AS
+
+    PROCEDURE GetAllEntries
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT * FROM CONTACT_US_ENTRIES;
+                DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllEntries;
+    
+    PROCEDURE GetEntryByID(p_EntryID IN NUMBER)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM CONTACT_US_ENTRIES WHERE ID = p_EntryID;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetEntryByID;
+    
+    PROCEDURE DeleteEntryByID(p_EntryID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            DELETE FROM CONTACT_US_ENTRIES WHERE ID = p_EntryID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END DeleteEntryByID;
+    
+    PROCEDURE UpdateEntryByID(p_EntryID IN NUMBER, p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            UPDATE CONTACT_US_ENTRIES
+            SET
+                Subject = p_Subject,
+                Content = p_Content,
+                Email = p_Email,
+                PhoneNumber = p_PhoneNumber,
+                AdminId = p_AdminId
+            WHERE ID = p_EntryID RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END UpdateEntryByID;
+    
+    PROCEDURE CreateEntry(p_Subject IN VARCHAR2, p_Content IN VARCHAR2, p_Email IN VARCHAR2, p_PhoneNumber IN NUMBER, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
+    AS
+        v_IsSuccessed NUMBER;
+        BEGIN
+            INSERT INTO CONTACT_US_ENTRIES (Subject, Content, Email, PhoneNumber, AdminId)
+            VALUES (p_Subject, p_Content, p_Email, p_PhoneNumber, p_AdminId) RETURNING ID INTO v_IsSuccessed;
+            IF v_IsSuccessed IS NOT NULL
+                THEN
+                    p_IsSuccessed := 1;
+                ELSE
+                    p_IsSuccessed := 0;
+                END IF; 
+    END CreateEntry;
+
+END CONTACT_US_ENTRIES_Package;

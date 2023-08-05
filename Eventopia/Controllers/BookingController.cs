@@ -1,7 +1,7 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
-using Eventopia.Infra.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers
 {
@@ -18,16 +18,24 @@ namespace Eventopia.API.Controllers
 
         [HttpPost]
         [Route("CreateNewBooking")]
-        public void CreateNewBooking(Booking booking)
+        public IActionResult CreateNewBooking([FromBody] Booking booking)
         {
-            _bookingService.CreateNew(booking);
+			_bookingService.CreateNew(booking);
+
+            return Ok();
         }
 
         [HttpGet]
         [Route("GetBookingByID/{id}")]
-        public Booking GetBookingByID(int id)
+        public IActionResult GetBookingByID(
+			[Required(ErrorMessage = "BookingId is required.")]
+		    [Range(1, int.MaxValue, ErrorMessage = "BookingId must be a positive number.")]
+			int id)
         {
-            return _bookingService.GetById(id);
+            Booking booking = _bookingService.GetById(id);
+            if(booking == null)
+                return NotFound();
+			return Ok(booking);
         }
 
         [HttpGet]
@@ -39,23 +47,37 @@ namespace Eventopia.API.Controllers
 
         [HttpPut]
         [Route("UpdateBooking")]
-        public void UpdateBooking(Booking booking) 
+        public IActionResult UpdateBooking([FromBody] Booking booking) 
         {
-            _bookingService.Update(booking);
+			_bookingService.Update(booking);
+            return Ok();
         }
 
         [HttpDelete]
         [Route("DeleteBooking/{id}")]
-        public void DeleteBooking(int id)
+        public IActionResult DeleteBooking(
+			[Required(ErrorMessage = "BookingId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "BookingId must be a positive number.")]
+			int id)
         {
-            _bookingService.Delete(id);
+            if(!_bookingService.Delete(id))
+                return NotFound();
+            return Ok();
         }
 
         [HttpDelete]
         [Route("DeleteUserFromBooking/{userId}/{eventId}")]
-        public void DeleteUserFromBooking(int userId, int eventId)
+        public IActionResult DeleteUserFromBooking(
+			[Required(ErrorMessage = "UserId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
+			int userId,
+			[Required(ErrorMessage = "EventId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "EventId must be a positive number.")]
+			int eventId)
         {
-            _bookingService.DeleteUserFromBooking(userId, eventId);
+            if(!_bookingService.DeleteUserFromBooking(userId, eventId))
+			    return NotFound("UserId or EventId not found");
+            return Ok();
         }
     }
 }

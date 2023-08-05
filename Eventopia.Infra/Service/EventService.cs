@@ -17,8 +17,7 @@ public class EventService : IEventService
 
     public List<Event> GetEventsBetweenDates(SearchBetweenDatesDTO datesDTO)
     {
-        var allEvents = _eventRepository.GetAll();
-        return allEvents.Where(e => e.Startdate >= datesDTO.Startdate && e.Enddate <= datesDTO.Enddate).ToList();
+        return _eventRepository.SearchEventsBetweenDates(datesDTO.StartDate, datesDTO.EndDate);
     }
 
     public List<Event> SearchEventsByName(string eventName)

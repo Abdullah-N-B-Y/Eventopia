@@ -20,10 +20,10 @@ public class PaymentRepository : IPaymentRepository
         DynamicParameters parameters = new DynamicParameters();
 
         parameters.Add("p_EventId", eventId, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        parameters.Add("p_CardNumber", bank.Cardnumber, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_CardHolder", bank.Cardholder, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_ExpirationDate", bank.Expirationdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-        parameters.Add("p_CVV", bank.Cvv, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_CardNumber", bank.CardNumber, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_CardHolder", bank.CardHolder, dbType: DbType.String, direction: ParameterDirection.Input);
+        parameters.Add("p_ExpirationDate", bank.ExpirationDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        parameters.Add("p_CVV", bank.CVV, dbType: DbType.String, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsPaid", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

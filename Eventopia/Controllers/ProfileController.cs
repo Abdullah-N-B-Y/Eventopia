@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Eventopia.Core.Data;
 using Eventopia.Core.Service;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers;
 
@@ -24,29 +25,42 @@ public class ProfileController : ControllerBase
 
     [HttpGet]
     [Route("GetProfileByID/{id}")]
-    public Profile GetProfileByID(int id)
+    public IActionResult GetProfileByID(
+		[Required(ErrorMessage = "ProfileId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "ProfileId must be a positive number.")]
+		int id)
     {
-        return _profileService.GetById(id);
+        Profile profile = _profileService.GetById(id);
+        if(profile == null)
+            return NotFound();
+		return Ok(profile);
     }
 
     [HttpPost]
     [Route("CreateNewProfile")]
-    public void CreateNewProfile(Profile profile)
+    public IActionResult CreateNewProfile([FromBody] Profile profile)
     {
-        _profileService.CreateNew(profile);
+		_profileService.CreateNew(profile);
+        return Ok();
     }
 
     [HttpPut]
     [Route("UpdateProfile")]
-    public void UpdateProfile(Profile profile)
+    public IActionResult UpdateProfile([FromBody] Profile profile)
     {
-        _profileService.Update(profile);
+		_profileService.Update(profile);
+        return Ok();
     }
 
     [HttpDelete]
     [Route("DeleteProfile/{id}")]
-    public void DeleteProfile(int id)
+    public IActionResult DeleteProfile(
+		[Required(ErrorMessage = "ProfileId is required.")]
+		[Range(1, int.MaxValue, ErrorMessage = "ProfileId must be a positive number.")]
+		int id)
     {
-        _profileService.Delete(id);
+        if(!_profileService.Delete(id))
+            return NotFound();
+        return Ok();
     }
 }

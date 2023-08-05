@@ -21,8 +21,8 @@ public class PageRepository : IRepository<Page>
 		DynamicParameters parameters = new DynamicParameters();
 		parameters.Add("p_Content1", page.Content1, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Content2", page.Content2, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_ImagePath", page.Backgroundimagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_AdminId", page.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", page.BackgroundImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_AdminId", page.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -64,8 +64,8 @@ public class PageRepository : IRepository<Page>
 		parameters.Add("p_PageId", page.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("p_Content1", page.Content1, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Content2", page.Content2, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_ImagePath", page.Backgroundimagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_AdminId", page.Adminid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", page.BackgroundImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_AdminId", page.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

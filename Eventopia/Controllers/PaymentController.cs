@@ -17,8 +17,9 @@ public class PaymentController : ControllerBase
 
     [HttpPost]
     [Route("Pay/{eventId}")]
-    public void Pay(int eventId, Bank bank)
+    public IActionResult Pay(int eventId, [FromBody] Bank bank)
     {
-        _paymentService.Pay(eventId, bank);
+		_paymentService.Pay(eventId, bank);
+        return Ok();
     }
 }

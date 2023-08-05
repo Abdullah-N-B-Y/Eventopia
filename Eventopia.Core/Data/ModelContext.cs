@@ -61,7 +61,7 @@ public partial class ModelContext : DbContext
 
             entity.ToTable("BANK");
 
-            entity.HasIndex(e => e.Cardnumber, "UQ_BANK_CARDNUMBER").IsUnique();
+            entity.HasIndex(e => e.CardNumber, "UQ_BANK_CARDNUMBER").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
@@ -70,19 +70,19 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.Balance)
                 .HasColumnType("NUMBER")
                 .HasColumnName("BALANCE");
-            entity.Property(e => e.Cardholder)
+            entity.Property(e => e.CardHolder)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CARDHOLDER");
-            entity.Property(e => e.Cardnumber)
+            entity.Property(e => e.CardNumber)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("CARDNUMBER");
-            entity.Property(e => e.Cvv)
+            entity.Property(e => e.CVV)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("CVV");
-            entity.Property(e => e.Expirationdate)
+            entity.Property(e => e.ExpirationDate)
                 .HasColumnType("DATE")
                 .HasColumnName("EXPIRATIONDATE");
         });
@@ -97,23 +97,23 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
-            entity.Property(e => e.Bookingdate)
+            entity.Property(e => e.BookingDate)
                 .HasColumnType("DATE")
                 .HasColumnName("BOOKINGDATE");
-            entity.Property(e => e.Eventid)
+            entity.Property(e => e.EventId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("EVENTID");
-            entity.Property(e => e.Userid)
+            entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("USERID");
 
             entity.HasOne(d => d.Event).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.Eventid)
+                .HasForeignKey(d => d.EventId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_BOOKING_EVENTID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.Userid)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_BOOKING_USERID");
         });
@@ -130,17 +130,17 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
-            entity.Property(e => e.Adminid)
+            entity.Property(e => e.AdminId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ADMINID");
-            entity.Property(e => e.Creationdate)
+            entity.Property(e => e.CreationDate)
                 .HasColumnType("DATE")
                 .HasColumnName("CREATIONDATE");
             entity.Property(e => e.Description)
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("DESCRIPTION");
-            entity.Property(e => e.Imagepath)
+            entity.Property(e => e.ImagePath)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("IMAGEPATH");
@@ -150,7 +150,7 @@ public partial class ModelContext : DbContext
                 .HasColumnName("NAME");
 
             entity.HasOne(d => d.Admin).WithMany(p => p.Categories)
-                .HasForeignKey(d => d.Adminid)
+                .HasForeignKey(d => d.AdminId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CATEGORY_ADMINID");
         });
@@ -169,19 +169,19 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("CONTENT");
-            entity.Property(e => e.Eventid)
+            entity.Property(e => e.EventId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("EVENTID");
-			entity.Property(e => e.Userid)
+			entity.Property(e => e.UserId)
 				.HasColumnType("NUMBER")
 				.HasColumnName("USERID");
 
 			entity.HasOne(d => d.Event).WithMany(p => p.Comments)
-                .HasForeignKey(d => d.Eventid)
+                .HasForeignKey(d => d.EventId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_COMMENT_EVENTID");
 			entity.HasOne(d => d.User).WithMany(p => p.Comments)
-				.HasForeignKey(d => d.Userid)
+				.HasForeignKey(d => d.UserId)
 				.OnDelete(DeleteBehavior.Cascade)
 				.HasConstraintName("FK_COMMENT_USERID");
 		});
@@ -196,7 +196,7 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
-            entity.Property(e => e.Adminid)
+            entity.Property(e => e.AdminId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ADMINID");
             entity.Property(e => e.Content)
@@ -207,7 +207,7 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("EMAIL");
-            entity.Property(e => e.Phonenumber)
+            entity.Property(e => e.PhoneNumber)
                 .HasColumnType("NUMBER")
                 .HasColumnName("PHONENUMBER");
             entity.Property(e => e.Subject)
@@ -216,7 +216,7 @@ public partial class ModelContext : DbContext
                 .HasColumnName("SUBJECT");
 
             entity.HasOne(d => d.Admin).WithMany(p => p.ContactUsEntries)
-                .HasForeignKey(d => d.Adminid)
+                .HasForeignKey(d => d.AdminId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CONTACTENTRIES_ADMINID");
         });
@@ -231,26 +231,26 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
-            entity.Property(e => e.Attendingcost)
+            entity.Property(e => e.AttendingCost)
                 .HasColumnType("FLOAT")
                 .HasColumnName("ATTENDINGCOST");
-            entity.Property(e => e.Categoryid)
+            entity.Property(e => e.CategoryId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("CATEGORYID");
-            entity.Property(e => e.Enddate)
+            entity.Property(e => e.EndDate)
                 .HasColumnType("DATE")
                 .HasColumnName("ENDDATE");
-            entity.Property(e => e.Eventcapacity)
+            entity.Property(e => e.EventCapacity)
                 .HasColumnType("NUMBER")
                 .HasColumnName("EVENTCAPACITY");
-            entity.Property(e => e.Eventcreatorid)
+            entity.Property(e => e.EventCreatorId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("EVENTCREATORID");
-            entity.Property(e => e.Eventdescription)
+            entity.Property(e => e.EventDescription)
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("EVENTDESCRIPTION");
-            entity.Property(e => e.Imagepath)
+            entity.Property(e => e.ImagePath)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("IMAGEPATH");
@@ -264,7 +264,7 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("NAME");
-            entity.Property(e => e.Startdate)
+            entity.Property(e => e.StartDate)
                 .HasColumnType("DATE")
                 .HasColumnName("STARTDATE");
             entity.Property(e => e.Status)
@@ -273,12 +273,12 @@ public partial class ModelContext : DbContext
                 .HasColumnName("STATUS");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Events)
-                .HasForeignKey(d => d.Categoryid)
+                .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_EVENT_CATEGORYID");
 
             entity.HasOne(d => d.Eventcreator).WithMany(p => p.Events)
-                .HasForeignKey(d => d.Eventcreatorid)
+                .HasForeignKey(d => d.EventCreatorId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_EVENT_CREATORID");
         });
@@ -297,29 +297,29 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("CONTENT");
-            entity.Property(e => e.Isdeleted)
+            entity.Property(e => e.IsDeleted)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ISDELETED");
-            entity.Property(e => e.Isread)
+            entity.Property(e => e.IsRead)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ISREAD");
-            entity.Property(e => e.Messagedate)
+            entity.Property(e => e.MessageDate)
                 .HasColumnType("DATE")
                 .HasColumnName("MESSAGEDATE");
-            entity.Property(e => e.Receiverid)
+            entity.Property(e => e.ReceiverId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("RECEIVERID");
-            entity.Property(e => e.Senderid)
+            entity.Property(e => e.SenderId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("SENDERID");
 
             entity.HasOne(d => d.Receiver).WithMany(p => p.MessageReceivers)
-                .HasForeignKey(d => d.Receiverid)
+                .HasForeignKey(d => d.ReceiverId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_MESSAGE_RECEIVERID");
 
             entity.HasOne(d => d.Sender).WithMany(p => p.MessageSenders)
-                .HasForeignKey(d => d.Senderid)
+                .HasForeignKey(d => d.SenderId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_MESSAGE_SENDERID");
         });
@@ -338,15 +338,15 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("CONTENT");
-            entity.Property(e => e.Receiveddate)
+            entity.Property(e => e.ReceivedDate)
                 .HasColumnType("DATE")
                 .HasColumnName("RECEIVEDDATE");
-            entity.Property(e => e.Receiverid)
+            entity.Property(e => e.ReceiverId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("RECEIVERID");
 
             entity.HasOne(d => d.Receiver).WithMany(p => p.Notifications)
-                .HasForeignKey(d => d.Receiverid)
+                .HasForeignKey(d => d.ReceiverId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_NOTIFICATION_RECEIVERID");
         });
@@ -361,10 +361,10 @@ public partial class ModelContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
-            entity.Property(e => e.Adminid)
+            entity.Property(e => e.AdminId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ADMINID");
-            entity.Property(e => e.Backgroundimagepath)
+            entity.Property(e => e.BackgroundImagePath)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("BACKGROUNDIMAGEPATH");
@@ -378,7 +378,7 @@ public partial class ModelContext : DbContext
                 .HasColumnName("CONTENT2");
 
             entity.HasOne(d => d.Admin).WithMany(p => p.Pages)
-                .HasForeignKey(d => d.Adminid)
+                .HasForeignKey(d => d.AdminId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PAGE_ADMINID");
         });
@@ -399,19 +399,19 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("METHOD");
-            entity.Property(e => e.Paymentdate)
+            entity.Property(e => e.PaymentDate)
                 .HasColumnType("DATE")
                 .HasColumnName("PAYMENTDATE");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("STATUS");
-            entity.Property(e => e.Userid)
+            entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("USERID");
 
             entity.HasOne(d => d.User).WithMany()
-                .HasForeignKey(d => d.Userid)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PAYMENT_USERID");
         });
@@ -422,7 +422,7 @@ public partial class ModelContext : DbContext
 
             entity.ToTable("PROFILE");
 
-            entity.HasIndex(e => e.Phonenumber, "UQ_PROFILE_PHONENUMBER").IsUnique();
+            entity.HasIndex(e => e.PhoneNumber, "UQ_PROFILE_PHONENUMBER").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
@@ -432,10 +432,10 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("BIO");
-            entity.Property(e => e.Dateofbirth)
+            entity.Property(e => e.DateOfBirth)
                 .HasColumnType("DATE")
                 .HasColumnName("DATEOFBIRTH");
-            entity.Property(e => e.Firstname)
+            entity.Property(e => e.FirstName)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("FIRSTNAME");
@@ -443,26 +443,26 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("GENDER");
-            entity.Property(e => e.Imagepath)
+            entity.Property(e => e.ImagePath)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("IMAGEPATH");
-            entity.Property(e => e.Lastname)
+            entity.Property(e => e.LastName)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("LASTNAME");
-            entity.Property(e => e.Phonenumber)
+            entity.Property(e => e.PhoneNumber)
                 .HasColumnType("NUMBER")
                 .HasColumnName("PHONENUMBER");
             entity.Property(e => e.Rate)
                 .HasColumnType("NUMBER")
                 .HasColumnName("RATE");
-            entity.Property(e => e.Userid)
+            entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("USERID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Profiles)
-                .HasForeignKey(d => d.Userid)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PROFILE_USERID");
         });
@@ -481,7 +481,7 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("LANGUAGE");
-            entity.Property(e => e.Profileid)
+            entity.Property(e => e.ProfileId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("PROFILEID");
             entity.Property(e => e.Theme)
@@ -490,7 +490,7 @@ public partial class ModelContext : DbContext
                 .HasColumnName("THEME");
 
             entity.HasOne(d => d.Profile).WithMany(p => p.Profilesettings)
-                .HasForeignKey(d => d.Profileid)
+                .HasForeignKey(d => d.ProfileId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PROFILESETTING_PROFILEID");
         });
@@ -501,13 +501,13 @@ public partial class ModelContext : DbContext
 
             entity.ToTable("ROLE_");
 
-            entity.HasIndex(e => e.Rolename, "UQ_ROLE_ROLENAME").IsUnique();
+            entity.HasIndex(e => e.RoleName, "UQ_ROLE_ROLENAME").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
-            entity.Property(e => e.Rolename)
+            entity.Property(e => e.RoleName)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ROLENAME");
@@ -527,19 +527,19 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("CONTENT");
-            entity.Property(e => e.Creationdate)
+            entity.Property(e => e.CreationDate)
                 .HasColumnType("DATE")
                 .HasColumnName("CREATIONDATE");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("STATUS");
-            entity.Property(e => e.Userid)
+            entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("USERID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Testimonials)
-                .HasForeignKey(d => d.Userid)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TESTIMONIAL_USERID");
         });
@@ -566,24 +566,24 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PASSWORD");
-            entity.Property(e => e.Roleid)
+            entity.Property(e => e.RoleId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ROLEID");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("USERNAME");
-            entity.Property(e => e.Userstatus)
+            entity.Property(e => e.UserStatus)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("USERSTATUS");
-            entity.Property(e => e.Verfiicationcode)
+            entity.Property(e => e.VerificationCode)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("VERFIICATIONCODE");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
-                .HasForeignKey(d => d.Roleid)
+                .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_USER_ROLEID");
         });

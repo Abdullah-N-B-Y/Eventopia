@@ -42,7 +42,7 @@ public class AuthService : IAuthService
 			var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 			var claims = new List<Claim> {
 				new Claim("Username", result.Username),
-				new Claim("RoleId", result.Roleid.ToString()),
+				new Claim("RoleId", result.RoleId.ToString()),
 				new Claim("UserId", result.Id.ToString())
 			};
 

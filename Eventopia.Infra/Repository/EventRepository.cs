@@ -23,12 +23,12 @@ public class EventRepository : IEventRepository
         IEnumerable<Event> result = _dBContext.Connection.Query<Event>("EVENT_PACKAGE.SearchEventsByName", parameters, commandType: CommandType.StoredProcedure);
         return result.ToList();
     }
-    
-    public List<Event> SearchBetweenDates(DateTime startDate, DateTime endDate)
+     
+    public List<Event> SearchEventsBetweenDates(DateTime startDate, DateTime endDate)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("START_DATE", startDate, dbType: DbType.Date, direction: ParameterDirection.Input);
-        parameters.Add("END_DATE", endDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+        parameters.Add("p_StartDate", startDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+        parameters.Add("p_EndDate", endDate, dbType: DbType.Date, direction: ParameterDirection.Input);
 
         IEnumerable<Event> result = _dBContext.Connection.Query<Event>("EVENT_PACKAGE.SearchEventsBetweenDates", parameters, commandType: CommandType.StoredProcedure);
         return result.ToList();
@@ -39,16 +39,16 @@ public class EventRepository : IEventRepository
 		DynamicParameters parameters = new DynamicParameters();
 
 		parameters.Add("p_Name", eventObj.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_AttendingCost", eventObj.Attendingcost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_StartDate", eventObj.Startdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-		parameters.Add("p_EndDate", eventObj.Enddate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-		parameters.Add("p_EventDescription", eventObj.Eventdescription, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_ImagePath", eventObj.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_EventCapacity", eventObj.Eventcapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_AttendingCost", eventObj.AttendingCost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_StartDate", eventObj.StartDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_EndDate", eventObj.EndDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_EventDescription", eventObj.EventDescription, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", eventObj.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_EventCapacity", eventObj.EventCapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Latitude", eventObj.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
         parameters.Add("p_Longitude", eventObj.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_EventCreatorID", eventObj.Eventcreatorid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_CategoryID", eventObj.Categoryid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_EventCreatorID", eventObj.EventCreatorId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_CategoryID", eventObj.CategoryId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
 
@@ -90,17 +90,17 @@ public class EventRepository : IEventRepository
 
         parameters.Add("p_EventID", eventObj.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Name", eventObj.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_AttendingCost", eventObj.Attendingcost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_StartDate", eventObj.Startdate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-		parameters.Add("p_EndDate", eventObj.Enddate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_AttendingCost", eventObj.AttendingCost, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_StartDate", eventObj.StartDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+		parameters.Add("p_EndDate", eventObj.EndDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
 		parameters.Add("p_Status", eventObj.Status, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_EventDescription", eventObj.Eventdescription, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_ImagePath", eventObj.Imagepath, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_EventCapacity", eventObj.Eventcapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_EventDescription", eventObj.EventDescription, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_ImagePath", eventObj.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_EventCapacity", eventObj.EventCapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Latitude", eventObj.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Longitude", eventObj.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_EventCreatorID", eventObj.Eventcreatorid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-		parameters.Add("p_CategoryID", eventObj.Categoryid, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_EventCreatorID", eventObj.EventCreatorId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_CategoryID", eventObj.CategoryId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
 

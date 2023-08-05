@@ -19,11 +19,11 @@ public class MessageRepository : IRepository<Message>
     {
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("p_Content", message.Content, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_MessageDate", message.Messagedate, dbType: DbType.Date, direction: ParameterDirection.Input);
-        parameters.Add("p_IsRead", message.Isread, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_IsDeleted", message.Isdeleted, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-        parameters.Add("p_SenderId", message.Senderid, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        parameters.Add("p_ReceiverId", message.Receiverid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_MessageDate", message.MessageDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+        parameters.Add("p_IsRead", message.IsRead, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_IsDeleted", message.IsDeleted, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_SenderId", message.SenderId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_ReceiverId", message.ReceiverId, dbType: DbType.Int32, direction: ParameterDirection.Input);
         
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -51,11 +51,11 @@ public class MessageRepository : IRepository<Message>
 
         parameters.Add("p_Id", message.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
         parameters.Add("p_Content", message.Content, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_MessageDate", message.Messagedate, dbType: DbType.Date, direction: ParameterDirection.Input);
-        parameters.Add("p_IsRead", message.Isread, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        parameters.Add("p_IsDeleted", message.Isdeleted, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        parameters.Add("p_SenderId", message.Senderid, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        parameters.Add("p_ReceiverId", message.Receiverid, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_MessageDate", message.MessageDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+        parameters.Add("p_IsRead", message.IsRead, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_IsDeleted", message.IsDeleted, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_SenderId", message.SenderId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_ReceiverId", message.ReceiverId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

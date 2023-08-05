@@ -2,6 +2,7 @@
 using Eventopia.Core.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventopia.API.Controllers
 {
@@ -9,9 +10,9 @@ namespace Eventopia.API.Controllers
 	[ApiController]
 	public class CategoryController : ControllerBase
 	{
-		private readonly IService<Category> _categoryService;
+		private readonly ICategoryService _categoryService;
 
-		public CategoryController(IService<Category> categoryService)
+		public CategoryController(ICategoryService categoryService)
 		{
 			_categoryService = categoryService;
 		}
@@ -25,30 +26,65 @@ namespace Eventopia.API.Controllers
 
 		[HttpGet]
 		[Route("GetCategoryById/{id}")]
-		public Category GetCategoryById(int id)
+		public IActionResult GetCategoryById(
+			[Required(ErrorMessage = "CategoryId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "CategoryId must be a positive number.")]
+			int id)
 		{
-			return _categoryService.GetById(id);
+			Category category = _categoryService.GetById(id);
+			if(category == null)
+				return NotFound();
+			return Ok(category);
+		}
+
+		[HttpGet]
+		[Route("GetCategoryByName/{name}")]
+		public IActionResult GetCategoryByName(
+			[Required(ErrorMessage = "Name is required.")]
+			[MaxLength(50, ErrorMessage = "Name cannot exceed 50 characters.")]
+			string name)
+		{
+			Category category = _categoryService.GetCategoryByName(name);
+			if (category == null)
+				return NotFound();
+			return Ok(category);
 		}
 
 		[HttpPost]
 		[Route("CreateCategory")]
-		public void CreateCategory(Category category)
+		public IActionResult CreateCategory([FromBody] Category category)
 		{
+			Category cat = _categoryService.GetCategoryByName(category.Name);
+			if(cat == null)
+				return Conflict("CategoryName Already Exists");
+
 			_categoryService.CreateNew(category);
+			return Ok();
 		}
 
 		[HttpPut]
 		[Route("UpdateCategory")]
-		public void UpdateCategory(Category category)
+		public IActionResult UpdateCategory([FromBody] Category category)
 		{
+			Category cat = _categoryService.GetCategoryByName(category.Name);
+			if (cat == null)
+				return Conflict("CategoryName Already Exists");
+
 			_categoryService.Update(category);
+			return Ok();
 		}
 
 		[HttpDelete]
 		[Route("DeleteCategory/{id}")]
-		public void DeleteCategory(int id)
+		public IActionResult DeleteCategory(
+			[Required(ErrorMessage = "CategoryId is required.")]
+			[Range(1, int.MaxValue, ErrorMessage = "CategoryId must be a positive number.")]
+			int id)
 		{
-			_categoryService.Delete(id);
+			if(!_categoryService.Delete(id))
+				return NotFound();
+
+			return Ok();
 		}
 
 	}
