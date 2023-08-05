@@ -2,6 +2,9 @@
 using Eventopia.Core.Data;
 using Eventopia.Core.Service;
 using System.ComponentModel.DataAnnotations;
+using Eventopia.Infra.Utility;
+using Microsoft.Extensions.Logging;
+using Eventopia.Infra.Service;
 
 namespace Eventopia.API.Controllers;
 
@@ -49,19 +52,43 @@ public class ProfileController : ControllerBase
 		return Ok(profile);
 	}
 
-    [HttpPost]
-    [Route("CreateNewProfile")]
-    public IActionResult CreateNewProfile([FromBody] Profile profile)
+	[HttpPost]
+    [Route("CreateProfile")]
+    public IActionResult CreateProfile([FromForm] Profile profile)
     {
-		_profileService.CreateNew(profile);
-        return Ok();
+		Profile p = _profileService.GetProfileByPhoneNumber(profile.PhoneNumber);
+		if (p != null)
+			return Conflict("PhoneNumber Already Exists");
+
+		if (profile.ReceivedImageFile != null)
+		{
+			if (!ImageUtility.IsImageContentType(profile.ReceivedImageFile.ContentType))
+				return BadRequest("Invalid file type. Only images are allowed.");
+
+			profile.ImagePath = ImageUtility.StoreImage(profile.ReceivedImageFile, "Profile");
+		}
+		
+        return Ok(_profileService.CreateNew(profile));
     }
 
     [HttpPut]
     [Route("UpdateProfile")]
-    public IActionResult UpdateProfile([FromBody] Profile profile)
+    public IActionResult UpdateProfile([FromForm] Profile profile)
     {
-		_profileService.Update(profile);
+		Profile p = _profileService.GetProfileByPhoneNumber(profile.PhoneNumber);
+		if (p != null && p.Id != profile.Id)
+			return Conflict("PhoneNumber Already Exists");
+
+		if (profile.ReceivedImageFile != null)
+		{
+			if (!ImageUtility.IsImageContentType(profile.ReceivedImageFile.ContentType))
+				return BadRequest("Invalid file type. Only images are allowed.");
+
+			profile.ImagePath = ImageUtility.ReplaceImage(profile.ImagePath, profile.ReceivedImageFile, "Profile");
+		}
+
+        if (!_profileService.Update(profile))
+            return BadRequest();
         return Ok();
     }
 

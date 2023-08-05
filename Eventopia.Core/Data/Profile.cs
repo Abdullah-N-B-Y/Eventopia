@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eventopia.Core.Data;
 
@@ -38,7 +40,13 @@ public partial class Profile
 	[Range(1, int.MaxValue, ErrorMessage = "Userid must be a positive number.")]
 	public decimal? UserId { get; set; }
 
-    public virtual ICollection<Profilesetting> Profilesettings { get; set; } = new List<Profilesetting>();
+	[NotMapped]
+	public virtual IFormFile? ReceivedImageFile { get; set; }
+
+	[NotMapped]
+	public virtual byte[]? RetrievedImageFile { get; set; }
+
+	public virtual ICollection<Profilesetting> Profilesettings { get; set; } = new List<Profilesetting>();
 
     public virtual User? User { get; set; }
 }
