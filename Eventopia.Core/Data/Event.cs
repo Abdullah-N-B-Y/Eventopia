@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eventopia.Core.Data;
 
@@ -51,7 +53,13 @@ public partial class Event
 	[Range(1, int.MaxValue, ErrorMessage = "CategoryId must be a positive number.")]
 	public decimal? CategoryId { get; set; }
 
-    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+	[NotMapped]
+	public virtual IFormFile? ReceivedImageFile { get; set; }
+
+	[NotMapped]
+	public virtual byte[]? RetrievedImageFile { get; set; }
+
+	public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual Category? Category { get; set; }
 

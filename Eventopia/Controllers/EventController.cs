@@ -1,6 +1,7 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
+using Eventopia.Infra.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -20,7 +21,6 @@ public class EventController : ControllerBase
 
     [HttpPost]
     [Route("SearchEventsBetweenDates")]
-    //[Authorize(Policy = "AdminOnly")]
     public IActionResult SearchEventsBetweenDates([FromBody] SearchBetweenDatesDTO searchDTO)
     {
         return Ok(_eventService.GetEventsBetweenDates(searchDTO));
@@ -39,11 +39,17 @@ public class EventController : ControllerBase
 
     [HttpPost]
     [Route("CreateNewEvent")]
-    public IActionResult CreateNewEvent([FromBody] Event eventt)
+    public IActionResult CreateNewEvent([FromForm] Event eventt)
     {
-		_eventService.CreateNew(eventt);
+		if (eventt.ReceivedImageFile != null)
+		{
+			if (!ImageUtility.IsImageContentType(eventt.ReceivedImageFile.ContentType))
+				return BadRequest("Invalid file type. Only images are allowed.");
 
-        return Ok();
+			eventt.ImagePath = ImageUtility.StoreImage(eventt.ReceivedImageFile, "Event");
+		}
+
+        return Ok(_eventService.CreateNew(eventt));
     }
 
     [HttpGet]
@@ -68,9 +74,17 @@ public class EventController : ControllerBase
 
     [HttpPut]
     [Route("UpdateEvent")]
-    public IActionResult UpdateEvent([FromBody] Event eventt)
+    public IActionResult UpdateEvent([FromForm] Event eventt)
     {
-		_eventService.Update(eventt);
+		if (eventt.ReceivedImageFile != null)
+		{
+			if (!ImageUtility.IsImageContentType(eventt.ReceivedImageFile.ContentType))
+				return BadRequest("Invalid file type. Only images are allowed.");
+
+			eventt.ImagePath = ImageUtility.ReplaceImage(eventt.ImagePath, eventt.ReceivedImageFile, "Event");
+		}
+        if (!_eventService.Update(eventt))
+            return NotFound();
         return Ok();
     }
 
