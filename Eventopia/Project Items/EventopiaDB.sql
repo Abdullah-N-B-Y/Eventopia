@@ -524,8 +524,8 @@ AS
     PROCEDURE GetAllCategories;
     PROCEDURE GetCategoryById(p_CategoryID IN NUMBER);
     PROCEDURE GetCategoryByName(p_CategoryName IN VARCHAR2);
-    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE DeleteCategory(p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     
 END CATEGORY_PACKAGE;
@@ -564,7 +564,7 @@ AS
     
     END GetCategoryByName;
     
-    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN
@@ -579,7 +579,7 @@ AS
     
     END CreateCategory;
     
-    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
     v_IsSuccessed NUMBER;
         BEGIN

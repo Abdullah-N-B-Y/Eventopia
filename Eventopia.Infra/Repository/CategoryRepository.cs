@@ -22,7 +22,7 @@ public class CategoryRepository : ICategoryRepository
 		parameters.Add("p_Name", category.Name, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_ImagePath", category.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Description", category.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_CreateionDate", category.CreationDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+		parameters.Add("p_CreationDate", category.CreationDate, dbType: DbType.Date, direction: ParameterDirection.Input);
 		parameters.Add("p_AdminId", category.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
@@ -74,7 +74,7 @@ public class CategoryRepository : ICategoryRepository
 		parameters.Add("p_Name", category.Name, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_ImagePath", category.ImagePath, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Description", category.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_CreateionDate", category.CreationDate, dbType: DbType.Date, direction: ParameterDirection.Input);
+		parameters.Add("p_CreationDate", category.CreationDate, dbType: DbType.Date, direction: ParameterDirection.Input);
 		parameters.Add("p_AdminId", category.AdminId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
 		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);

@@ -452,7 +452,7 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.PhoneNumber)
 				.HasMaxLength(13)
 				.IsUnicode(false)
-                .HasColumnName("PHONENUMBER");
+				.HasColumnName("PHONENUMBER");
             entity.Property(e => e.Rate)
                 .HasColumnType("NUMBER")
                 .HasColumnName("RATE");

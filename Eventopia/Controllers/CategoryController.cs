@@ -1,5 +1,6 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
+using Eventopia.Infra.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -21,7 +22,7 @@ namespace Eventopia.API.Controllers
 		[Route("GetAllCategories")]
 		public List<Category> GetAllCategories()
 		{
-			return _categoryService.GetAll();
+            return _categoryService.GetAll();
 		}
 
 		[HttpGet]
@@ -52,11 +53,19 @@ namespace Eventopia.API.Controllers
 
 		[HttpPost]
 		[Route("CreateCategory")]
-		public IActionResult CreateCategory([FromBody] Category category)
+		public IActionResult CreateCategory([FromForm] Category category)
 		{
 			Category cat = _categoryService.GetCategoryByName(category.Name);
-			if(cat == null)
+			if(cat != null)
 				return Conflict("CategoryName Already Exists");
+
+			if(category.ReceivedImageFile != null)
+			{
+				if (!ImageUtility.IsImageContentType(category.ReceivedImageFile.ContentType))
+					return BadRequest("Invalid file type. Only images are allowed.");
+
+				category.ImagePath = ImageUtility.StoreImage(category.ReceivedImageFile, "Category");
+			}
 
 			_categoryService.CreateNew(category);
 			return Ok();
@@ -64,13 +73,22 @@ namespace Eventopia.API.Controllers
 
 		[HttpPut]
 		[Route("UpdateCategory")]
-		public IActionResult UpdateCategory([FromBody] Category category)
+		public IActionResult UpdateCategory([FromForm] Category category)
 		{
 			Category cat = _categoryService.GetCategoryByName(category.Name);
-			if (cat == null)
+			if (cat != null && cat.Id != category.Id)
 				return Conflict("CategoryName Already Exists");
 
-			_categoryService.Update(category);
+			if (category.ReceivedImageFile != null)
+			{
+				if (!ImageUtility.IsImageContentType(category.ReceivedImageFile.ContentType))
+					return BadRequest("Invalid file type. Only images are allowed.");
+
+				category.ImagePath = ImageUtility.ReplaceImage(category.ImagePath, category.ReceivedImageFile, "Category");
+			}
+			if (!_categoryService.Update(category))
+				return NotFound();
+
 			return Ok();
 		}
 
@@ -86,6 +104,5 @@ namespace Eventopia.API.Controllers
 
 			return Ok();
 		}
-
 	}
 }
