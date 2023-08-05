@@ -2,6 +2,7 @@
 using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
 using Eventopia.Infra.Repository;
+using Eventopia.Infra.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -22,6 +23,14 @@ public class UserController : ControllerBase
 	[Route("CreateNewUser")]
 	public IActionResult CreateNewUser([FromBody] User user)
 	{
+		User userByUsername = _userService.GetUserByUserName(user.Username);
+		if (userByUsername != null)
+			return Conflict("username already exists");
+
+		User userByEmail = _userService.GetUserByUserName(user.Email);
+		if (userByEmail != null)
+			return Conflict("email already exists");
+
 		_userService.CreateNew(user);
 		return Ok();
 	}
@@ -76,25 +85,33 @@ public class UserController : ControllerBase
 	[Route("UpdateUser")]
 	public IActionResult UpdateUser([FromBody] User user)
 	{
+		User userByUsername = _userService.GetUserByUserName(user.Username);
+		if (userByUsername != null && userByUsername.Id != user.Id)
+			return Conflict("username already exists");
+
+		User userByEmail = _userService.GetUserByUserName(user.Email);
+		if (userByEmail != null && userByEmail.Id != user.Id)
+			return Conflict("email already exists");
+
 		if (!_userService.Update(user))
 			return NotFound();
 		return Ok();
 	}
 
-    [HttpPut]
-    [Route("UpdateUserProfile/{password}")]
-    public IActionResult UpdateUserProfile([FromBody] Profile profile,
-		[StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters and less than 50")]
-		[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$",
-			ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")]
-		[Required(ErrorMessage = "Password is required")]
-		string password)
-    {
-		if (!_userService.UpdateUserProfile(profile, password))
-			return NotFound();
+  //  [HttpPut]
+  //  [Route("UpdateUserProfile/{password}")]
+  //  public IActionResult UpdateUserProfile([FromBody] Profile profile,
+		//[StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters and less than 50")]
+		//[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$",
+		//	ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")]
+		//[Required(ErrorMessage = "Password is required")]
+		//string password)
+  //  {
+		//if (!_userService.UpdateUserProfile(profile, password))
+		//	return NotFound();
 
-		return Ok();
-    }
+		//return Ok();
+  //  }
 
     [HttpPut]
     [Route("UpdatePassword/{id}")]
