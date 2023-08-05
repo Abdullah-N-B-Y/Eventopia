@@ -27,7 +27,7 @@ CREATE TABLE Profile (
   FirstName VARCHAR2(50),
   LastName VARCHAR2(50),
   ImagePath VARCHAR2(100),
-  PhoneNumber NUMBER,
+  PhoneNumber VARCHAR2(13),
   Gender VARCHAR2(10),
   DateOfBirth DATE,
   Bio VARCHAR2(500),
@@ -410,7 +410,7 @@ create or replace PACKAGE Event_Package AS
     PROCEDURE GetAllEvents;
     PROCEDURE GetEventByID(p_EventID IN NUMBER);
     PROCEDURE DeleteEventByID(p_EventID IN NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE SearchEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
     PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
@@ -450,7 +450,7 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 END IF; 
     END DeleteEventByID;
 
-    PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN
@@ -460,7 +460,7 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 AttendingCost = p_AttendingCost,
                 StartDate = p_StartDate,
                 EndDate = p_EndDate,
-                Status = 'Pending',
+                Status = p_Status,
                 EventDescription = p_EventDescription,
                 ImagePath = p_ImagePath,
                 EventCapacity = p_EventCapacity,
@@ -524,8 +524,8 @@ AS
     PROCEDURE GetAllCategories;
     PROCEDURE GetCategoryById(p_CategoryID IN NUMBER);
     PROCEDURE GetCategoryByName(p_CategoryName IN VARCHAR2);
-    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE DeleteCategory(p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     
 END CATEGORY_PACKAGE;
@@ -564,7 +564,7 @@ AS
     
     END GetCategoryByName;
     
-    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE CreateCategory(p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN
@@ -579,7 +579,7 @@ AS
     
     END CreateCategory;
     
-    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE UpdateCategory(p_CategoryID IN NUMBER, p_Name IN VARCHAR2, p_ImagePath IN VARCHAR2, p_Description IN VARCHAR2, p_CreationDate IN DATE, p_AdminId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
     v_IsSuccessed NUMBER;
         BEGIN
@@ -699,9 +699,10 @@ END Page_Package;
 CREATE OR REPLACE PACKAGE Profile_Package AS
     PROCEDURE GetAllProfiles;
     PROCEDURE GetProfileByID(p_ProfileId IN NUMBER);
+    PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2);
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
 END Profile_Package;
 
 CREATE OR REPLACE PACKAGE BODY Profile_Package
@@ -725,6 +726,15 @@ AS
             DBMS_SQL.RETURN_RESULT(cur_item);
     END GetProfileByID;
 
+    PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+            SELECT * FROM Profile WHERE PhoneNumber = p_PhoneNumber;
+            DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetProfileByPhoneNumber;
+    
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
@@ -739,7 +749,7 @@ AS
                 END IF; 
     END DeleteProfileByID;
 
-    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN
@@ -764,7 +774,7 @@ AS
                 END IF; 
     END UpdateProfileByID;
 
-    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN

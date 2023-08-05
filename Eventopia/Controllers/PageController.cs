@@ -2,6 +2,9 @@
 using Eventopia.Core.Data;
 using Eventopia.Core.Service;
 using System.ComponentModel.DataAnnotations;
+using Eventopia.Infra.Utility;
+using Microsoft.Extensions.Logging;
+using Eventopia.Infra.Service;
 
 namespace Eventopia.API.Controllers;
 
@@ -39,17 +42,32 @@ public class PageController : ControllerBase
 
 	[HttpPost]
 	[Route("CreatePage")]
-	public IActionResult CreatePage([FromBody] Page page)
+	public IActionResult CreatePage([FromForm] Page page)
 	{
-		_pageService.CreateNew(page);
-		return Ok();
+		if (page.ReceivedImageFile != null)
+		{
+			if (!ImageUtility.IsImageContentType(page.ReceivedImageFile.ContentType))
+				return BadRequest("Invalid file type. Only images are allowed.");
+
+			page.BackgroundImagePath = ImageUtility.StoreImage(page.ReceivedImageFile, "Page");
+		}
+		
+		return Ok(_pageService.CreateNew(page));
 	}
 
 	[HttpPut]
 	[Route("UpdatePage")]
-	public IActionResult UpdatePage([FromBody] Page page)
+	public IActionResult UpdatePage([FromForm] Page page)
 	{
-		_pageService.Update(page);
+		if (page.ReceivedImageFile != null)
+		{
+			if (!ImageUtility.IsImageContentType(page.ReceivedImageFile.ContentType))
+				return BadRequest("Invalid file type. Only images are allowed.");
+
+			page.BackgroundImagePath = ImageUtility.ReplaceImage(page.BackgroundImagePath, page.ReceivedImageFile, "Page");
+		}
+		if (!_pageService.Update(page))
+			return NotFound();
 		return Ok();
 	}
 

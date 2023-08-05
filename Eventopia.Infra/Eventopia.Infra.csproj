@@ -25,4 +25,12 @@
     <ProjectReference Include="..\Eventopia.Core\Eventopia.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\Images\Event\" />
+    <Folder Include="Assets\Images\Category\" />
+    <Folder Include="Assets\Images\" />
+    <Folder Include="Assets\Images\Page\" />
+    <Folder Include="Assets\Images\Profile\" />
+  </ItemGroup>
+
 </Project>

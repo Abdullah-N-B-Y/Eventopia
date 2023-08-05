@@ -2,7 +2,8 @@
 using Eventopia.Core.DTO;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
-
+using Eventopia.Infra.Repository;
+using Eventopia.Infra.Utility;
 
 namespace Eventopia.Infra.Service;
 
@@ -17,12 +18,24 @@ public class EventService : IEventService
 
     public List<Event> GetEventsBetweenDates(SearchBetweenDatesDTO datesDTO)
     {
-        return _eventRepository.SearchEventsBetweenDates(datesDTO.StartDate, datesDTO.EndDate);
+		List<Event> events = _eventRepository.SearchEventsBetweenDates(datesDTO.StartDate, datesDTO.EndDate);
+		foreach (Event e in events)
+		{
+			byte[]? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			e.RetrievedImageFile = byteFile;
+		}
+		return events;
     }
 
     public List<Event> SearchEventsByName(string eventName)
     {
-        return _eventRepository.SearchEventsByName(eventName);
+        List<Event> events = _eventRepository.SearchEventsByName(eventName);
+        foreach(Event e in events)
+        {
+			byte[]? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			e.RetrievedImageFile = byteFile;
+		}
+        return events;
     }
     
     public bool CreateNew(Event @event)
@@ -32,17 +45,32 @@ public class EventService : IEventService
 
     public bool Delete(int id)
     {
-        return _eventRepository.Delete(id);
+		Event eventt = _eventRepository.GetById(id);
+		if (eventt == null)
+			return false;
+		ImageUtility.DeleteImage(eventt.ImagePath, "Event");
+		return _eventRepository.Delete(id);
     }
 
     public List<Event> GetAll()
     {
-        return _eventRepository.GetAll();
+		List<Event> events = _eventRepository.GetAll();
+		foreach (Event e in events)
+		{
+			byte[]? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			e.RetrievedImageFile = byteFile;
+		}
+		return events;
     }
 
     public Event GetById(int id)
     {
-        return _eventRepository.GetById(id);
+		Event eventt = _eventRepository.GetById(id);
+		if (eventt == null)
+			return null;
+		byte[]? byteFile = ImageUtility.RetrieveImage(eventt.ImagePath, "Event");
+		eventt.RetrievedImageFile = byteFile;
+		return eventt;
     }
 
     public bool Update(Event @event)
