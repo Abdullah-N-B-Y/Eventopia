@@ -72,10 +72,12 @@ public class Program
 		builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 		builder.Services.AddScoped<IProfileService, ProfileService>();
 
-		builder.Services.AddAuthentication(opt => {
+		builder.Services.AddAuthentication(opt =>
+		{
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-		}).AddJwtBearer(options => {
+		}).AddJwtBearer(options =>
+		{
 			options.TokenValidationParameters = new TokenValidationParameters
 			{
 				ValidateIssuer = true,
@@ -93,6 +95,14 @@ public class Program
 		});
 		// EX: [Authorize(Policy = "AdminOnly")] // Enforce the custom policy for role-based authorization
 
+		builder.Services.AddCors(options =>
+		{
+			options.AddPolicy("policy", builder =>
+			{
+				builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+			});
+		});
+
 		var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -102,10 +112,11 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+		app.UseCors("policy");
+		app.UseHttpsRedirection();
 		app.UseAuthentication();
 		app.UseAuthorization();
-        app.MapControllers();
+		app.MapControllers();
 
         app.Run();
     }
