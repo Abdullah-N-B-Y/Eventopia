@@ -1,6 +1,7 @@
 ﻿using Eventopia.Core.DTO;
 using Eventopia.Core.Repository;
 using Eventopia.Core.Service;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,10 +13,12 @@ namespace Eventopia.Infra.Service;
 public class AuthService : IAuthService
 {
 	private readonly IAuthRepository _authRepository;
+	private readonly IConfiguration _configuration;
 
-	public AuthService(IAuthRepository authRepository)
+	public AuthService(IAuthRepository authRepository, IConfiguration configuration)
 	{
 		_authRepository = authRepository;
+		_configuration = configuration;
 	}
 
 	public bool CheckEmailExists(string email)
@@ -38,12 +41,14 @@ public class AuthService : IAuthService
 		}
 		else
 		{
-			var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@34512345678912345"));
+			var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:SecretKey").Value));
 			var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 			var claims = new List<Claim> {
 				new Claim("Username", result.Username),
 				new Claim("RoleId", result.RoleId.ToString()),
-				new Claim("UserId", result.Id.ToString())
+				new Claim("UserId", result.Id.ToString()),
+				new Claim(JwtRegisteredClaimNames.Iss, _configuration.GetSection("AppSettings:Issuer").Value),
+				new Claim(JwtRegisteredClaimNames.Aud, _configuration.GetSection("AppSettings:Audience").Value)
 			};
 
 			var tokeOptions = new JwtSecurityToken (

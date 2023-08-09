@@ -83,8 +83,10 @@ public class Program
 				ValidateIssuer = true,
 				ValidateAudience = true,
 				ValidateLifetime = true,
+				ValidIssuer = builder.Configuration["AppSettings:Issuer"],
+				ValidAudience = builder.Configuration["AppSettings:Audience"],
 				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@34512345678912345"))
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:SecretKey"]))
 			};
 		});
 
