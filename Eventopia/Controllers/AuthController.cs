@@ -29,7 +29,8 @@ public class AuthController : ControllerBase
 		}
 		else
 		{
-			return Ok(token);
+			return Ok(new ResponseBody(token));
+			//return Ok(token);
 		}
 	}
 
