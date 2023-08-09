@@ -20,7 +20,7 @@ public partial class User
 
 	[Required(ErrorMessage = "Email is required")]
 	[EmailAddress(ErrorMessage = "Invalid email address")]
-	[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
+	[StringLength(50, ErrorMessage = "Email must be less than 50 characters long")]
 	public string? Email { get; set; }
 
 	[MaxLength(50, ErrorMessage = "VerificationCode cannot exceed 50 characters.")]

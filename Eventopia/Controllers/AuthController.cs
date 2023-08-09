@@ -29,8 +29,7 @@ public class AuthController : ControllerBase
 		}
 		else
 		{
-			return Ok(new ResponseBody(token));
-			//return Ok(token);
+			return Ok(new { Content = token });
 		}
 	}
 
@@ -41,14 +40,14 @@ public class AuthController : ControllerBase
 		bool usernameExists = _authService.CheckUsernameExists(registerDTO.Username);
 		if(usernameExists)
 		{
-			return Conflict("username already exists");
+			return Conflict(new { error = "username already exists" });
 		}
 
 		bool emailExists = _authService.CheckEmailExists(registerDTO.Email);
 
 		if(emailExists)
 		{
-			return Conflict("email already exists");
+			return Conflict(new { error = "email already exists" });
 		}
 
 		User user = new User
@@ -56,9 +55,9 @@ public class AuthController : ControllerBase
 			Username = registerDTO.Username,
 			Email = registerDTO.Email,
 			Password = registerDTO.Password,
-			UserStatus = registerDTO.UserStatus,
+			UserStatus = "active",
 			VerificationCode = "",
-			RoleId = registerDTO.RoleId
+			RoleId = 2
 		};
 
 		_userService.CreateNew(user);

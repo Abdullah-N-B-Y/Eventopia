@@ -28,7 +28,7 @@ public class UserRepository : IUserRepository
 		parameters.Add("p_UserStatus", user.UserStatus, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_RoleID", user.RoleId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("User_Package.CreateUser", parameters, commandType: CommandType.StoredProcedure);
 
@@ -41,7 +41,7 @@ public class UserRepository : IUserRepository
 
 		parameters.Add("p_UserID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("User_Package.DeleteUserById", parameters, commandType: CommandType.StoredProcedure);
 
@@ -117,7 +117,7 @@ public class UserRepository : IUserRepository
         parameters.Add("p_NewPassword", updatePasswordDTO.NewPassword, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_ConfirmPassword", updatePasswordDTO.ConfirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("User_Package.UpdatePassword", parameters, commandType: CommandType.StoredProcedure);
 

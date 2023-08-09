@@ -16,11 +16,8 @@ public class RegisterDTO
 
 	[Required(ErrorMessage = "Email is required")]
 	[EmailAddress(ErrorMessage = "Invalid email address")]
-	[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
+	[StringLength(50, ErrorMessage = "Email must be less than 50 characters long")]
 	public string? Email { get; set; }
-	public string VerificationCode { get; set; } = string.Empty;
-	public string UserStatus { get; set; } = "Accepted";
-	public decimal RoleId { get; set; } = 2;
 
 	public RegisterDTO(string? username, string? password, string? email)
 	{
