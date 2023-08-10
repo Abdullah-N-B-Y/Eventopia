@@ -39,7 +39,19 @@ public class ProfileController : ControllerBase
 		return Ok(profile);
     }
 
-	[HttpGet]
+    [HttpGet]
+    [Route("GetProfileByUserId/{id}")]
+    public IActionResult GetProfileByUserId(
+        [Required(ErrorMessage = "Id is required.")]
+        int id)
+    {
+        Profile profile = _profileService.GetProfileByUserId(id);
+        if (profile == null)
+            return NotFound();
+        return Ok(profile);
+    }
+
+    [HttpGet]
 	[Route("GetProfileByPhoneNumber/{phoneNumber}")]
 	public IActionResult GetProfileByPhoneNumber(
 		[Required(ErrorMessage = "PhoneNumber is required.")]
