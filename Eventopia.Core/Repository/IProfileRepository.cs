@@ -9,6 +9,7 @@ namespace Eventopia.Core.Repository
 {
 	public interface IProfileRepository: IRepository<Profile>
 	{
+		Profile GetProfileByUserId(int id);
 		Profile GetProfileByPhoneNumber(string phoneNumber);
 	}
 }

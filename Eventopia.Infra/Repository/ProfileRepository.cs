@@ -63,6 +63,14 @@ public class ProfileRepository : IProfileRepository
         return result.FirstOrDefault();
     }
 
+    public Profile GetProfileByUserId(int id) 
+    {
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_UserId",id,dbType:DbType.Int32,direction:ParameterDirection.Input);
+        return _dBContext.Connection.Query<Profile>("Profile_Package.GetProfileByUserId", parameters,commandType:CommandType.StoredProcedure).FirstOrDefault();
+    }
+
 	public Profile GetProfileByPhoneNumber(string phoneNumber)
 	{
 		var parameters = new DynamicParameters();
