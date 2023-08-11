@@ -1070,7 +1070,7 @@ AS
     PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE GetStats(p_UsersNumber OUT NUMBER, p_EventsNumber OUT Event.ID%TYPE, p_EventId OUT Event.ID%TYPE, p_MaxAttendance OUT NUMBER);
-    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT NUMBER, p_AnnualBenefits OUT NUMBER);
+    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT FLOAT, p_AnnualBenefits OUT FLOAT);
 
 END Admin_Package;
 
@@ -1137,7 +1137,7 @@ AS
         FETCH FIRST 1 ROWS ONLY;
     END GetStats;
     
-    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT NUMBER, p_AnnualBenefits OUT NUMBER)
+    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT FLOAT, p_AnnualBenefits OUT FLOAT)
     AS
     BEGIN
         SELECT SUM(Amount) INTO p_MonthlyBenefits
