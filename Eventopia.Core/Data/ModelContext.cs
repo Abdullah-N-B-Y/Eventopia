@@ -578,7 +578,7 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("USERSTATUS");
-            entity.Property(e => e.VerificationCode)
+            entity.Property(e => e.Verfiicationcode)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("VERFIICATIONCODE");

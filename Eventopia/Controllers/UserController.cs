@@ -150,24 +150,29 @@ public class UserController : ControllerBase
 	[HttpPost]
 	[Route("ForgotPassword")]
 	public IActionResult ForgotPassword(
+		[FromBody]
 		[Required(ErrorMessage = "Email is required")]
 		[EmailAddress(ErrorMessage = "Invalid email address")]
 		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
 		string email)
 	{
-		bool success = _userService.ForgotPassword(email);
-		if (!success)
-			return NotFound("Email not found");
+        bool success = _userService.ForgotPassword(email);
+        if (!success)
+			return NotFound(new { error= "Email not found" });
 		return Ok();
 	}
 
 	[HttpPost]
-	[Route("CheckPasswordResetToken")]
+	[Route("CheckPasswordResetToken/{email}")]
 	public IActionResult CheckPasswordResetToken(
 		[Required(ErrorMessage = "Email is required")]
 		[EmailAddress(ErrorMessage = "Invalid email address")]
 		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
-		string email, string token)
+		string email,
+		[FromBody]
+		[Required(ErrorMessage = "Token is required")]
+		[StringLength(36, MinimumLength =36, ErrorMessage = "Token must be at 36 characters long")]
+		string token)
 	{
 		bool success = _userService.CheckPasswordResetToken(email, token);
 		if (!success)
@@ -176,12 +181,13 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
-	[Route("ResetForgottenPassword")]
+	[Route("ResetForgottenPassword/{email}")]
 	public IActionResult ResetForgottenPassword(
 		[Required(ErrorMessage = "Email is required")]
 		[EmailAddress(ErrorMessage = "Invalid email address")]
 		[StringLength(50, ErrorMessage = "Email must be at least 50 characters long")]
 		string email,
+		[FromBody]
 		[StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters and less than 50")]
 		[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$",
 			ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")]

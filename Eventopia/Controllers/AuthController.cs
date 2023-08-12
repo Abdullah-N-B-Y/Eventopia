@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
 			Email = registerDTO.Email,
 			Password = registerDTO.Password,
 			UserStatus = "active",
-			VerificationCode = "",
+			Verfiicationcode = "",
 			RoleId = 2
 		};
 

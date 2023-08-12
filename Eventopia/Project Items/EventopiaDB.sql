@@ -199,6 +199,7 @@ CREATE TABLE Contact_Us_Entries (
 commit;
 
 select * from Role_;
+
 select * from User_;
 
 select * from User_ u
@@ -248,7 +249,7 @@ END User_Package;
 
 CREATE OR REPLACE PACKAGE BODY User_Package 
 AS
-
+        
     PROCEDURE GetAllUsers
     AS
         cur_all SYS_REFCURSOR;
@@ -290,6 +291,7 @@ AS
         v_IsSuccessed NUMBER;
         BEGIN
             DELETE FROM User_ WHERE ID = p_UserID RETURNING ID INTO v_IsSuccessed;
+            COMMIT;
             IF v_IsSuccessed IS NOT NULL
                 THEN
                     p_IsSuccessed := 1;
@@ -311,6 +313,7 @@ AS
                 UserStatus = p_UserStatus,
                 RoleID = p_RoleID
                 WHERE ID = p_UserID RETURNING ID INTO v_IsSuccessed;
+                COMMIT;
                 IF v_IsSuccessed IS NOT NULL
                 THEN
                     p_IsSuccessed := 1;
@@ -325,6 +328,7 @@ AS
         BEGIN
             INSERT INTO User_ 
             VALUES (DEFAULT, p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID) RETURNING ID INTO v_IsSuccessed;
+            COMMIT;
             IF v_IsSuccessed IS NOT NULL THEN
                     p_IsSuccessed := 1;
             ELSE
@@ -347,6 +351,7 @@ AS
                     LastName = p_LastName,
                     PhoneNumber = p_PhoneNumber
                 WHERE ID = p_UserId RETURNING ID INTO v_IsSuccessed;
+                COMMIT;
                 IF v_IsSuccessed IS NOT NULL THEN
                     p_IsSuccessed := 1;
                 ELSE
@@ -374,6 +379,7 @@ AS
                 UPDATE User_ 
                 SET Password = p_NewPassword
                 WHERE ID = p_UserId RETURNING ID INTO v_IsSuccessed;
+                COMMIT;
                 IF v_IsSuccessed IS NOT NULL
                 THEN
                     p_IsSuccessed := 1;
@@ -732,7 +738,7 @@ AS
         BEGIN
             OPEN cur_item FOR
             SELECT * FROM Profile WHERE PhoneNumber = p_PhoneNumber;
-            DBMS_SQL.RETURN_RESULT(cur_item);
+            DBMS_SQL.RETURN_RESULT(cur_item); 
     END GetProfileByPhoneNumber;
     
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER)
