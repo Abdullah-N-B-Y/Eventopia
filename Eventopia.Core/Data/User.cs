@@ -24,7 +24,8 @@ public partial class User
 	public string? Email { get; set; }
 
 	[MaxLength(50, ErrorMessage = "VerificationCode cannot exceed 50 characters.")]
-	public string? VerificationCode { get; set; }
+	public string? Verfiicationcode { get; set; }
+	
 
 	[Required(ErrorMessage = "UserStatus is required.")]
 	[MaxLength(20, ErrorMessage = "UserStatus cannot exceed 20 characters.")]

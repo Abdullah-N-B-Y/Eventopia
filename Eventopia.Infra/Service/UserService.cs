@@ -68,14 +68,13 @@ public class UserService : IUserService
 
 	public bool ForgotPassword(string email)
 	{
-		User user = _userRepository.GetUserByEmail(email);
+        User user = _userRepository.GetUserByEmail(email);
 		if (user == null)
 			return false; // Maybe replace with EmailNotFoundException
 
 		string verificationToken = Guid.NewGuid().ToString();
-		user.VerificationCode = verificationToken;
-
-		_userRepository.Update(user);
+		user.Verfiicationcode = verificationToken;
+        _userRepository.Update(user);
 
 		string emailSubject = "Password Reset Request";
 		string emailBody = $"The following code is your account password reset verification code.\n\n" +
@@ -84,7 +83,7 @@ public class UserService : IUserService
 
 		EmailUtility.SendEmailAsync(emailSubject, emailBody, email);
 
-		return true;
+        return true;
 	}
 
 	public bool CheckPasswordResetToken(string email, string token)
@@ -92,7 +91,8 @@ public class UserService : IUserService
 		User user = _userRepository.GetUserByEmail(email);
 		if (user == null)
 			return false; // Maybe replace with EmailNotFoundException
-		if (user.VerificationCode != token)
+        
+        if (user.Verfiicationcode != token)
 			return false; //maybe replace with InvalidVerificationCodeException
 
 		return true;
@@ -105,7 +105,7 @@ public class UserService : IUserService
 			return false; // Maybe replace with EmailNotFoundException
 
 		user.Password = newPassword;
-		user.VerificationCode = "";
+		user.Verfiicationcode = "";
 
 		_userRepository.Update(user);
 

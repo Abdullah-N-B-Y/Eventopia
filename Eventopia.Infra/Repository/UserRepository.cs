@@ -24,7 +24,7 @@ public class UserRepository : IUserRepository
 		parameters.Add("p_Username", user.Username, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Password", user.Password, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Email", user.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_VerificationCode", user.VerificationCode, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_VerificationCode", user.Verfiicationcode, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_UserStatus", user.UserStatus, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_RoleID", user.RoleId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
@@ -76,11 +76,11 @@ public class UserRepository : IUserRepository
 	public bool Update(User user)
 	{
 		DynamicParameters parameters = new DynamicParameters();
-		parameters.Add("p_UserID", user.Id, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_UserID", user.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("p_Username", user.Username, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Password", user.Password, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_Email", user.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-		parameters.Add("p_VerificationCode", user.VerificationCode, dbType: DbType.String, direction: ParameterDirection.Input);
+		parameters.Add("p_VerificationCode", user.Verfiicationcode, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_UserStatus", user.UserStatus, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_RoleID", user.RoleId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
