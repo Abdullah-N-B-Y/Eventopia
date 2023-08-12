@@ -99,4 +99,10 @@ public class EventController : ControllerBase
             return NotFound();
         return Ok();
     }
+
+    [HttpGet("GetAllEventsByCreatorId/{id}")]
+    public IActionResult GetAllEventsByCreatorId([Range(1, int.MaxValue, ErrorMessage = "User id must be a positive number.")] int id) 
+    {
+        return Ok(_eventService.GetAllEventsByCreatorId(id));
+    }
 }
