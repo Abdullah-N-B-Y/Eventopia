@@ -701,17 +701,17 @@ AS
 END Page_Package;
 
 
--- PROFILE PACKAGE
-CREATE OR REPLACE PACKAGE Profile_Package AS
+create or replace PACKAGE Profile_Package AS
     PROCEDURE GetAllProfiles;
     PROCEDURE GetProfileByID(p_ProfileId IN NUMBER);
+    PROCEDURE GetProfileByUserId(p_UserId IN NUMBER);
     PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2);
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
-    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
 END Profile_Package;
 
-CREATE OR REPLACE PACKAGE BODY Profile_Package
+create or replace PACKAGE BODY Profile_Package
 AS
 
     PROCEDURE GetAllProfiles
@@ -732,6 +732,15 @@ AS
             DBMS_SQL.RETURN_RESULT(cur_item);
     END GetProfileByID;
 
+    PROCEDURE GetProfileByUserId(p_UserId IN NUMBER)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+                SELECT * FROM Profile WHERE UserId = p_UserId;
+                DBMS_SQL.RETURN_RESULT(cur_item);
+    END GetProfileByUserId;
+
     PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2)
     AS
         cur_item SYS_REFCURSOR;
@@ -740,7 +749,7 @@ AS
             SELECT * FROM Profile WHERE PhoneNumber = p_PhoneNumber;
             DBMS_SQL.RETURN_RESULT(cur_item); 
     END GetProfileByPhoneNumber;
-    
+
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
@@ -755,7 +764,7 @@ AS
                 END IF; 
     END DeleteProfileByID;
 
-    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN
@@ -780,7 +789,7 @@ AS
                 END IF; 
     END UpdateProfileByID;
 
-    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN VARCHAR2, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
+    PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
         v_IsSuccessed NUMBER;
         BEGIN
@@ -1077,7 +1086,7 @@ AS
     PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
     PROCEDURE GetStats(p_UsersNumber OUT NUMBER, p_EventsNumber OUT Event.ID%TYPE, p_EventId OUT Event.ID%TYPE, p_MaxAttendance OUT NUMBER);
-    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT NUMBER, p_AnnualBenefits OUT NUMBER);
+    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT FLOAT, p_AnnualBenefits OUT FLOAT);
 
 END Admin_Package;
 
@@ -1144,7 +1153,7 @@ AS
         FETCH FIRST 1 ROWS ONLY;
     END GetStats;
     
-    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT NUMBER, p_AnnualBenefits OUT NUMBER)
+    PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT FLOAT, p_AnnualBenefits OUT FLOAT)
     AS
     BEGIN
         SELECT SUM(Amount) INTO p_MonthlyBenefits

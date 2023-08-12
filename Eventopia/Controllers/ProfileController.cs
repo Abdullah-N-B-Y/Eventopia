@@ -39,7 +39,19 @@ public class ProfileController : ControllerBase
 		return Ok(profile);
     }
 
-	[HttpGet]
+    [HttpGet]
+    [Route("GetProfileByUserId/{id}")]
+    public IActionResult GetProfileByUserId(
+        [Required(ErrorMessage = "Id is required.")]
+        int id)
+    {
+        Profile profile = _profileService.GetProfileByUserId(id);
+        if (profile == null)
+            return NotFound();
+        return Ok(profile);
+    }
+
+    [HttpGet]
 	[Route("GetProfileByPhoneNumber/{phoneNumber}")]
 	public IActionResult GetProfileByPhoneNumber(
 		[Required(ErrorMessage = "PhoneNumber is required.")]
@@ -73,19 +85,19 @@ public class ProfileController : ControllerBase
 
     [HttpPut]
     [Route("UpdateProfile")]
-    public IActionResult UpdateProfile([FromForm] Profile profile)
+    public IActionResult UpdateProfile([FromBody] Profile profile)
     {
-		Profile p = _profileService.GetProfileByPhoneNumber(profile.PhoneNumber);
-		if (p != null && p.Id != profile.Id)
-			return Conflict("PhoneNumber Already Exists");
+        Profile p = _profileService.GetProfileByPhoneNumber(profile.PhoneNumber);
+        if (p != null && p.Id != profile.Id)
+            return Conflict("PhoneNumber Already Exists");
 
-		if (profile.ReceivedImageFile != null)
-		{
-			if (!ImageUtility.IsImageContentType(profile.ReceivedImageFile.ContentType))
-				return BadRequest("Invalid file type. Only images are allowed.");
+        if (profile.ReceivedImageFile != null)
+        {
+            if (!ImageUtility.IsImageContentType(profile.ReceivedImageFile.ContentType))
+                return BadRequest("Invalid file type. Only images are allowed.");
 
-			profile.ImagePath = ImageUtility.ReplaceImage(profile.ImagePath, profile.ReceivedImageFile, "Profile");
-		}
+            profile.ImagePath = ImageUtility.ReplaceImage(profile.ImagePath, profile.ReceivedImageFile, "Profile");
+        }
 
         if (!_profileService.Update(profile))
             return BadRequest();

@@ -9,6 +9,7 @@ namespace Eventopia.Core.Service
 {
 	public interface IProfileService: IService<Profile>
 	{
-		Profile GetProfileByPhoneNumber(string phoneNumber);
+        Profile GetProfileByUserId(int id);
+        Profile GetProfileByPhoneNumber(string phoneNumber);
 	}
 }

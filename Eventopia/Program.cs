@@ -20,7 +20,7 @@ public class Program
         builder.Services.AddControllers(options =>
 		{
 			options.Filters.Add<ErrorHandlingFilterAttribute>();
-			options.Filters.Add<ValidateModelStateActionFilter>();
+			//options.Filters.Add<ValidateModelStateActionFilter>();
 		});
 		builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();

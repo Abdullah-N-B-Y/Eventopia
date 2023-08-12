@@ -64,4 +64,9 @@ public class ProfileService : IProfileService
 		profile.RetrievedImageFile = byteFile;
 		return profile;
 	}
+
+    public Profile GetProfileByUserId(int id)
+    {
+        return _profileRepository.GetProfileByUserId(id);
+    }
 }

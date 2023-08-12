@@ -81,15 +81,24 @@ public class AdminRepository : IAdminRepository
         var parameters = new DynamicParameters();
         parameters.Add("p_StartDate", searchDTO.StartDate, DbType.Date, ParameterDirection.Input);
         parameters.Add("p_EndDate", searchDTO.EndDate, DbType.Date, ParameterDirection.Input);
-        parameters.Add("p_MonthlyBenefits", DbType.Decimal, direction: ParameterDirection.Output);
-        parameters.Add("p_AnnualBenefits", DbType.Decimal, direction: ParameterDirection.Output);
+        //parameters.Add("p_MonthlyBenefits", DbType.Decimal, direction: ParameterDirection.Output);
+        //parameters.Add("p_AnnualBenefits", DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_MonthlyBenefits", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_AnnualBenefits", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+
+
+
 
         _dbContext.Connection.Execute("Admin_Package.GetBenefitsReport", parameters, commandType: CommandType.StoredProcedure);
 
         var benefits = new GetBenefitsReportDTO
         {
-            MonthlyBenefits = parameters.Get<decimal?>("p_MonthlyBenefits"),
-            AnnualBenefits = parameters.Get<decimal?>("p_AnnualBenefits")
+            //MonthlyBenefits = parameters.Get<decimal?>("p_MonthlyBenefits"),
+            //AnnualBenefits = parameters.Get<decimal?>("p_AnnualBenefits")
+
+            MonthlyBenefits = parameters.Get<decimal?>("p_MonthlyBenefits") ?? 0,
+            AnnualBenefits = parameters.Get<decimal?>("p_AnnualBenefits") ?? 0
+
         };
 
         return benefits;
