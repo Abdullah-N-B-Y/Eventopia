@@ -414,6 +414,7 @@ END User_Package;
 create or replace PACKAGE Event_Package AS
 
     PROCEDURE GetAllEvents;
+    PROCEDURE GetAllActiveEvents;
     PROCEDURE GetEventByID(p_EventID IN NUMBER);
     PROCEDURE DeleteEventByID(p_EventID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
@@ -434,7 +435,16 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 SELECT * FROM Event;
             DBMS_SQL.RETURN_RESULT(cur_all);
     END GetAllEvents;
-
+    
+    PROCEDURE GetAllActiveEvents
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR 
+                SELECT * FROM Event WHERE ENDDATE >= SYSDATE;
+            DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllActiveEvents;
+    
     PROCEDURE GetEventByID(p_EventID IN NUMBER)
     AS
         cur_item SYS_REFCURSOR;

@@ -44,7 +44,7 @@ public partial class Profile
 	public virtual IFormFile? ReceivedImageFile { get; set; }
 
 	[NotMapped]
-	public virtual byte[]? RetrievedImageFile { get; set; }
+	public virtual string? RetrievedImageFile { get; set; }
 
 	public virtual ICollection<Profilesetting> Profilesettings { get; set; } = new List<Profilesetting>();
 

@@ -20,7 +20,7 @@ public class ProfileService : IProfileService
 		Profile profile = _profileRepository.GetById(id);
 		if (profile == null)
 			return null;
-		byte[]? byteFile = ImageUtility.RetrieveImage(profile.ImagePath, "Profile");
+		string? byteFile = ImageUtility.RetrieveImage(profile.ImagePath, "Profile");
 		profile.RetrievedImageFile = byteFile;
 		return profile;
     }
@@ -30,7 +30,7 @@ public class ProfileService : IProfileService
 		List<Profile> profiles = _profileRepository.GetAll();
 		foreach (Profile profile in profiles)
 		{
-			byte[]? byteFile = ImageUtility.RetrieveImage(profile.ImagePath, "Profile");
+			string? byteFile = ImageUtility.RetrieveImage(profile.ImagePath, "Profile");
 			profile.RetrievedImageFile = byteFile;
 		}
 		return profiles;
@@ -60,14 +60,20 @@ public class ProfileService : IProfileService
 		Profile profile = _profileRepository.GetProfileByPhoneNumber(phoneNumber);
 		if (profile == null)
 			return null;
-		byte[]? byteFile = ImageUtility.RetrieveImage(profile.ImagePath, "Profile");
+		string? byteFile = ImageUtility.RetrieveImage(profile.ImagePath, "Profile");
 		profile.RetrievedImageFile = byteFile;
 		return profile;
 	}
 
     public Profile GetProfileByUserId(int id)
     {
-        return _profileRepository.GetProfileByUserId(id);
+		Profile profile = _profileRepository.GetProfileByUserId(id);
+		if (profile == null)
+			return null;
+		string? byteFile = ImageUtility.RetrieveImage(profile.ImagePath, "Profile");
+		profile.RetrievedImageFile = byteFile;
+		return profile;
+
     }
 
     public void UpdateUserProfileImage(int userId, string imagePath)

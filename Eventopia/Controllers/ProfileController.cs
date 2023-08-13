@@ -84,7 +84,7 @@ public class ProfileController : ControllerBase
 
     [HttpPut]
     [Route("UpdateProfile")]
-    public IActionResult UpdateProfile([FromBody] Profile profile)
+    public IActionResult UpdateProfile([FromForm] Profile profile)
     {
         Profile p = _profileService.GetProfileByPhoneNumber(profile.PhoneNumber);
         if (p != null && p.Id != profile.Id)

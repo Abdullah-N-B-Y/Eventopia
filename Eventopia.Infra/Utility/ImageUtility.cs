@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,7 +57,7 @@ namespace Eventopia.Infra.Utility
 			return StoreImage(newFile, imageFolderName);
 		}
 
-		public static byte[]? RetrieveImage(string imageFileName, string imageFolderName)
+		public static string? RetrieveImage(string imageFileName, string imageFolderName)
 		{
 			if (string.IsNullOrEmpty(imageFileName))
 			{
@@ -71,7 +72,8 @@ namespace Eventopia.Infra.Utility
 				return null;
 			}
 
-			return File.ReadAllBytes(fullPath);
+			string base64String = Convert.ToBase64String(File.ReadAllBytes(fullPath));
+			return base64String;
 		}
 
 		public static bool IsImageContentType(string contentType)
