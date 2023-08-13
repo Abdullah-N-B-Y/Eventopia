@@ -77,4 +77,9 @@ public class EventService : IEventService
     {
         return _eventRepository.Update(@event);
     }
+
+    public List<Event> GetAllEventsByCreatorId(int creatorId) 
+    {
+        return _eventRepository.GetAllEventsByCreatorId(@creatorId);
+    }
 }

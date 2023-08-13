@@ -420,7 +420,8 @@ create or replace PACKAGE Event_Package AS
     PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE SearchEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
     PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
-    
+    PROCEDURE GetAllEventsByCreatorId(p_CreatorId IN NUMBER);
+
 END Event_Package;
 
 CREATE OR REPLACE PACKAGE BODY Event_Package AS
@@ -519,6 +520,15 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 DBMS_SQL.RETURN_RESULT(cur_item);
     END SearchEventsByName;
     
+    PROCEDURE GetAllEventsByCreatorId(p_CreatorId IN NUMBER)
+    AS
+            cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT * FROM Event WHERE EventCreatorId = p_CreatorId;
+                DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllEventsByCreatorId;
+
 END Event_Package;
 
 
