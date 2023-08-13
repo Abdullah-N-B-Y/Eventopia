@@ -69,4 +69,9 @@ public class ProfileService : IProfileService
     {
         return _profileRepository.GetProfileByUserId(id);
     }
+
+    public void UpdateUserProfileImage(int userId, string imagePath)
+    { 
+        _profileRepository.UpdateUserProfileImage(userId, imagePath);
+    }
 }
