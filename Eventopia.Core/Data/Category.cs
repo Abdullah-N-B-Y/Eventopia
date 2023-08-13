@@ -30,7 +30,7 @@ public partial class Category
 	public virtual IFormFile? ReceivedImageFile { get; set; }
 
 	[NotMapped]
-	public virtual byte[]? RetrievedImageFile { get; set; }
+	public virtual string? RetrievedImageFile { get; set; }
 	public virtual User? Admin { get; set; }
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();

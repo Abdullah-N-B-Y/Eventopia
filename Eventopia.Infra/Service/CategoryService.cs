@@ -34,7 +34,7 @@ public class CategoryService : ICategoryService
 		List<Category> categories = _categoryRepository.GetAll();
 		foreach(var category in categories)
 		{
-			byte[]? byteFile = ImageUtility.RetrieveImage(category.ImagePath, "Category");
+			string? byteFile = ImageUtility.RetrieveImage(category.ImagePath, "Category");
 			category.RetrievedImageFile = byteFile;
         }
 		return categories;
@@ -45,7 +45,7 @@ public class CategoryService : ICategoryService
 		Category category = _categoryRepository.GetById(id);
 		if (category == null)
 			return null;
-		byte[]? byteFile = ImageUtility.RetrieveImage(category.ImagePath, "Category");
+		string? byteFile = ImageUtility.RetrieveImage(category.ImagePath, "Category");
 		category.RetrievedImageFile = byteFile;
 		return category;
 	}
@@ -55,7 +55,7 @@ public class CategoryService : ICategoryService
 		Category category = _categoryRepository.GetCategoryByName(name);
 		if (category == null)
 			return null;
-		byte[]? byteFile = ImageUtility.RetrieveImage(category.ImagePath, "Category");
+		string? byteFile = ImageUtility.RetrieveImage(category.ImagePath, "Category");
 		category.RetrievedImageFile = byteFile;
 		return category;
 	}
