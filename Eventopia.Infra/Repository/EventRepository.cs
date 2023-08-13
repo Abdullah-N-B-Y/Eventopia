@@ -115,4 +115,10 @@ public class EventRepository : IEventRepository
 		IEnumerable<Event> events = _dBContext.Connection.Query<Event>("Event_Package.GetAllEventsByCreatorId",parameters,commandType:CommandType.StoredProcedure);
 		return events.ToList();
     }
+
+	public List<Event> GetAllActiveEvents()
+	{
+		IEnumerable<Event> result = _dBContext.Connection.Query<Event>("EVENT_PACKAGE.GetAllActiveEvents", commandType: CommandType.StoredProcedure);
+		return result.ToList();
+	}
 }

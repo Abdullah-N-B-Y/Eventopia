@@ -72,7 +72,14 @@ public class EventController : ControllerBase
         return _eventService.GetAll();
     }
 
-    [HttpPut]
+	[HttpGet]
+	[Route("GetAllActiveEvents")]
+	public List<Event> GetAllActiveEvents()
+	{
+		return _eventService.GetAllActiveEvents();
+	}
+
+	[HttpPut]
     [Route("UpdateEvent")]
     public IActionResult UpdateEvent([FromForm] Event eventt)
     {

@@ -9,4 +9,5 @@ public interface IEventService : IService<Event>
     List<Event> GetEventsBetweenDates(SearchBetweenDatesDTO datesDTO);
     List<Event> SearchEventsByName(string eventName);
     List<Event> GetAllEventsByCreatorId(int creatorId);
+	List<Event> GetAllActiveEvents();
 }
