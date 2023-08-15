@@ -20,7 +20,8 @@ namespace Eventopia.API.Controllers
         [Route("CreateNewBooking")]
         public IActionResult CreateNewBooking([FromBody] Booking booking)
         {
-			_bookingService.CreateNew(booking);
+            if (!_bookingService.CreateNew(booking))
+                return Problem();
 
             return Ok();
         }
