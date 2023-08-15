@@ -93,4 +93,26 @@ public class EventService : IEventService
 		}
 		return events;
 	}
+
+	public List<EventWithDetailsDTO> GetAllEventsWithDetails()
+	{
+		List<EventWithDetailsDTO> events = _eventRepository.GetAllEventsWithDetails();
+		foreach (EventWithDetailsDTO e in events)
+		{
+			string? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			e.RetrievedImageFile = byteFile;
+		}
+		return events;
+	}
+
+	public List<EventWithDetailsDTO> GetAllActiveEventsWithDetails()
+	{
+		List<EventWithDetailsDTO> events = _eventRepository.GetAllActiveEventsWithDetails();
+		foreach (EventWithDetailsDTO e in events)
+		{
+			string? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			e.RetrievedImageFile = byteFile;
+		}
+		return events;
+	}
 }

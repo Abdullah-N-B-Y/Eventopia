@@ -10,4 +10,6 @@ public interface IEventService : IService<Event>
     List<Event> SearchEventsByName(string eventName);
     List<Event> GetAllEventsByCreatorId(int creatorId);
 	List<Event> GetAllActiveEvents();
+	List<EventWithDetailsDTO> GetAllEventsWithDetails();
+	List<EventWithDetailsDTO> GetAllActiveEventsWithDetails();
 }

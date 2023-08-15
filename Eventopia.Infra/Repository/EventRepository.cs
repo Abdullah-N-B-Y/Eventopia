@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Eventopia.Core.Common;
 using Eventopia.Core.Data;
+using Eventopia.Core.DTO;
 using Eventopia.Core.Repository;
 using Microsoft.Extensions.Logging;
 using PdfSharpCore.Pdf.Content.Objects;
@@ -50,6 +51,7 @@ public class EventRepository : IEventRepository
 		parameters.Add("p_EventCapacity", eventObj.EventCapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Latitude", eventObj.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Longitude", eventObj.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_Address", eventObj.Address, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_EventCreatorID", eventObj.EventCreatorId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("p_CategoryID", eventObj.CategoryId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
@@ -99,6 +101,7 @@ public class EventRepository : IEventRepository
 		parameters.Add("p_EventCapacity", eventObj.EventCapacity, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Latitude", eventObj.Latitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
 		parameters.Add("p_Longitude", eventObj.Longitude, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+		parameters.Add("p_Address", eventObj.Address, dbType: DbType.String, direction: ParameterDirection.Input);
 		parameters.Add("p_EventCreatorID", eventObj.EventCreatorId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("p_CategoryID", eventObj.CategoryId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 		parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
@@ -119,6 +122,18 @@ public class EventRepository : IEventRepository
 	public List<Event> GetAllActiveEvents()
 	{
 		IEnumerable<Event> result = _dBContext.Connection.Query<Event>("EVENT_PACKAGE.GetAllActiveEvents", commandType: CommandType.StoredProcedure);
+		return result.ToList();
+	}
+
+	public List<EventWithDetailsDTO> GetAllEventsWithDetails()
+	{
+		IEnumerable<EventWithDetailsDTO> result = _dBContext.Connection.Query<EventWithDetailsDTO>("EVENT_PACKAGE.GetAllEventsWithDetails", commandType: CommandType.StoredProcedure);
+		return result.ToList();
+	}
+
+	public List<EventWithDetailsDTO> GetAllActiveEventsWithDetails()
+	{
+			IEnumerable<EventWithDetailsDTO> result = _dBContext.Connection.Query<EventWithDetailsDTO>("EVENT_PACKAGE.GetAllActiveEventsWithDetails", commandType: CommandType.StoredProcedure);
 		return result.ToList();
 	}
 }

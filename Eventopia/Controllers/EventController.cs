@@ -79,6 +79,20 @@ public class EventController : ControllerBase
 		return _eventService.GetAllActiveEvents();
 	}
 
+	[HttpGet]
+	[Route("GetAllActiveEventsWithDetails")]
+	public List<EventWithDetailsDTO> GetAllActiveEventsWithDetails()
+	{
+		return _eventService.GetAllActiveEventsWithDetails();
+	}
+
+	[HttpGet]
+	[Route("GetAllEventsWithDetails")]
+	public List<EventWithDetailsDTO> GetAllEventsWithDetails()
+	{
+		return _eventService.GetAllEventsWithDetails();
+	}
+
 	[HttpPut]
     [Route("UpdateEvent")]
     public IActionResult UpdateEvent([FromForm] Event eventt)
