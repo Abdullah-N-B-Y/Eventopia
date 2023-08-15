@@ -26,10 +26,11 @@ public partial class User
 	[MaxLength(50, ErrorMessage = "VerificationCode cannot exceed 50 characters.")]
 	public string? Verfiicationcode { get; set; }
 	
-
 	[Required(ErrorMessage = "UserStatus is required.")]
 	[MaxLength(20, ErrorMessage = "UserStatus cannot exceed 20 characters.")]
 	public string? UserStatus { get; set; }
+
+	public decimal? Profits { get; set; }
 
 	[Required(ErrorMessage = "Roleid is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "RoleId must be a positive number.")]

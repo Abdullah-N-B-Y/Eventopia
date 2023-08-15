@@ -271,8 +271,12 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("STATUS");
+			entity.Property(e => e.Address)
+				.HasMaxLength(100)
+				.IsUnicode(false)
+				.HasColumnName("ADDRESS");
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Events)
+			entity.HasOne(d => d.Category).WithMany(p => p.Events)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_EVENT_CATEGORYID");
@@ -385,9 +389,9 @@ public partial class ModelContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("PAYMENT");
+            entity.HasKey(e => e.Id).HasName("SYS_C008517");
+
+            entity.ToTable("PAYMENT");
 
             entity.Property(e => e.Amount)
                 .HasColumnType("FLOAT")
@@ -395,10 +399,10 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.Id)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID");
-            entity.Property(e => e.Method)
+            entity.Property(e => e.PaymentType)
                 .HasMaxLength(50)
                 .IsUnicode(false)
-                .HasColumnName("METHOD");
+                .HasColumnName("PAYMENTTYPE");
             entity.Property(e => e.PaymentDate)
                 .HasColumnType("DATE")
                 .HasColumnName("PAYMENTDATE");
@@ -409,12 +413,19 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("USERID");
+			entity.Property(e => e.EventId)
+				.HasColumnType("NUMBER")
+				.HasColumnName("EVENTID");
 
-            entity.HasOne(d => d.User).WithMany()
+			entity.HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PAYMENT_USERID");
-        });
+			entity.HasOne(d => d.Event).WithMany()
+				.HasForeignKey(d => d.EventId)
+				.OnDelete(DeleteBehavior.Cascade)
+				.HasConstraintName("FK_PAYMENT_EVENTID");
+		});
 
         modelBuilder.Entity<Profile>(entity =>
         {
@@ -582,8 +593,11 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("VERFIICATIONCODE");
+			entity.Property(e => e.Profits)
+				.HasColumnType("FLOAT")
+				.HasColumnName("PROFITS");
 
-            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+			entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_USER_ROLEID");

@@ -45,6 +45,9 @@ public partial class Event
 	[Required(ErrorMessage = "Longitude is required.")]
 	public decimal? Longitude { get; set; }
 
+	[MaxLength(100, ErrorMessage = "Address cannot exceed 100 characters.")]
+	public string? Address { get; set; }
+
 	[Required(ErrorMessage = "EventCreatorId is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "EventCreatorId must be a positive number.")]
 	public decimal? EventCreatorId { get; set; }

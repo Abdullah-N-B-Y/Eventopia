@@ -17,7 +17,7 @@ public partial class Payment
 
 	[Required(ErrorMessage = "Method is required.")]
 	[MaxLength(50, ErrorMessage = "Method cannot exceed 50 characters.")]
-	public string? Method { get; set; }
+	public string? PaymentType { get; set; }
 
 	[Required(ErrorMessage = "Status is required.")]
 	[MaxLength(20, ErrorMessage = "Status cannot exceed 20 characters.")]
@@ -27,5 +27,8 @@ public partial class Payment
 	[Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")]
 	public decimal? UserId { get; set; }
 
+	public decimal? EventId { get; set; }
+
     public virtual User? User { get; set; }
+	public virtual Event? Event { get; set; }
 }
