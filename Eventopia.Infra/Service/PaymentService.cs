@@ -82,12 +82,30 @@ Thank you for choosing Eventopia!
 			Event e = _eventRepository.GetById((int)paymentDetailsDTO.EventId);
 			DateTime d = DateTime.Now;
 			string pdfBody =
-$@"=====================================================\nINVOICE\n=====================================================\nDate:"
-+ $@"{d.Month}/{d.Day}/{d.Year}\n\nBill To:\n{u.Username}\nEmail: {u.Email}\n\nEvent Details:\nEvent Name: {e.Name}\nEvent Date:"
-+ $@"{e.StartDate.Value.Month}/{e.StartDate.Value.Day},/{e.StartDate.Value.Year} - {e.EndDate.Value.Month}/{e.EndDate.Value.Day}"
-+ $@"/{e.EndDate.Value.Year}\nLocation: {e.Address}\n\n-----------------------------------------------------\n\nDescription               Amount\n"
-+ $@"-----------------------------------------------------\nCreate New Event              ${e.AttendingCost}\n----------------------------------------"
-+ $@"-------------\n\nThank you for choosing Eventopia!.\n\n=====================================================";
+$@"=====================================================
+                    INVOICE
+=====================================================
+Date: {d.Month}/{d.Day}/{d.Year}
+
+Bill To:
+{u.Username}
+Email: {u.Email}
+
+Event Details:
+Event Name: {e.Name}
+Event Date: {e.StartDate.Value.Month}/{e.StartDate.Value.Day}/{e.StartDate.Value.Year} - {e.EndDate.Value.Month}/{e.EndDate.Value.Day}/{e.EndDate.Value.Year}
+Location: {e.Address}
+
+-----------------------------------------------------
+
+Description                                    Amount
+-----------------------------------------------------
+Event Created                                  ${e.AttendingCost}
+-----------------------------------------------------
+
+Thank you for choosing Eventopia!
+
+=====================================================";
 			string subject = "Event creation invoice";
 			string body = "Invoice in pdf form";
 			string pdfSubject = "Invoice";

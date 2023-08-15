@@ -80,7 +80,13 @@ public class EventService : IEventService
 
     public List<Event> GetAllEventsByCreatorId(int creatorId) 
     {
-        return _eventRepository.GetAllEventsByCreatorId(@creatorId);
+		List<Event> events = _eventRepository.GetAllEventsByCreatorId(@creatorId);
+		foreach (Event e in events)
+		{
+			string? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			e.RetrievedImageFile = byteFile;
+		}
+		return events;
     }
 
 	public List<Event> GetAllActiveEvents()
