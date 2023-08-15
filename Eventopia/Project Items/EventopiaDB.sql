@@ -1475,74 +1475,106 @@ AS
             Dbms_sql.return_result(cur_item); 
     END GetPaymentById;
     
-    PROCEDURE PayForEventRegister(p_UserId IN NUMBER, p_EventId IN NUMBER,
-        p_PaymentAmount IN FLOAT, p_CardNumber IN Bank.CardNumber%TYPE, 
-        p_CardHolder IN Bank.CardHolder%TYPE, p_ExpirationDate IN Bank.ExpirationDate%TYPE,
-        p_CVV IN Bank.CVV%TYPE, p_IsPaid OUT NUMBER)
-    AS
-        v_Balance Bank.Balance%TYPE;
+PROCEDURE PayForEventRegister(p_UserId IN NUMBER, p_EventId IN NUMBER,
+    p_PaymentAmount IN FLOAT, p_CardNumber IN Bank.CardNumber%TYPE, 
+    p_CardHolder IN Bank.CardHolder%TYPE, p_ExpirationDate IN Bank.ExpirationDate%TYPE,
+    p_CVV IN Bank.CVV%TYPE, p_IsPaid OUT NUMBER)
+AS
+    v_Balance Bank.Balance%TYPE;
 BEGIN
+    -- Initialize p_IsPaid to 0 in case of an exception
+    p_IsPaid := 0;
+
+    BEGIN
+        SELECT Balance INTO v_Balance
+        FROM Bank
+        WHERE CardNumber = p_CardNumber 
+        AND CardHolder = p_CardHolder 
+        AND ExpirationDate = p_ExpirationDate 
+        AND CVV = p_CVV;
+
+        IF v_Balance >= p_PaymentAmount THEN
+            UPDATE Bank
+            SET Balance = Balance - p_PaymentAmount
+            WHERE CardNumber = p_CardNumber;
+
+            INSERT INTO Payment (PaymentDate, Amount, PaymentType, Status, UserID, EventId) 
+            VALUES(SYSDATE, p_PaymentAmount, 'Event Register', 'Paid', p_UserId, p_EventId);
+            
+            UPDATE User_
+            SET Profits = Profits + p_PaymentAmount * 0.05
+            WHERE RoleId = 1;
+            
+            UPDATE User_
+            SET Profits = Profits + p_PaymentAmount * 0.95
+            WHERE Id = p_UserId;
+
+            p_IsPaid := 1;
+        END IF;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            -- Handle no data found error here (v_Balance is null)
+            p_IsPaid := 0;
+        WHEN OTHERS THEN
+            -- Handle other exceptions here
+            p_IsPaid := 0;
+            -- Optionally, you can log the error using DBMS_OUTPUT or other means
+    END;
     
-    SELECT Balance INTO v_Balance
-    FROM Bank
-    WHERE CardNumber = p_CardNumber 
-    AND CardHolder = p_CardHolder 
-    AND ExpirationDate = p_ExpirationDate 
-    AND CVV = p_CVV;
-    
-    IF v_Balance IS NOT NULL AND v_Balance >= p_PaymentAmount THEN
-
-        UPDATE Bank
-        SET Balance = Balance - p_PaymentAmount
-        WHERE CardNumber = p_CardNumber;
-
-        INSERT INTO Payment (PaymentDate, Amount, PaymentType, Status, UserID, EventId) 
-        VALUES(SYSDATE, p_PaymentAmount, 'Event Register', 'Paid', p_UserId, p_EventId);
-        
-        UPDATE User_
-        SET Profits = Profits + p_PaymentAmount * 0.05
-        WHERE RoleId = 1;
-        
-        UPDATE User_
-        SET Profits = Profits + p_PaymentAmount * 0.95
-        WHERE Id = p_UserId;
-
-        p_IsPaid := 1;
-    ELSE
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions raised outside the inner block
         p_IsPaid := 0;
-    END IF;
-    END PayForEventRegister;
+        -- Optionally, you can log the error using DBMS_OUTPUT or other means
+END PayForEventRegister;
+
         
-    PROCEDURE PayForNewEvent(p_UserId IN NUMBER, p_EventId IN NUMBER,
-        p_PaymentAmount IN FLOAT, p_CardNumber IN Bank.CardNumber%TYPE, 
-        p_CardHolder IN Bank.CardHolder%TYPE, p_ExpirationDate IN Bank.ExpirationDate%TYPE,
-        p_CVV IN Bank.CVV%TYPE, p_IsPaid OUT NUMBER)
-    AS
-        v_Balance Bank.Balance%TYPE;
+PROCEDURE PayForNewEvent(p_UserId IN NUMBER, p_EventId IN NUMBER,
+    p_PaymentAmount IN FLOAT, p_CardNumber IN Bank.CardNumber%TYPE, 
+    p_CardHolder IN Bank.CardHolder%TYPE, p_ExpirationDate IN Bank.ExpirationDate%TYPE,
+    p_CVV IN Bank.CVV%TYPE, p_IsPaid OUT NUMBER)
+AS
+    v_Balance Bank.Balance%TYPE;
 BEGIN
+    -- Initialize p_IsPaid to 0 in case of an exception
+    p_IsPaid := 0;
+
+    BEGIN
+        SELECT Balance INTO v_Balance
+        FROM Bank
+        WHERE CardNumber = p_CardNumber AND CardHolder = p_CardHolder AND ExpirationDate = p_ExpirationDate AND CVV = p_CVV;
+
+        IF v_Balance >= p_PaymentAmount THEN
+            UPDATE Bank
+            SET Balance = Balance - p_PaymentAmount
+            WHERE CardNumber = p_CardNumber;
+
+            INSERT INTO Payment (PaymentDate, Amount, PaymentType, Status, UserID, EventId) 
+            VALUES(SYSDATE, p_PaymentAmount, 'Create Event', 'Paid', p_UserId, p_EventId);
+
+            UPDATE User_
+            SET Profits = Profits + p_PaymentAmount
+            WHERE RoleId = 1;
+            
+            p_IsPaid := 1;
+        END IF;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            -- Handle no data found error here (v_Balance is null)
+            p_IsPaid := 0;
+        WHEN OTHERS THEN
+            -- Handle other exceptions here
+            p_IsPaid := 0;
+            -- Optionally, you can log the error using DBMS_OUTPUT or other means
+    END;
     
-    SELECT Balance INTO v_Balance
-    FROM Bank
-    WHERE CardNumber = p_CardNumber AND CardHolder = p_CardHolder AND ExpirationDate = p_ExpirationDate AND CVV = p_CVV;
-    
-    IF v_Balance IS NOT NULL AND v_Balance >= p_PaymentAmount THEN
-
-        UPDATE Bank
-        SET Balance = Balance - p_PaymentAmount
-        WHERE CardNumber = p_CardNumber;
-
-        INSERT INTO Payment (PaymentDate, Amount, PaymentType, Status, UserID, EventId) 
-        VALUES(SYSDATE, p_PaymentAmount, 'Create Event', 'Paid', p_UserId, p_EventId);
-
-        UPDATE User_
-        SET Profits = Profits + p_PaymentAmount
-        WHERE RoleId = 1;
-        
-        p_IsPaid := 1;
-    ELSE
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions raised outside the inner block
         p_IsPaid := 0;
-    END IF;
-    END PayForNewEvent;
+        -- Optionally, you can log the error using DBMS_OUTPUT or other means
+END PayForNewEvent;
+
         
     
 END Payment_Package;
