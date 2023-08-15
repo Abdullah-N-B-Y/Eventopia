@@ -43,11 +43,14 @@ public class ProfileController : ControllerBase
 
     [HttpGet]
     [Route("GetProfileByUserId/{id}")]
-    public Profile GetProfileByUserId(
+    public IActionResult GetProfileByUserId(
         [Required(ErrorMessage = "Id is required.")]
         int id)
     {
-        return _profileService.GetProfileByUserId(id);
+		Profile profile = _profileService.GetProfileByUserId(id);
+		if (profile == null)
+			return NotFound();
+		return Ok(profile);
     }
 
     [HttpGet]
