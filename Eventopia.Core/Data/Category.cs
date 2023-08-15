@@ -33,5 +33,5 @@ public partial class Category
 	public virtual string? RetrievedImageFile { get; set; }
 	public virtual User? Admin { get; set; }
 
-    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+    public virtual ICollection<Event>? Events { get; set; } = new List<Event>();
 }

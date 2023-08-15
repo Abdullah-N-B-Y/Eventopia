@@ -5,8 +5,8 @@ namespace Eventopia.Core.Service;
 public interface IAdminService
 {
     bool EventAcceptation(int id, string status);
-    bool BannedUser(int userId);
-    bool UnbannedUser(int userId);
+    bool BannedUser(string username);
+    bool UnbannedUser(string username);
     StatisticsDTO GetStatistics();
     GetBenefitsReportDTO GetBenefitsReport(SearchBetweenDatesDTO searchDTO);
 }

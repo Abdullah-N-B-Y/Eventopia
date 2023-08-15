@@ -11,5 +11,6 @@ namespace Eventopia.Core.Service
 	{
         Profile GetProfileByUserId(int id);
         Profile GetProfileByPhoneNumber(string phoneNumber);
-	}
+        void UpdateUserProfileImage(int userId, string imagePath);
+    }
 }
