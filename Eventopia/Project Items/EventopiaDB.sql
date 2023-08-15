@@ -461,7 +461,7 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
         BEGIN
             OPEN cur_all FOR 
                 SELECT * FROM Event
-                WHERE ENDDATE >= SYSDATE
+                WHERE ENDDATE >= SYSDATE AND status = 'paid'
                 ;
             DBMS_SQL.RETURN_RESULT(cur_all);
     END GetAllActiveEvents;
@@ -494,7 +494,7 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 FROM Event e
                 LEFT JOIN Category c ON e.CategoryId = c.ID
                 JOIN USER_ u on e.EventCreatorId = u.ID
-                WHERE ENDDATE >= SYSDATE
+                WHERE ENDDATE >= SYSDATE  AND status = 'paid'
                 ;
             DBMS_SQL.RETURN_RESULT(cur_all);
     END GetAllActiveEventsWithDetails;
