@@ -6,7 +6,7 @@ namespace Eventopia.Infra.Utility;
 
 public static class EmailUtility
 {
-	public static async Task SendEmailAsync(string subject
+	public static void SendEmailAsync(string subject
 		, string body
 		, string toEmail
 		, string fromEmail= "EventOpiaTeam@outlook.com")
@@ -25,24 +25,24 @@ public static class EmailUtility
 
 		message.Body = bodyBuilder.ToMessageBody();
 
-		await _smtpClient.SendAsync(message);
+		_smtpClient.Send(message);
 		_smtpClient.Disconnect(true);
 	}
 
-	public static async Task SendEmailWithPDFAsync(string subject
+	public static void SendEmailWithPDFAsync(string subject
 		, string body
 		, string pdfSubject
 		, string pdfBody
 		, string toEmail
-		, string fromEmail = "EventOpiaTeam@outlook.com")
+		, string fromEmail = "giftmaker2@outlook.com")
 	{
 		SmtpClient _smtpClient = new SmtpClient();
 		_smtpClient.Connect("smtp.outlook.com", 587, SecureSocketOptions.StartTls);
-		_smtpClient.Authenticate("EventOpiaTeam@outlook.com", "EventOpia123!@#@");
+		_smtpClient.Authenticate("giftmaker2@outlook.com", "Q2W3e4r5@");
 
 		var message = new MimeMessage();
-		message.From.Add(new MailboxAddress("Sender", fromEmail));
-		message.To.Add(new MailboxAddress("Recipient", toEmail));
+		message.From.Add(new MailboxAddress("Eventopia", fromEmail));
+		message.To.Add(new MailboxAddress("Customer", toEmail));
 		message.Subject = subject;
 
 		var bodyBuilder = new BodyBuilder();
@@ -53,7 +53,7 @@ public static class EmailUtility
 
 		message.Body = bodyBuilder.ToMessageBody();
 
-		await _smtpClient.SendAsync(message);
+		_smtpClient.Send(message);
 		_smtpClient.Disconnect(true);
 	}
 }
