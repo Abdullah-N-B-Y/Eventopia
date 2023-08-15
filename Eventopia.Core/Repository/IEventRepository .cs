@@ -6,4 +6,6 @@ public interface IEventRepository : IRepository<Event>
 {
     List<Event> SearchEventsByName(string eventName);
 	List<Event> SearchEventsBetweenDates(DateTime startDate, DateTime endDate);
+    List<Event> GetAllEventsByCreatorId(int creatorId);
+    List<Event> GetAllActiveEvents();
 }

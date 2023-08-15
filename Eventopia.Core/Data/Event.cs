@@ -57,7 +57,7 @@ public partial class Event
 	public virtual IFormFile? ReceivedImageFile { get; set; }
 
 	[NotMapped]
-	public virtual byte[]? RetrievedImageFile { get; set; }
+	public virtual string? RetrievedImageFile { get; set; }
 
 	public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 

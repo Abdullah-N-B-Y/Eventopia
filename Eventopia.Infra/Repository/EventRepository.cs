@@ -105,4 +105,20 @@ public class EventRepository : IEventRepository
 		_dBContext.Connection.Execute("EVENT_PACKAGE.UpdateEventByID", parameters, commandType: CommandType.StoredProcedure);
 		return parameters.Get<int>("p_IsSuccessed") == 1;
     }
+
+	public List<Event> GetAllEventsByCreatorId(int creatorId)
+	{
+        DynamicParameters parameters = new DynamicParameters();
+
+        parameters.Add("p_CreatorId", creatorId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+		IEnumerable<Event> events = _dBContext.Connection.Query<Event>("Event_Package.GetAllEventsByCreatorId",parameters,commandType:CommandType.StoredProcedure);
+		return events.ToList();
+    }
+
+	public List<Event> GetAllActiveEvents()
+	{
+		IEnumerable<Event> result = _dBContext.Connection.Query<Event>("EVENT_PACKAGE.GetAllActiveEvents", commandType: CommandType.StoredProcedure);
+		return result.ToList();
+	}
 }

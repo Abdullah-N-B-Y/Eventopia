@@ -21,9 +21,9 @@ public class TestimonialRepository : IRepository<Testimonial>
         parameters.Add("p_Content", testimonial.Content, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_CreationDate", testimonial.CreationDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Status", testimonial.Status, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", testimonial.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", testimonial.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("TESTIMONIAL_PACKAGE.CreateTestimonial", parameters, commandType: CommandType.StoredProcedure);
 
@@ -34,9 +34,9 @@ public class TestimonialRepository : IRepository<Testimonial>
     {
         var parameters = new DynamicParameters();
 
-        parameters.Add("p_TestimonialID", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_TestimonialID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("TESTIMONIAL_PACKAGE.DeleteTestimonialByID", parameters, commandType: CommandType.StoredProcedure);
 
@@ -52,26 +52,21 @@ public class TestimonialRepository : IRepository<Testimonial>
     public Testimonial GetById(int id)
     {
         var parameters = new DynamicParameters();
-        parameters.Add("TESTIMONIAL_ID", id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_TestimonialID", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
         IEnumerable<Testimonial> result = _dBContext.Connection.Query<Testimonial>("TESTIMONIAL_PACKAGE.GetTestimonialByID", parameters, commandType: CommandType.StoredProcedure);
         return result.FirstOrDefault();
-    }
-
-    public Testimonial GetById(decimal id)
-    {
-        throw new NotImplementedException();
     }
 
     public bool Update(Testimonial testimonial)
     {
         DynamicParameters parameters = new DynamicParameters();
-        parameters.Add("p_TestimonialID", testimonial.Id, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_TestimonialID", testimonial.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
         parameters.Add("p_Content", testimonial.Content, dbType: DbType.String, direction: ParameterDirection.Input);
         parameters.Add("p_CreationDate", testimonial.CreationDate, dbType: DbType.DateTime, direction: ParameterDirection.Input);
         parameters.Add("p_Status", testimonial.Status, dbType: DbType.String, direction: ParameterDirection.Input);
-        parameters.Add("p_UserID", testimonial.UserId, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+        parameters.Add("p_UserID", testimonial.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-        parameters.Add("p_IsSuccessed", dbType: DbType.Decimal, direction: ParameterDirection.Output);
+        parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
         _dBContext.Connection.Execute("TESTIMONIAL_PACKAGE.UpdateTestimonialByID", parameters, commandType: CommandType.StoredProcedure);
 

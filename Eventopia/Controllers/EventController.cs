@@ -72,7 +72,14 @@ public class EventController : ControllerBase
         return _eventService.GetAll();
     }
 
-    [HttpPut]
+	[HttpGet]
+	[Route("GetAllActiveEvents")]
+	public List<Event> GetAllActiveEvents()
+	{
+		return _eventService.GetAllActiveEvents();
+	}
+
+	[HttpPut]
     [Route("UpdateEvent")]
     public IActionResult UpdateEvent([FromForm] Event eventt)
     {
@@ -98,5 +105,11 @@ public class EventController : ControllerBase
 		if(!_eventService.Delete(id))
             return NotFound();
         return Ok();
+    }
+
+    [HttpGet("GetAllEventsByCreatorId/{id}")]
+    public IActionResult GetAllEventsByCreatorId([Range(1, int.MaxValue, ErrorMessage = "User id must be a positive number.")] int id) 
+    {
+        return Ok(_eventService.GetAllEventsByCreatorId(id));
     }
 }

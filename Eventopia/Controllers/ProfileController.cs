@@ -13,10 +13,12 @@ namespace Eventopia.API.Controllers;
 public class ProfileController : ControllerBase
 {
     private readonly IProfileService _profileService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public ProfileController(IProfileService profileService)
+    public ProfileController(IProfileService profileService, IWebHostEnvironment webHostEnvironment)
     {
         _profileService = profileService;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     [HttpGet]
@@ -41,14 +43,11 @@ public class ProfileController : ControllerBase
 
     [HttpGet]
     [Route("GetProfileByUserId/{id}")]
-    public IActionResult GetProfileByUserId(
+    public Profile GetProfileByUserId(
         [Required(ErrorMessage = "Id is required.")]
         int id)
     {
-        Profile profile = _profileService.GetProfileByUserId(id);
-        if (profile == null)
-            return NotFound();
-        return Ok(profile);
+        return _profileService.GetProfileByUserId(id);
     }
 
     [HttpGet]
@@ -87,17 +86,17 @@ public class ProfileController : ControllerBase
     [Route("UpdateProfile")]
     public IActionResult UpdateProfile([FromForm] Profile profile)
     {
-		Profile p = _profileService.GetProfileByPhoneNumber(profile.PhoneNumber);
-		if (p != null && p.Id != profile.Id)
-			return Conflict("PhoneNumber Already Exists");
+        Profile p = _profileService.GetProfileByPhoneNumber(profile.PhoneNumber);
+        if (p != null && p.Id != profile.Id)
+            return Conflict("PhoneNumber Already Exists");
 
-		if (profile.ReceivedImageFile != null)
-		{
-			if (!ImageUtility.IsImageContentType(profile.ReceivedImageFile.ContentType))
-				return BadRequest("Invalid file type. Only images are allowed.");
+        if (profile.ReceivedImageFile != null)
+        {
+            if (!ImageUtility.IsImageContentType(profile.ReceivedImageFile.ContentType))
+                return BadRequest("Invalid file type. Only images are allowed.");
 
-			profile.ImagePath = ImageUtility.ReplaceImage(profile.ImagePath, profile.ReceivedImageFile, "Profile");
-		}
+            profile.ImagePath = ImageUtility.ReplaceImage(profile.ImagePath, profile.ReceivedImageFile, "Profile");
+        }
 
         if (!_profileService.Update(profile))
             return BadRequest();
@@ -114,5 +113,54 @@ public class ProfileController : ControllerBase
         if(!_profileService.Delete(id))
             return NotFound();
         return Ok();
+    }
+
+    private string localPath = @"D:\Thaluf\Files\Final project\Images\UsersImages";
+    [HttpPost]
+    [Route("UploadImage/{userId}")]
+    public IActionResult UploadImage(IFormFile file, int userId)
+    {
+        if (file.Length > 0)
+        {
+            if (string.IsNullOrEmpty(localPath))
+            {
+                return BadRequest(new { Message = "Invalid localPath." });
+            }
+
+            string fileName = Path.GetFileName(file.FileName);
+            string fullPath = Path.Combine(localPath, fileName);
+
+            using (Stream fileStream = new FileStream(fullPath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+            _profileService.UpdateUserProfileImage(userId, fullPath);
+
+
+            return Ok(new { Message = "Image path updated successfully." });
+        }
+
+        return BadRequest(new { Message = "Image file is empty" });
+    }
+
+    [HttpGet]
+    [Route("GetProfileImage/{userId}")]
+    public IActionResult GetProfileImage(int userId) 
+    {
+        Profile profile = _profileService.GetById(userId);
+        string imagePath = profile.ImagePath;
+
+        if (!string.IsNullOrEmpty(imagePath))
+        {
+            if (System.IO.File.Exists(imagePath))
+            {
+                return PhysicalFile(imagePath, "application/octet-stream", Path.GetFileName(imagePath));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        return BadRequest();
     }
 }

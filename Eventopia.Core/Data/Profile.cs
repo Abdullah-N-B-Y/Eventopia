@@ -22,7 +22,7 @@ public partial class Profile
 	public string? ImagePath { get; set; }
 
 	[Required(ErrorMessage = "PhoneNumber is required.")]
-	[RegularExpression(@"^\+?[0-9]{10,12}$", ErrorMessage = "Invalid phone number. It should contain 10 to 12 digits and may start with a '+' symbol.")]
+	[RegularExpression(@"^\+?[0-9]{10,13}$", ErrorMessage = "Invalid phone number. It should contain 10 to 13 digits and may start with a '+' symbol.")]
 	public string? PhoneNumber { get; set; }
 
 	[MaxLength(10, ErrorMessage = "Gender cannot exceed 10 characters.")]
@@ -44,7 +44,7 @@ public partial class Profile
 	public virtual IFormFile? ReceivedImageFile { get; set; }
 
 	[NotMapped]
-	public virtual byte[]? RetrievedImageFile { get; set; }
+	public virtual string? RetrievedImageFile { get; set; }
 
 	public virtual ICollection<Profilesetting> Profilesettings { get; set; } = new List<Profilesetting>();
 

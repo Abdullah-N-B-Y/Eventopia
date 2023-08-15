@@ -21,7 +21,7 @@ public class EventService : IEventService
 		List<Event> events = _eventRepository.SearchEventsBetweenDates(datesDTO.StartDate, datesDTO.EndDate);
 		foreach (Event e in events)
 		{
-			byte[]? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			string? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
 			e.RetrievedImageFile = byteFile;
 		}
 		return events;
@@ -32,7 +32,7 @@ public class EventService : IEventService
         List<Event> events = _eventRepository.SearchEventsByName(eventName);
         foreach(Event e in events)
         {
-			byte[]? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			string? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
 			e.RetrievedImageFile = byteFile;
 		}
         return events;
@@ -57,7 +57,7 @@ public class EventService : IEventService
 		List<Event> events = _eventRepository.GetAll();
 		foreach (Event e in events)
 		{
-			byte[]? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			string? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
 			e.RetrievedImageFile = byteFile;
 		}
 		return events;
@@ -68,7 +68,7 @@ public class EventService : IEventService
 		Event eventt = _eventRepository.GetById(id);
 		if (eventt == null)
 			return null;
-		byte[]? byteFile = ImageUtility.RetrieveImage(eventt.ImagePath, "Event");
+		string? byteFile = ImageUtility.RetrieveImage(eventt.ImagePath, "Event");
 		eventt.RetrievedImageFile = byteFile;
 		return eventt;
     }
@@ -77,4 +77,20 @@ public class EventService : IEventService
     {
         return _eventRepository.Update(@event);
     }
+
+    public List<Event> GetAllEventsByCreatorId(int creatorId) 
+    {
+        return _eventRepository.GetAllEventsByCreatorId(@creatorId);
+    }
+
+	public List<Event> GetAllActiveEvents()
+	{
+		List<Event> events = _eventRepository.GetAllActiveEvents();
+		foreach (Event e in events)
+		{
+			string? byteFile = ImageUtility.RetrieveImage(e.ImagePath, "Event");
+			e.RetrievedImageFile = byteFile;
+		}
+		return events;
+	}
 }

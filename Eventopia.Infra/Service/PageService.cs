@@ -34,7 +34,7 @@ public class PageService : IService<Page>
 		List<Page> pages = _pageRepository.GetAll();
 		foreach (Page page in pages)
 		{
-			byte[]? byteFile = ImageUtility.RetrieveImage(page.BackgroundImagePath, "Page");
+			string? byteFile = ImageUtility.RetrieveImage(page.BackgroundImagePath, "Page");
 			page.RetrievedImageFile = byteFile;
 		}
 		return pages;
@@ -45,7 +45,7 @@ public class PageService : IService<Page>
 		Page page = _pageRepository.GetById(id);
 		if (page == null)
 			return null;
-		byte[]? byteFile = ImageUtility.RetrieveImage(page.BackgroundImagePath, "Page");
+		string? byteFile = ImageUtility.RetrieveImage(page.BackgroundImagePath, "Page");
 		page.RetrievedImageFile = byteFile;
 		return page;
 	}

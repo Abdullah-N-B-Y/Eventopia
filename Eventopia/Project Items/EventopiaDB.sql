@@ -199,6 +199,7 @@ CREATE TABLE Contact_Us_Entries (
 commit;
 
 select * from Role_;
+
 select * from User_;
 
 select * from User_ u
@@ -248,7 +249,7 @@ END User_Package;
 
 CREATE OR REPLACE PACKAGE BODY User_Package 
 AS
-
+        
     PROCEDURE GetAllUsers
     AS
         cur_all SYS_REFCURSOR;
@@ -290,6 +291,7 @@ AS
         v_IsSuccessed NUMBER;
         BEGIN
             DELETE FROM User_ WHERE ID = p_UserID RETURNING ID INTO v_IsSuccessed;
+            COMMIT;
             IF v_IsSuccessed IS NOT NULL
                 THEN
                     p_IsSuccessed := 1;
@@ -311,6 +313,7 @@ AS
                 UserStatus = p_UserStatus,
                 RoleID = p_RoleID
                 WHERE ID = p_UserID RETURNING ID INTO v_IsSuccessed;
+                COMMIT;
                 IF v_IsSuccessed IS NOT NULL
                 THEN
                     p_IsSuccessed := 1;
@@ -325,6 +328,7 @@ AS
         BEGIN
             INSERT INTO User_ 
             VALUES (DEFAULT, p_Username, p_Password, p_Email, p_VerificationCode, p_UserStatus, p_RoleID) RETURNING ID INTO v_IsSuccessed;
+            COMMIT;
             IF v_IsSuccessed IS NOT NULL THEN
                     p_IsSuccessed := 1;
             ELSE
@@ -347,6 +351,7 @@ AS
                     LastName = p_LastName,
                     PhoneNumber = p_PhoneNumber
                 WHERE ID = p_UserId RETURNING ID INTO v_IsSuccessed;
+                COMMIT;
                 IF v_IsSuccessed IS NOT NULL THEN
                     p_IsSuccessed := 1;
                 ELSE
@@ -374,6 +379,7 @@ AS
                 UPDATE User_ 
                 SET Password = p_NewPassword
                 WHERE ID = p_UserId RETURNING ID INTO v_IsSuccessed;
+                COMMIT;
                 IF v_IsSuccessed IS NOT NULL
                 THEN
                     p_IsSuccessed := 1;
@@ -408,13 +414,15 @@ END User_Package;
 create or replace PACKAGE Event_Package AS
 
     PROCEDURE GetAllEvents;
+    PROCEDURE GetAllActiveEvents;
     PROCEDURE GetEventByID(p_EventID IN NUMBER);
     PROCEDURE DeleteEventByID(p_EventID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE UpdateEventByID(p_EventID IN NUMBER, p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE CreateEvent(p_Name IN VARCHAR2, p_AttendingCost IN FLOAT, p_StartDate IN DATE, p_EndDate IN DATE, p_Status IN VARCHAR2, p_EventDescription IN VARCHAR2, p_ImagePath IN VARCHAR2, p_EventCapacity IN NUMBER, p_Latitude IN NUMBER, p_Longitude IN NUMBER, p_EventCreatorID IN NUMBER, p_CategoryID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE SearchEventsBetweenDates(p_StartDate IN DATE, p_EndDate IN DATE);
     PROCEDURE SearchEventsByName(p_Name IN VARCHAR2);
-    
+    PROCEDURE GetAllEventsByCreatorId(p_CreatorId IN NUMBER);
+
 END Event_Package;
 
 CREATE OR REPLACE PACKAGE BODY Event_Package AS
@@ -427,7 +435,16 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 SELECT * FROM Event;
             DBMS_SQL.RETURN_RESULT(cur_all);
     END GetAllEvents;
-
+    
+    PROCEDURE GetAllActiveEvents
+    AS
+        cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR 
+                SELECT * FROM Event WHERE ENDDATE >= SYSDATE;
+            DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllActiveEvents;
+    
     PROCEDURE GetEventByID(p_EventID IN NUMBER)
     AS
         cur_item SYS_REFCURSOR;
@@ -513,6 +530,15 @@ CREATE OR REPLACE PACKAGE BODY Event_Package AS
                 DBMS_SQL.RETURN_RESULT(cur_item);
     END SearchEventsByName;
     
+    PROCEDURE GetAllEventsByCreatorId(p_CreatorId IN NUMBER)
+    AS
+            cur_all SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_all FOR
+                SELECT * FROM Event WHERE EventCreatorId = p_CreatorId;
+                DBMS_SQL.RETURN_RESULT(cur_all);
+    END GetAllEventsByCreatorId;
+
 END Event_Package;
 
 
@@ -699,6 +725,7 @@ create or replace PACKAGE Profile_Package AS
     PROCEDURE GetAllProfiles;
     PROCEDURE GetProfileByID(p_ProfileId IN NUMBER);
     PROCEDURE GetProfileByUserId(p_UserId IN NUMBER);
+    PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2);
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE UpdateProfileByID(p_ProfileId IN NUMBER, p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
     PROCEDURE CreateProfile(p_FirstName IN VARCHAR2, p_LastName IN VARCHAR2, p_ImagePath IN VARCHAR2, p_PhoneNumber IN NUMBER, p_Gender IN VARCHAR2, p_DateOfBirth IN DATE, p_Bio IN VARCHAR2, p_Rate IN NUMBER, p_UserID IN NUMBER, p_IsSuccessed OUT NUMBER);
@@ -733,6 +760,15 @@ AS
                 SELECT * FROM Profile WHERE UserId = p_UserId;
                 DBMS_SQL.RETURN_RESULT(cur_item);
     END GetProfileByUserId;
+
+    PROCEDURE GetProfileByPhoneNumber(p_PhoneNumber IN VARCHAR2)
+    AS
+        cur_item SYS_REFCURSOR;
+        BEGIN
+            OPEN cur_item FOR
+            SELECT * FROM Profile WHERE PhoneNumber = p_PhoneNumber;
+            DBMS_SQL.RETURN_RESULT(cur_item); 
+    END GetProfileByPhoneNumber;
 
     PROCEDURE DeleteProfileByID(p_ProfileId IN NUMBER, p_IsSuccessed OUT NUMBER)
     AS
@@ -1067,8 +1103,8 @@ CREATE OR REPLACE PACKAGE Admin_Package
 AS
     
     PROCEDURE EventAcceptation(p_event_id IN Event.ID%TYPE, p_event_status IN Event.Status%TYPE, p_IsSuccessed OUT NUMBER);
-    PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
-    PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER);
+    PROCEDURE BannedUser(p_Username IN VARCHAR2, p_IsSuccessed OUT NUMBER);
+    PROCEDURE UnbannedUser(p_Username IN VARCHAR2, p_IsSuccessed OUT NUMBER);
     PROCEDURE GetStats(p_UsersNumber OUT NUMBER, p_EventsNumber OUT Event.ID%TYPE, p_EventId OUT Event.ID%TYPE, p_MaxAttendance OUT NUMBER);
     PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT FLOAT, p_AnnualBenefits OUT FLOAT);
 
@@ -1093,11 +1129,11 @@ AS
         END IF;
     END EventAcceptation;
 
-    PROCEDURE BannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)
+    PROCEDURE BannedUser(p_Username IN VARCHAR2, p_IsSuccessed OUT NUMBER)
     AS
         v_id NUMBER;
         BEGIN
-            UPDATE User_ SET UserStatus = 'Banned' WHERE ID = p_UserId RETURNING ID INTO v_id;
+            UPDATE User_ SET UserStatus = 'Banned' WHERE Username = p_Username RETURNING ID INTO v_id;
             COMMIT;
             IF v_id IS NOT NULL
             THEN
@@ -1106,12 +1142,12 @@ AS
                 p_IsSuccessed := 0;
             END IF;
     END BannedUser; 
-    
-    PROCEDURE UnbannedUser(p_UserId IN User_.ID%TYPE, p_IsSuccessed OUT NUMBER)
+
+    PROCEDURE UnbannedUser(p_Username IN VARCHAR2, p_IsSuccessed OUT NUMBER)
     AS
         v_Id NUMBER;
         BEGIN
-            UPDATE User_ SET UserStatus = 'Activated' WHERE ID = p_UserId RETURNING ID INTO v_Id;
+            UPDATE User_ SET UserStatus = 'Activated' WHERE Username = p_Username RETURNING ID INTO v_Id;
             COMMIT;
         IF v_Id IS NULL
 		THEN
@@ -1120,6 +1156,7 @@ AS
 			p_IsSuccessed := 1;
 		END IF;
     END UnbannedUser; 
+
     
     PROCEDURE GetStats(p_UsersNumber OUT NUMBER, p_EventsNumber OUT Event.ID%TYPE, p_EventId OUT Event.ID%TYPE, p_MaxAttendance OUT NUMBER)
     AS

@@ -100,4 +100,13 @@ public class ProfileRepository : IProfileRepository
 
         return parameters.Get<int>("p_IsSuccessed") == 1;
     }
+
+    public void UpdateUserProfileImage(int userId, string imagePath)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("p_ProfileId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_ImagePath", imagePath, dbType: DbType.String, direction: ParameterDirection.Input);
+
+        _dBContext.Connection.Execute("Profile_Package.UpdateUserProfileImage", parameters, commandType: CommandType.StoredProcedure);
+    }
 }
