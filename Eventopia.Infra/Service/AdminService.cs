@@ -18,14 +18,14 @@ public class AdminService : IAdminService
         return _adminRepository.EventAcceptation(id, status);
     }
 
-    public bool BannedUser(int userId)
+    public bool BannedUser(string username)
     {
-        return _adminRepository.BannedUser(userId);
+        return _adminRepository.BannedUser(username);
     }
 
-    public bool UnbannedUser(int userId)
+    public bool UnbannedUser(string username)
     {
-        return _adminRepository.UnbannedUser(userId);
+        return _adminRepository.UnbannedUser(username);
     }
 
     public StatisticsDTO GetStatistics()

@@ -30,25 +30,23 @@ public class AdminController : ControllerBase
     }
 
     [HttpPut]
-    [Route("BannedUser/{id}")]
+    [Route("BannedUser/{username}")]
     public IActionResult BannedUser(
-		[Required(ErrorMessage = "UserId is required.")]
-	    [Range(1, int.MaxValue, ErrorMessage = "userId must be a positive number.")]
-		int id)
+		[Required(ErrorMessage = "Username is required.")]
+        string username)
     {
-        if(!_adminService.BannedUser(id))
+        if(!_adminService.BannedUser(username))
 		    return NotFound();
         return Ok();
     }
 
     [HttpPut]
-    [Route("UnbannedUser/{id}")]
+    [Route("UnbannedUser/{username}")]
     public IActionResult UnbannedUser(
-        [Required(ErrorMessage = "UserId is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "UserId must be a positive number.")] 
-        int id)
+        [Required(ErrorMessage = "Username is required.")]
+        string username)
     {
-        if(!_adminService.UnbannedUser(id))
+        if(!_adminService.UnbannedUser(username))
             return NotFound();
         return Ok();
     }

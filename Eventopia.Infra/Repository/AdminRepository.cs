@@ -30,11 +30,11 @@ public class AdminRepository : IAdminRepository
         return a == 1;
     }
 
-    public bool BannedUser(int userId)
+    public bool BannedUser(string username)
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_Username", username, dbType: DbType.String, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -43,11 +43,11 @@ public class AdminRepository : IAdminRepository
         return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
-    public bool UnbannedUser(int userId)
+    public bool UnbannedUser(string username)
     {
         DynamicParameters parameters = new DynamicParameters();
 
-        parameters.Add("p_UserId", userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        parameters.Add("p_Username", username, dbType: DbType.String, direction: ParameterDirection.Input);
 
         parameters.Add("p_IsSuccessed", dbType: DbType.Int32, direction: ParameterDirection.Output);
 

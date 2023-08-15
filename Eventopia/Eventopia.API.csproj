@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Images\" />
     <Folder Include="Project Items\" />
   </ItemGroup>
 
