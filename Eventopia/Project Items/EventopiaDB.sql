@@ -1241,10 +1241,10 @@ AS
     
     PROCEDURE GetBenefitsReport(p_StartDate IN DATE, p_EndDate IN DATE, p_MonthlyBenefits OUT FLOAT, p_AnnualBenefits OUT FLOAT)
     AS
-        v_sum1 Float;
-        v_sum2 Float;
-        v_sum3 Float;
-        v_sum4 Float;
+        v_sum1 Float := 0;
+        v_sum2 Float := 0;
+        v_sum3 Float := 0;
+        v_sum4 Float := 0;
     BEGIN
         SELECT SUM(Amount) INTO v_sum1
         FROM Payment
