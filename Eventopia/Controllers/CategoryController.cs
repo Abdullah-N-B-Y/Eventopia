@@ -1,6 +1,7 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
 using Eventopia.Infra.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -9,6 +10,7 @@ namespace Eventopia.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Policy = "AdminAndUserOnly")]
 	public class CategoryController : ControllerBase
 	{
 		private readonly ICategoryService _categoryService;

@@ -5,11 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using Eventopia.Infra.Utility;
 using Microsoft.Extensions.Logging;
 using Eventopia.Infra.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Eventopia.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[AllowAnonymous]
 public class PageController : ControllerBase
 {
 	private readonly IService<Page> _pageService;

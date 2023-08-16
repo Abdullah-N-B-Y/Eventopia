@@ -3,6 +3,7 @@ using Eventopia.Core.DTO;
 using Eventopia.Core.Service;
 using Eventopia.Infra.Repository;
 using Eventopia.Infra.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,6 +11,7 @@ namespace Eventopia.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Policy = "AdminAndUserOnly")]
 public class UserController : ControllerBase
 {
 	private readonly IUserService _userService;
@@ -97,21 +99,6 @@ public class UserController : ControllerBase
 			return NotFound();
 		return Ok();
 	}
-
-  //  [HttpPut]
-  //  [Route("UpdateUserProfile/{password}")]
-  //  public IActionResult UpdateUserProfile([FromBody] Profile profile,
-		//[StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters and less than 50")]
-		//[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$",
-		//	ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")]
-		//[Required(ErrorMessage = "Password is required")]
-		//string password)
-  //  {
-		//if (!_userService.UpdateUserProfile(profile, password))
-		//	return NotFound();
-
-		//return Ok();
-  //  }
 
     [HttpPut]
     [Route("UpdatePassword/{id}")]

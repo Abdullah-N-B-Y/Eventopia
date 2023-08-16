@@ -2,11 +2,13 @@
 using Eventopia.Core.Data;
 using Eventopia.Core.Service;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Eventopia.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Policy = "AdminAndUserOnly")]
 public class TestimonialController : ControllerBase
 {
     private readonly IService<Testimonial> _testimonialService;

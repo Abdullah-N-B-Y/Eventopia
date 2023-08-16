@@ -10,6 +10,7 @@ namespace Eventopia.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Policy = "AdminAndUserOnly")]
 public class EventController : ControllerBase
 {
     private readonly IEventService _eventService; 

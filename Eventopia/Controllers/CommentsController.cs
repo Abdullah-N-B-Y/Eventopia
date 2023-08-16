@@ -1,5 +1,6 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,6 +8,7 @@ namespace Eventopia.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Policy = "AdminAndUserOnly")]
 	public class CommentsController : ControllerBase
 	{
 		private readonly ICommentsService _commentsService;

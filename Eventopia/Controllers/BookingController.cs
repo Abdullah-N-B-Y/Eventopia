@@ -1,5 +1,6 @@
 ﻿using Eventopia.Core.Data;
 using Eventopia.Core.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,7 +8,8 @@ namespace Eventopia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookingController : ControllerBase
+	[Authorize(Policy = "AdminAndUserOnly")]
+	public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
 
