@@ -8,7 +8,7 @@ namespace Eventopia.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Policy = "AdminAndUserOnly")]
+[AllowAnonymous]
 public class TestimonialController : ControllerBase
 {
     private readonly IService<Testimonial> _testimonialService;
