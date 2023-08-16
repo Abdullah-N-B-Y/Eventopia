@@ -27,7 +27,7 @@ public class TestimonialRepository : IRepository<Testimonial>
 
         _dBContext.Connection.Execute("TESTIMONIAL_PACKAGE.CreateTestimonial", parameters, commandType: CommandType.StoredProcedure);
 
-        return parameters.Get<decimal>("p_IsSuccessed") == 1;
+        return parameters.Get<int>("p_IsSuccessed") == 1;
     }
 
     public bool Delete(int id)
