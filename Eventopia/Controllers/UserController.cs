@@ -136,6 +136,7 @@ public class UserController : ControllerBase
 
 	[HttpPost]
 	[Route("ForgotPassword")]
+	[AllowAnonymous]
 	public IActionResult ForgotPassword(
 		[FromBody]
 		[Required(ErrorMessage = "Email is required")]
@@ -151,6 +152,7 @@ public class UserController : ControllerBase
 
 	[HttpPost]
 	[Route("CheckPasswordResetToken/{email}")]
+	[AllowAnonymous]
 	public IActionResult CheckPasswordResetToken(
 		[Required(ErrorMessage = "Email is required")]
 		[EmailAddress(ErrorMessage = "Invalid email address")]
@@ -169,6 +171,7 @@ public class UserController : ControllerBase
 
 	[HttpPost]
 	[Route("ResetForgottenPassword/{email}")]
+	[AllowAnonymous]
 	public IActionResult ResetForgottenPassword(
 		[Required(ErrorMessage = "Email is required")]
 		[EmailAddress(ErrorMessage = "Invalid email address")]
