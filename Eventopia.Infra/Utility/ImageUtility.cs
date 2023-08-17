@@ -47,12 +47,12 @@ namespace Eventopia.Infra.Utility
 
 		public static string ReplaceImage(string oldFileName, IFormFile? newFile, string imageFolderName)
 		{
-			if (string.IsNullOrEmpty(oldFileName))
-				throw new ArgumentException("Invalid file name.", nameof(oldFileName));
-			if (newFile == null || newFile.Length == 0)
-				throw new ArgumentException("Invalid file.", nameof(newFile));
+			//if (string.IsNullOrEmpty(oldFileName))
+			//	throw new ArgumentException("Invalid file name.", nameof(oldFileName));
+			//if (newFile == null || newFile.Length == 0)
+			//	throw new ArgumentException("Invalid file.", nameof(newFile));
 
-			DeleteImage(oldFileName, imageFolderName);
+			//DeleteImage(oldFileName, imageFolderName);
 
 			return StoreImage(newFile, imageFolderName);
 		}

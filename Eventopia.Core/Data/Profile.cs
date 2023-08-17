@@ -10,18 +10,18 @@ public partial class Profile
 {
     public decimal Id { get; set; }
 
-	[Required(ErrorMessage = "FirstName is required.")]
+	//[Required(ErrorMessage = "FirstName is required.")]
 	[MaxLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
 	public string? FirstName { get; set; }
 
-	[Required(ErrorMessage = "LastName is required.")]
+	//[Required(ErrorMessage = "LastName is required.")]
 	[MaxLength(50, ErrorMessage = "LastName cannot exceed 50 characters.")]
 	public string? LastName { get; set; }
 
 	[MaxLength(100, ErrorMessage = "ImagePath cannot exceed 100 characters.")]
 	public string? ImagePath { get; set; }
 
-	[Required(ErrorMessage = "PhoneNumber is required.")]
+	//[Required(ErrorMessage = "PhoneNumber is required.")]
 	[RegularExpression(@"^\+?[0-9]{10,13}$", ErrorMessage = "Invalid phone number. It should contain 10 to 13 digits and may start with a '+' symbol.")]
 	public string? PhoneNumber { get; set; }
 
@@ -36,7 +36,7 @@ public partial class Profile
 	[Range(0, 5, ErrorMessage = "Rate must be between 0 and 5.")]
 	public decimal? Rate { get; set; }
 
-	[Required(ErrorMessage = "Userid is required.")]
+	//[Required(ErrorMessage = "Userid is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "Userid must be a positive number.")]
 	public decimal? UserId { get; set; }
 

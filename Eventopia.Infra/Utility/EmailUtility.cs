@@ -9,11 +9,11 @@ public static class EmailUtility
 	public static void SendEmailAsync(string subject
 		, string body
 		, string toEmail
-		, string fromEmail= "EventOpiaTeam@outlook.com")
+		, string fromEmail= "your email address")
 	{
 		SmtpClient _smtpClient = new SmtpClient();
 		_smtpClient.Connect("smtp.outlook.com", 587, SecureSocketOptions.StartTls);
-		_smtpClient.Authenticate("EventOpiaTeam@outlook.com", "EventOpia123!@#");
+		_smtpClient.Authenticate("your email address", "your password");
 
 		var message = new MimeMessage();
 		message.From.Add(new MailboxAddress("Sender", fromEmail));
@@ -34,11 +34,11 @@ public static class EmailUtility
 		, string pdfSubject
 		, string pdfBody
 		, string toEmail
-		, string fromEmail = "giftmaker2@outlook.com")
+		, string fromEmail = "email")
 	{
 		SmtpClient _smtpClient = new SmtpClient();
 		_smtpClient.Connect("smtp.outlook.com", 587, SecureSocketOptions.StartTls);
-		_smtpClient.Authenticate("giftmaker2@outlook.com", "Q2W3e4r5@");
+		_smtpClient.Authenticate("email", "auth code");
 
 		var message = new MimeMessage();
 		message.From.Add(new MailboxAddress("Eventopia", fromEmail));
