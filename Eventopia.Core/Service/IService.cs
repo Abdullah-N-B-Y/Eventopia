@@ -1,6 +1,6 @@
 ﻿
 
-namespace DesalinationPlant_Booty.Core.Service;
+namespace Eventopia.Core.Service;
 
 public interface IService<T>
 {
